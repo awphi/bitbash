@@ -1,0 +1,67 @@
+
+atlas.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+placeholder
+  rotate: false
+  xy: 1, 31
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 1, 1
+  size: 28, 28
+  orig: 32, 32
+  offset: 3, 1
+  index: -1
+
+atlas2.png
+size: 256,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+tiles/dirt
+  rotate: false
+  xy: 1, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/grass
+  rotate: false
+  xy: 35, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/marble_floor
+  rotate: false
+  xy: 69, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/stone_brick
+  rotate: false
+  xy: 103, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+atlas3.png
+size: 32,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+widgets/lamp
+  rotate: false
+  xy: 1, 1
+  size: 30, 62
+  orig: 32, 64
+  offset: 1, 1
+  index: -1

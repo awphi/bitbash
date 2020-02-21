@@ -1,0 +1,74 @@
+package ph.adamw.bitbash
+
+import com.badlogic.gdx.ApplicationAdapter
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.GL20
+import com.kotcrab.vis.ui.VisUI
+import org.nustaq.serialization.FSTConfiguration
+import ph.adamw.bitbash.game.actor.ActorGameObject
+import ph.adamw.bitbash.game.data.MapState
+import ph.adamw.bitbash.game.data.world.Map
+import ph.adamw.bitbash.game.data.world.MapRegion
+import ph.adamw.bitbash.scenes.BitbashPlayScene
+import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
+
+
+class BitbashApplication : ApplicationAdapter() {
+    override fun create() {
+        Gdx.input.inputProcessor = GameManager.STAGE
+
+        //VisUI.load(UIConstants.SKIN)
+
+        //TODO load main menu here instead
+        BitbashPlayScene.mapState = MapState.load("Game3")
+        GameManager.loadScene(BitbashPlayScene)
+    }
+
+    override fun dispose() {
+        ActorGameObject.disposeTextureAtlas()
+        GameManager.STAGE.dispose()
+        VisUI.dispose()
+        GameManager.physicsWorld.dispose()
+        GameManager.rayHandler.dispose()
+    }
+
+    override fun pause() {
+        GameManager.getScene()?.pause()
+    }
+
+    override fun render() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+        GameManager.getScene()?.preDraw()
+        for(i in GameManager.UI_LAYERS) {
+            i.setPosition(GameManager.MAIN_CAMERA.position.x - (GameManager.STAGE.width / 2f),
+                    GameManager.MAIN_CAMERA.position.y - (GameManager.STAGE.height / 2f))
+            i.setSize(GameManager.STAGE.width, GameManager.STAGE.height)
+        }
+
+        GameManager.STAGE.act(Gdx.graphics.deltaTime)
+        GameManager.STAGE.draw()
+
+        GameManager.physicsWorld.step(1/60f, 6, 2)
+
+        if(DEBUG) {
+            GameManager.debugRenderer.render(GameManager.physicsWorld, GameManager.MAIN_CAMERA.combined)
+        }
+        GameManager.getScene()?.postDraw()
+    }
+
+    override fun resize(width: Int, height: Int) {
+        GameManager.getScene()?.resize(width, height)
+    }
+
+    companion object {
+        val DEBUG = System.getProperty("debug") == "true"
+        val IO : FSTConfiguration = FSTConfiguration.createDefaultConfiguration()
+
+        init {
+            IO.setInstantiator(TweakedFSTClassInstantiator())
+            IO.registerClass(MapRegion::class.java)
+            IO.registerClass(Map::class.java)
+        }
+    }
+}

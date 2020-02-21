@@ -1,0 +1,52 @@
+import com.badlogic.gdx.tools.texturepacker.TexturePacker
+
+apply plugin: "kotlin"
+
+sourceCompatibility = 1.7
+sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = ["../core/assets"]
+
+project.ext.mainClassName = "com.mygdx.game.desktop.DesktopLauncher"
+project.ext.assetsDir = new File("../core/assets")
+
+task run(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.assetsDir
+    ignoreExitValue = true
+}
+
+task debug(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.assetsDir
+    ignoreExitValue = true
+    debug = true
+}
+
+task packTextures {
+    doLast {
+        logger.info "Calling TexturePacker: " + packTextures
+        TexturePacker.Settings v = new TexturePacker.Settings()
+        v.stripWhitespaceX = true
+        v.stripWhitespaceY = true
+        v.duplicatePadding = true
+        TexturePacker.process(v, "../core/assets/textures/", "../core/assets/textures-packed/", "atlas")
+    }
+}
+
+task dist(type: Jar) {
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+    }
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+
+dist.dependsOn classes
