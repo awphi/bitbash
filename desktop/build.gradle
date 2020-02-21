@@ -29,11 +29,16 @@ task debug(dependsOn: classes, type: JavaExec) {
 task packTextures {
     doLast {
         logger.info "Calling TexturePacker: " + packTextures
-        TexturePacker.Settings v = new TexturePacker.Settings()
-        v.stripWhitespaceX = true
-        v.stripWhitespaceY = true
-        v.duplicatePadding = true
-        TexturePacker.process(v, "../core/assets/textures/", "../core/assets/textures-packed/", "atlas")
+        TexturePacker.Settings tileSettings = new TexturePacker.Settings()
+        TexturePacker.Settings otherSettings = new TexturePacker.Settings()
+
+        tileSettings.duplicatePadding = true
+
+        otherSettings.stripWhitespaceX = true
+        otherSettings.stripWhitespaceY = true
+
+        TexturePacker.process(tileSettings, "../core/assets/textures/tiles/", "../core/assets/textures-packed/", "tiles")
+        TexturePacker.process(otherSettings, "../core/assets/textures/objects/", "../core/assets/textures-packed/", "objects")
     }
 }
 

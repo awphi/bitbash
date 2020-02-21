@@ -123,7 +123,7 @@ abstract class BitbashCoreScene : Scene() {
 
                     if(hitActor != lastActorGameObjHit) {
                         lastActorGameObjHit?.setColor(1f, 1f, 1f, 1f)
-                        hitActor.setColor(0.9f, 0.9f, 0.9f, 1f)
+                        hitActor.setColor(0.8f, 0.8f, 0.8f, 1f)
                         lastActorGameObjHit = hitActor
                     }
                 }

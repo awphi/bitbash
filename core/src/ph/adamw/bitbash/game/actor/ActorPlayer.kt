@@ -52,11 +52,11 @@ class ActorPlayer : ActorEntity("player") {
 
     object Physics : PhysicsData() {
         override val principleWidth: Float
-            get() = 24f
+            get() = 14f
         override val principleHeight: Float
-            get() = 24f
+            get() = 6f
         override val origin: Vector2
-            get() = Vector2(1.5f, 2.5f)
+            get() = Vector2(6f, 0f)
         override val bodyType: BodyDef.BodyType
             get() = BodyDef.BodyType.DynamicBody
 

@@ -8,7 +8,7 @@ import java.io.Serializable
 
 abstract class TileHandler(name : String) : ActorHandler<ActorTile>(name), Serializable {
     override fun getTexturePath() : String {
-        return "tiles/$name"
+        return name
     }
 
     abstract override val hasBody: Boolean

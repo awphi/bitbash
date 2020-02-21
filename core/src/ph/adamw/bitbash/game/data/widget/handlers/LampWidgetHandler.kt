@@ -11,11 +11,11 @@ object LampWidgetHandler : WidgetHandler("lamp") {
 
     object Physics : PhysicsData() {
         override val principleWidth: Float
-            get() = 22f
+            get() = 24f
         override val principleHeight: Float
-            get() = 6f
+            get() = 8f
         override val origin: Vector2
-            get() = Vector2(4f, 2f)
+            get() = Vector2(2f,  0f)
         override val principleFixtureType: Shape.Type
             get() = Shape.Type.Polygon
     }

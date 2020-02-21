@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Align
+import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.physics.PhysicsData
 import ph.adamw.bitbash.game.data.world.TilePosition
@@ -26,6 +27,9 @@ abstract class ActorGameObject(name: String) : Actor() {
 
     init {
         this.name = name
+        if(BitbashApplication.DEBUG && this !is ActorTile) {
+            debug = true
+        }
     }
 
     // Animation vars
@@ -81,7 +85,7 @@ abstract class ActorGameObject(name: String) : Actor() {
     fun buildBody() {
         val bodyDef = BodyDef()
         bodyDef.type = physicsData!!.bodyType
-        bodyDef.position.set(x + (width / 2f), y + (height / 2f))
+        bodyDef.position.set(x + width / 2f, y + height / 2f)
         bodyInternal = GameManager.physicsWorld.createBody(bodyDef)
         physicsData!!.addPrincipleFixture(bodyInternal!!, physicsData!!.origin)
         addAdditionalFixtures(bodyInternal!!)
@@ -179,12 +183,15 @@ abstract class ActorGameObject(name: String) : Actor() {
     open fun mouseDragged(button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {}
 
     companion object {
-        private val atlas = TextureAtlas("textures-packed/atlas.atlas")
+        private val tilesAtlas = TextureAtlas("textures-packed/tiles.atlas")
+        private val objectsAtlas = TextureAtlas("textures-packed/objects.atlas")
+
         private val atlasCache = HashMap<String, TextureAtlas.AtlasRegion>()
         val PLACEHOLDER = getTexture("placeholder")
 
         fun disposeTextureAtlas() {
-            atlas.dispose()
+            tilesAtlas.dispose()
+            objectsAtlas.dispose()
         }
 
         fun getTexture(name: String) : TextureAtlas.AtlasRegion {
@@ -192,7 +199,11 @@ abstract class ActorGameObject(name: String) : Actor() {
                 return atlasCache[name]!!
             }
 
-            val tex = atlas.findRegion(name)
+            var tex = tilesAtlas.findRegion(name)
+
+            if(tex == null) {
+                tex = objectsAtlas.findRegion(name)
+            }
 
             if(tex != null) {
                 atlasCache[name] = tex

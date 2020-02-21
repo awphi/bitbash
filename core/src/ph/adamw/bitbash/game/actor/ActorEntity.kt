@@ -11,7 +11,9 @@ abstract class ActorEntity(name: String) : ActorGameObject(name), Json.Serializa
         super.act(delta)
         actEntity(delta, readOnlyTilePosition)
         if(hasBody) {
-            setPosition(body.position.x - (physicsData!!.principleWidth / 2f), body.position.y - (physicsData!!.principleHeight / 2f))
+            val bx = body.position.x - (physicsData!!.principleWidth / 2f)
+            val by = body.position.y - (physicsData!!.principleHeight / 2f)
+            setPosition(bx, by)
         }
     }
 
