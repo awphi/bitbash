@@ -5,7 +5,7 @@ import ph.adamw.bitbash.game.actor.physics.PhysicsData
 import ph.adamw.bitbash.game.data.widget.WidgetHandler
 import ph.adamw.bitbash.game.data.widget.WidgetWrapper
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scenes.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashCoreScene
 import kotlin.math.*
 
 //TODO pool these if performance gets bad

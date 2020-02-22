@@ -4,11 +4,11 @@ import box2dLight.RayHandler
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import ph.adamw.bitbash.scenes.Scene
+import ph.adamw.bitbash.scene.Scene
+import ph.adamw.bitbash.scene.layer.Layer
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -22,8 +22,8 @@ object GameManager {
     const val MIN_WORLD_WIDTH = 640f
     const val MIN_WORLD_HEIGHT = 480f
 
-    private val STAGE_LAYERS = TreeMap<Int, Group>()
-    val UI_LAYERS = ArrayList<Group>()
+    private val STAGE_LAYERS = TreeMap<Int, Layer>()
+    val UI_LAYERS = ArrayList<Layer>()
     val STAGE: Stage = Stage(ExtendViewport(MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT))
     val MAIN_CAMERA = STAGE.camera
 
@@ -48,14 +48,8 @@ object GameManager {
         return scene
     }
 
-    fun addStageLayer(layer: Int, uiLayer: Boolean) {
-        val g = Group()
+    fun addStageLayer(layer: Int, g: Layer) {
         g.touchable = Touchable.childrenOnly
-
-        if(uiLayer) {
-            g.setSize(MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT)
-            UI_LAYERS.add(g)
-        }
 
         var flag = false
 
@@ -74,13 +68,13 @@ object GameManager {
         STAGE_LAYERS[layer] = g
     }
 
-    fun getStageLayer(layer : Int) : Group {
-        return getStageLayer(layer, false)
+    fun getStageLayer(layer : Int) : Layer {
+        return getStageLayer(layer, Layer())
     }
 
-    fun getStageLayer(layer : Int, uiLayer : Boolean) : Group {
+    fun getStageLayer(layer : Int, g: Layer) : Layer {
         if(!STAGE_LAYERS.containsKey(layer)) {
-            addStageLayer(layer, uiLayer)
+            addStageLayer(layer, g)
         }
 
         return STAGE_LAYERS[layer]!!

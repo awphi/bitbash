@@ -10,7 +10,7 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.DirtTileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.widget.WidgetWrapper
-import ph.adamw.bitbash.scenes.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashCoreScene
 import java.io.Serializable
 import kotlin.math.ceil
 

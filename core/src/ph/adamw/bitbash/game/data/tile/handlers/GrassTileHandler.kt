@@ -6,7 +6,7 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.widget.WidgetWrapper
 import ph.adamw.bitbash.game.data.widget.handlers.LampWidgetHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scenes.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashCoreScene
 
 object GrassTileHandler : TileHandler("grass") {
     override val hasBody: Boolean

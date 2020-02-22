@@ -4,7 +4,7 @@ import ph.adamw.bitbash.game.actor.physics.PhysicsData
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scenes.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashCoreScene
 
 class ActorTile : ActorGameObject("tile_null") {
     private var handler : TileHandler = GrassTileHandler

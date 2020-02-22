@@ -1,4 +1,4 @@
-package ph.adamw.bitbash.scenes
+package ph.adamw.bitbash.scene
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -20,7 +20,7 @@ class BitbashSceneListener : ClickListener(-1) {
             draggedOn = hit
         }
 
-        hit.mouseClicked(button, hit.readOnlyTilePosition, x, y, BitbashPlayScene)
+        hit.mouseClicked(button, hit.readOnlyTilePosition, x, y, BitbashInfiniteScene)
 
 
         return super.touchDown(event, x, y, pointer, button)
@@ -38,6 +38,6 @@ class BitbashSceneListener : ClickListener(-1) {
             return
         }
 
-        draggedOn!!.mouseDragged(pressedButton, draggedOn!!.readOnlyTilePosition, x, y, BitbashPlayScene)
+        draggedOn!!.mouseDragged(pressedButton, draggedOn!!.readOnlyTilePosition, x, y, BitbashInfiniteScene)
     }
 }

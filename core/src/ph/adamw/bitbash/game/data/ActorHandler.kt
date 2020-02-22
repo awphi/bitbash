@@ -3,7 +3,7 @@ package ph.adamw.bitbash.game.data
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.physics.PhysicsData
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scenes.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashCoreScene
 import java.io.Serializable
 
 abstract class ActorHandler<T : ActorGameObject>(val name : String) : Serializable {

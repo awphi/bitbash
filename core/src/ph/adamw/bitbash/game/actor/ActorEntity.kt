@@ -1,8 +1,10 @@
 package ph.adamw.bitbash.game.actor
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.scene.layer.SortedLayer
 
 abstract class ActorEntity(name: String) : ActorGameObject(name), Json.Serializable {
     abstract fun actEntity(delta: Float, tilePosition: TilePosition)
@@ -14,6 +16,13 @@ abstract class ActorEntity(name: String) : ActorGameObject(name), Json.Serializa
             val bx = body.position.x - (physicsData!!.principleWidth / 2f)
             val by = body.position.y - (physicsData!!.principleHeight / 2f)
             setPosition(bx, by)
+        }
+    }
+
+    override fun positionChanged() {
+        super.positionChanged()
+        if(parent != null) {
+            (parent as SortedLayer).update(this)
         }
     }
 

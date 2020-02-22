@@ -1,4 +1,4 @@
-package ph.adamw.bitbash.scenes.ui
+package ph.adamw.bitbash.scene.ui
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable

@@ -1,4 +1,4 @@
-package ph.adamw.bitbash.scenes
+package ph.adamw.bitbash.scene
 
 import ph.adamw.bitbash.GameManager
 

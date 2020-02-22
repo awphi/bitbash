@@ -1,9 +1,9 @@
-package ph.adamw.bitbash.scenes
+package ph.adamw.bitbash.scene
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.Actor
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorGroupMapRegion
@@ -13,8 +13,11 @@ import ph.adamw.bitbash.game.data.widget.WidgetWrapper
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.scene.layer.Layer
+import ph.adamw.bitbash.scene.layer.SortedLayer
 import ph.adamw.bitbash.util.CameraUtils
 import java.util.*
+import kotlin.Comparator
 import kotlin.collections.HashMap
 
 abstract class BitbashCoreScene : Scene() {
@@ -29,14 +32,43 @@ abstract class BitbashCoreScene : Scene() {
     private val drawnRegions = HashMap<Vector2, ActorGroupMapRegion>()
     protected val activeRegionCoords = HashSet<Vector2>()
 
-    private var GAME_OBJECT_LAYER : Group? = null
-    private val PLAYER_LAYER : Group = Group()
-    private val WIDGET_LAYER : Group = Group()
-    private val TILE_LAYER : Group = Group()
+    private var GAME_OBJECT_LAYER : Layer? = null
+    private val ENTITY_LAYER : Layer = SortedLayer(
+            object : Comparator<Actor> {
+                override fun compare(o1: Actor?, o2: Actor?): Int {
+                    if(o1 == null || o2 == null) {
+                        return 0
+                    }
+
+                    var y1 = o1.y
+                    var y2 = o2.y
+
+                    if(o1 is ActorGameObject && o2 is ActorGameObject) {
+                        if(o1.hasBody) {
+                            y1 = o1.body.transform.position.y
+                        }
+
+                        if(o2.hasBody) {
+                            y2 = o2.body.transform.position.y
+                        }
+                    }
+
+                    if(y1 == y2) {
+                        return 0
+                    } else if(y1 < y2) {
+                        return 1
+                    }
+
+                    return -1
+                }
+
+            }
+    )
+    private val TILE_LAYER : Layer = Layer()
 
     // Highest priority first
     private val OVERLAY_LAYERS = arrayOf(
-            WIDGET_LAYER,
+            ENTITY_LAYER,
             TILE_LAYER
     )
 
@@ -45,12 +77,11 @@ abstract class BitbashCoreScene : Scene() {
 
         // Lowest priority first
         GAME_OBJECT_LAYER!!.addActor(TILE_LAYER)
-        GAME_OBJECT_LAYER!!.addActor(PLAYER_LAYER)
-        GAME_OBJECT_LAYER!!.addActor(WIDGET_LAYER)
+        GAME_OBJECT_LAYER!!.addActor(ENTITY_LAYER)
 
         GAME_OBJECT_LAYER!!.addListener(BitbashSceneListener())
 
-        PLAYER_LAYER.addActor(mapState!!.player)
+        ENTITY_LAYER.addActor(mapState!!.player)
         CameraUtils.setCameraPos(GameManager.MAIN_CAMERA, mapState!!.player.x, mapState!!.player.y)
 
         GameManager.rayHandler.setAmbientLight(0f, 0f, 0f, 0.8f)
@@ -75,7 +106,7 @@ abstract class BitbashCoreScene : Scene() {
             if (region != null && !isDrawn(vec)) {
                 val drawnMapRegion = ActorGroupMapRegion.POOL.obtain()
                 drawnMapRegion.region = region
-                drawnMapRegion.loadToStage(TILE_LAYER, WIDGET_LAYER)
+                drawnMapRegion.loadToStage(TILE_LAYER, ENTITY_LAYER)
                 drawnRegions[vec] = drawnMapRegion
             }
         }
@@ -137,7 +168,7 @@ abstract class BitbashCoreScene : Scene() {
 
     fun addDrawnWidget(vec: Vector2, np: TilePosition, wrapper: WidgetWrapper) {
         if(isDrawn(vec)) {
-            drawnRegions[vec]?.drawWidget(wrapper, np, WIDGET_LAYER)
+            drawnRegions[vec]?.drawWidget(wrapper, np, ENTITY_LAYER)
         }
     }
 

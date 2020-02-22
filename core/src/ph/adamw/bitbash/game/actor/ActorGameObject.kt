@@ -13,7 +13,8 @@ import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.physics.PhysicsData
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scenes.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashInfiniteScene
 
 /**
  * The actor of a game object in the current instance of game - not saved, only the gameObject itself is saved. This

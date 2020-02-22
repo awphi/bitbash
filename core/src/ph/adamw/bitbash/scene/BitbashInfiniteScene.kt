@@ -1,4 +1,4 @@
-package ph.adamw.bitbash.scenes
+package ph.adamw.bitbash.scene
 
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
@@ -6,7 +6,7 @@ import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.game.data.world.TilePosition
 import kotlin.math.abs
 
-object BitbashPlayScene : BitbashCoreScene() {
+object BitbashInfiniteScene : BitbashCoreScene() {
     private const val BUILD_DISTANCE = 1000f
     private val buildLimitRect = Rectangle()
 

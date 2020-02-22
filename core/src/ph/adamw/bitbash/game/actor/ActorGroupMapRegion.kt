@@ -65,9 +65,7 @@ class ActorGroupMapRegion : Pool.Poolable {
     fun drawWidget(widget: WidgetWrapper, np: TilePosition, g: Group) {
         val ac = ActorWidget(widget, np)
         drawnWidgets[np] = ac
-        //TODO fix this - maybe keep a map or some sort of data on this
-        // or maybe create a sorted group that takes a comparator
-        g.addActorAt(Map.LIMIT - np.floor().y.toInt(), ac)
+        g.addActor(ac)
     }
 
     fun removeFromStage() {

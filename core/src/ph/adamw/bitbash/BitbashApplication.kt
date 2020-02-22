@@ -9,7 +9,7 @@ import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
-import ph.adamw.bitbash.scenes.BitbashPlayScene
+import ph.adamw.bitbash.scene.BitbashInfiniteScene
 import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
 
 
@@ -20,8 +20,8 @@ class BitbashApplication : ApplicationAdapter() {
         //VisUI.load(UIConstants.SKIN)
 
         //TODO load main menu here instead
-        BitbashPlayScene.mapState = MapState.load("Game3")
-        GameManager.loadScene(BitbashPlayScene)
+        BitbashInfiniteScene.mapState = MapState.load("Game3")
+        GameManager.loadScene(BitbashInfiniteScene)
     }
 
     override fun dispose() {
