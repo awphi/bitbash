@@ -1,12 +1,11 @@
 package ph.adamw.bitbash.game.data
 
-import ph.adamw.bitbash.game.actor.ActorGameObject
-import ph.adamw.bitbash.game.actor.physics.PhysicsData
+import com.badlogic.gdx.physics.box2d.Body
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashCoreScene
 import java.io.Serializable
 
-abstract class ActorHandler<T : ActorGameObject>(val name : String) : Serializable {
+abstract class ActorHandler<T>(val name : String) : Serializable {
     open val hasBody : Boolean
         get() = physicsData != null
 
@@ -14,7 +13,21 @@ abstract class ActorHandler<T : ActorGameObject>(val name : String) : Serializab
 
     open fun mouseDragged(actor: T, button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {}
 
+    open fun addAdditionalFixtures(body: Body) {}
+
     abstract fun getTexturePath() : String
 
     abstract val physicsData : PhysicsData?
+
+    override fun hashCode(): Int {
+        return javaClass.name.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if(other is ActorHandler<*>) {
+            return hashCode() == other.hashCode()
+        }
+
+        return false
+    }
 }

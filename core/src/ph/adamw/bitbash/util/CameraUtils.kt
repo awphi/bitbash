@@ -1,14 +1,10 @@
 package ph.adamw.bitbash.util
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Camera
-import ph.adamw.bitbash.game.actor.ActorPlayer
-import ph.adamw.bitbash.game.actor.ActorTile
-import kotlin.math.round
-import kotlin.math.roundToInt
+import ph.adamw.bitbash.game.actor.ActorMob
 
 object CameraUtils {
-    fun setCameraPos(camera: Camera, player: ActorPlayer, deltaTime: Float) {
+    fun setCameraPos(camera: Camera, player: ActorMob, deltaTime: Float) {
         setCameraPos(camera,camera.position.x + (player.x - camera.position.x) * deltaTime, camera.position.y + (player.y - camera.position.y) * deltaTime)
     }
 

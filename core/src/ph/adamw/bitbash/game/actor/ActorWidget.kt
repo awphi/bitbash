@@ -1,22 +1,15 @@
 package ph.adamw.bitbash.game.actor
 
-import com.badlogic.gdx.physics.box2d.Body
-import ph.adamw.bitbash.game.actor.physics.PhysicsData
-import ph.adamw.bitbash.game.data.widget.WidgetHandler
-import ph.adamw.bitbash.game.data.widget.WidgetWrapper
+import ph.adamw.bitbash.game.data.entity.widget.WidgetHandler
+import ph.adamw.bitbash.game.data.entity.widget.WidgetWrapper
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashCoreScene
 import kotlin.math.*
 
 //TODO pool these if performance gets bad
-class ActorWidget(var wrapper: WidgetWrapper, val initialPos: TilePosition) : ActorEntity(wrapper.handler.name) {
-    private val handler : WidgetHandler
-        get() = wrapper.handler
-
+class ActorWidget(var wrapper: WidgetWrapper, val initialPos: TilePosition) : ActorEntity<ActorWidget, WidgetHandler>(wrapper.handler) {
     init {
-        setTexture(handler.getTexturePath())
         setPositionWithBody(calculateX(), calculateY())
-        //TODO set rotation
     }
 
     private fun calculateX() : Float {
@@ -62,16 +55,9 @@ class ActorWidget(var wrapper: WidgetWrapper, val initialPos: TilePosition) : Ac
         setPositionWithBody(calculateX(), calculateY())
     }
 
-    override fun addAdditionalFixtures(body: Body) {
-        handler.addAdditionalFixtures(body)
+    override fun actEntity(actorEntity: ActorWidget, delta: Float, tilePosition: TilePosition) {
+        handler.act(this, delta, tilePosition)
     }
-
-    override fun actEntity(delta: Float, tilePosition: TilePosition) {
-        handler.act(delta, tilePosition)
-    }
-
-    override val physicsData: PhysicsData?
-        get() = handler.physicsData
 
     override fun mouseClicked(button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {
         handler.mouseClicked(this, button, tilePosition, x, y, scene)

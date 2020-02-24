@@ -14,6 +14,7 @@ object BitbashInfiniteScene : BitbashCoreScene() {
         mapState!!.save()
     }
 
+    //TODO - make mobs lazy/unload when out of build square or whatever
     private fun setBuildRectangle() {
         buildLimitRect.set(mapState!!.player.x - BUILD_DISTANCE, mapState!!.player.y - BUILD_DISTANCE, BUILD_DISTANCE * 2, BUILD_DISTANCE * 2)
     }

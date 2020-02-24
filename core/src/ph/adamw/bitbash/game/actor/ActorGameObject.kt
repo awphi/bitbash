@@ -11,10 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Align
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
-import ph.adamw.bitbash.game.actor.physics.PhysicsData
+import ph.adamw.bitbash.game.data.PhysicsData
+import ph.adamw.bitbash.game.data.ActorHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashCoreScene
-import ph.adamw.bitbash.scene.BitbashInfiniteScene
 
 /**
  * The actor of a game object in the current instance of game - not saved, only the gameObject itself is saved. This
@@ -22,12 +22,12 @@ import ph.adamw.bitbash.scene.BitbashInfiniteScene
  * the actor's physics body affecting the position of the player data object) and drawing/animating the data object.
  */
 
-abstract class ActorGameObject(name: String) : Actor() {
+abstract class ActorGameObject<T : ActorHandler<*>>(protected var handler: T) : Actor() {
     val readOnlyTilePosition: TilePosition = TilePosition.fromWorldPosition(x, y)
     private val tempCoords  = Vector2(0f, 0f)
 
     init {
-        this.name = name
+        this.name = handler.name
         if(BitbashApplication.DEBUG && this !is ActorTile) {
             debug = true
         }
@@ -42,7 +42,8 @@ abstract class ActorGameObject(name: String) : Actor() {
 
     private var bodyInternal : Body? = null
 
-    abstract val physicsData : PhysicsData?
+    open val physicsData: PhysicsData?
+        get() = handler.physicsData
 
     val hasBody : Boolean
         get() = physicsData != null
@@ -81,7 +82,9 @@ abstract class ActorGameObject(name: String) : Actor() {
             height = texture.regionHeight.toFloat()
         }
 
-    open fun addAdditionalFixtures(body: Body) {}
+    fun addAdditionalFixtures(body: Body) {
+        handler.addAdditionalFixtures(body)
+    }
 
     fun buildBody() {
         val bodyDef = BodyDef()
@@ -116,7 +119,7 @@ abstract class ActorGameObject(name: String) : Actor() {
         batch?.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
         if(animActive == null || animations[animActive!!] == null) {
-            batch?.draw(texture, x, y, width, height)
+            batch?.draw(texture, x, y, width * scaleX, height * scaleY)
             return
         }
 
@@ -125,7 +128,7 @@ abstract class ActorGameObject(name: String) : Actor() {
         }
 
         texture = animations[animActive!!]!!.getKeyFrame(animStateTime, animLoop)
-        batch?.draw(texture, x, y, width, height)
+        batch?.draw(texture, x, y, width * scaleX, height * scaleY)
 
         if(animations[animActive!!]!!.isAnimationFinished(animStateTime)) {
             stopCurrentAnimation()

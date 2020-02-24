@@ -1,17 +1,22 @@
 package ph.adamw.bitbash.game.actor
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.utils.Json
-import com.badlogic.gdx.utils.JsonValue
+import ph.adamw.bitbash.game.data.entity.EntityHandler
+import ph.adamw.bitbash.game.data.entity.mob.PlayerHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.SortedLayer
 
-abstract class ActorEntity(name: String) : ActorGameObject(name), Json.Serializable {
-    abstract fun actEntity(delta: Float, tilePosition: TilePosition)
+abstract class ActorEntity<T, B : EntityHandler<T>>(handler: B) : ActorGameObject<B>(handler) {
+    init {
+        setTexture(handler.getTexturePath())
+    }
+
+    open fun actEntity(actorEntity: T, delta: Float, tilePosition: TilePosition) {
+        handler.act(this as T, delta, tilePosition)
+    }
 
     override fun act(delta: Float) {
         super.act(delta)
-        actEntity(delta, readOnlyTilePosition)
+        actEntity(this as T, delta, readOnlyTilePosition)
         if(hasBody) {
             val bx = body.position.x - (physicsData!!.principleWidth / 2f)
             val by = body.position.y - (physicsData!!.principleHeight / 2f)
@@ -24,17 +29,5 @@ abstract class ActorEntity(name: String) : ActorGameObject(name), Json.Serializa
         if(parent != null) {
             (parent as SortedLayer).update(this)
         }
-    }
-
-    override fun write(json: Json?) {
-        val j = json!!
-        j.writeValue("x", x)
-        j.writeValue("y", y)
-    }
-
-    override fun read(json: Json?, jsonData: JsonValue?) {
-        val j = jsonData!!
-        x = j.getFloat("x")
-        y = j.getFloat("y")
     }
 }

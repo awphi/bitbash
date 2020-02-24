@@ -1,4 +1,4 @@
-package ph.adamw.bitbash.game.data.widget
+package ph.adamw.bitbash.game.data.entity.widget
 
 import java.io.Serializable
 

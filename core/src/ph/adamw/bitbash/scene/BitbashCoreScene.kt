@@ -9,7 +9,7 @@ import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorGroupMapRegion
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.game.data.widget.WidgetWrapper
+import ph.adamw.bitbash.game.data.entity.widget.WidgetWrapper
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.game.data.world.TilePosition
@@ -21,7 +21,7 @@ import kotlin.Comparator
 import kotlin.collections.HashMap
 
 abstract class BitbashCoreScene : Scene() {
-    private var lastActorGameObjHit : ActorGameObject? = null
+    private var lastActorGameObjHit : ActorGameObject<*>? = null
     private val tempCoords = Vector2(0f, 0f)
 
     var mapState: MapState? = null
@@ -43,7 +43,7 @@ abstract class BitbashCoreScene : Scene() {
                     var y1 = o1.y
                     var y2 = o2.y
 
-                    if(o1 is ActorGameObject && o2 is ActorGameObject) {
+                    if(o1 is ActorGameObject<*> && o2 is ActorGameObject<*>) {
                         if(o1.hasBody) {
                             y1 = o1.body.transform.position.y
                         }
@@ -149,7 +149,7 @@ abstract class BitbashCoreScene : Scene() {
         for(group in OVERLAY_LAYERS) {
             val hitActor = group.hit(tempCoords.x, tempCoords.y, true)
             hitActor?.let {
-                if (hitActor is ActorGameObject) {
+                if (hitActor is ActorGameObject<*>) {
                     exit = true
 
                     if(hitActor != lastActorGameObjHit) {

@@ -3,6 +3,7 @@ package ph.adamw.bitbash
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.utils.Json
 import com.kotcrab.vis.ui.VisUI
 import org.nustaq.serialization.FSTConfiguration
 import ph.adamw.bitbash.game.actor.ActorGameObject
@@ -64,6 +65,7 @@ class BitbashApplication : ApplicationAdapter() {
     companion object {
         val DEBUG = System.getProperty("debug") == "true"
         val IO : FSTConfiguration = FSTConfiguration.createDefaultConfiguration()
+        val JSON = Json()
 
         init {
             IO.setInstantiator(TweakedFSTClassInstantiator())

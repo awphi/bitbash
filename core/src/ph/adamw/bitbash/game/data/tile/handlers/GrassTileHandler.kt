@@ -3,8 +3,8 @@ package ph.adamw.bitbash.game.data.tile.handlers
 import com.badlogic.gdx.Input
 import ph.adamw.bitbash.game.actor.ActorTile
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.game.data.widget.WidgetWrapper
-import ph.adamw.bitbash.game.data.widget.handlers.LampWidgetHandler
+import ph.adamw.bitbash.game.data.entity.widget.WidgetWrapper
+import ph.adamw.bitbash.game.data.entity.widget.handlers.LampWidgetHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashCoreScene
 

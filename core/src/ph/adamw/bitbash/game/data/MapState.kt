@@ -2,16 +2,23 @@ package ph.adamw.bitbash.game.data
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.math.Vector2
 import ph.adamw.bitbash.BitbashApplication
-import ph.adamw.bitbash.game.actor.ActorPlayer
+import ph.adamw.bitbash.game.actor.ActorMob
+import ph.adamw.bitbash.util.MobMap
+import ph.adamw.bitbash.game.data.entity.mob.PlayerHandler
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import java.io.FileFilter
 
 
-class MapState(val name: String, var map: Map, var player: ActorPlayer) {
+class MapState(val name: String, var map: Map, val mobMap : MobMap) {
     val handle : FileHandle = Gdx.files.local("$MAPS_DIR/$name")
+
+    val player : ActorMob
+        get() {
+            return mobMap[PlayerHandler]!!.first
+        }
 
     init {
         handle.mkdirs()
@@ -21,25 +28,24 @@ class MapState(val name: String, var map: Map, var player: ActorPlayer) {
     fun save() {
         Gdx.app.log("CLOSE", "Saving game state: '$name'")
         map.unload()
-        val playerFile = handle.child(PLAYER_FILE)
+        val mobFile = handle.child(MOB_DATA_FILE)
         val dataFile = handle.child(MAP_DATA_FILE)
-        JSON.toJson(player, playerFile)
-        val bytes = BitbashApplication.IO.asByteArray(map)
-        dataFile.writeBytes(bytes, false)
+        dataFile.writeBytes(BitbashApplication.IO.asByteArray(map), false)
+        mobMap.write(mobFile)
         Gdx.app.log("CLOSE","Saved game state!")
     }
 
     companion object {
         const val MAPS_DIR = "maps"
-        const val PLAYER_FILE = "player.json"
         const val MAP_DATA_FILE = "data.bin"
-        internal val JSON = Json()
+        const val MOB_DATA_FILE = "mobs.bin"
 
         fun build(name: String, handle : FileHandle) : MapState {
             val m = BitbashApplication.IO.asObject(handle.child(MAP_DATA_FILE).readBytes()) as Map
-            val p = JSON.fromJson(ActorPlayer::class.java, handle.child(PLAYER_FILE))
 
-            val gs = MapState(name, m, p)
+            val gs = MapState(name, m, MobMap())
+
+            gs.mobMap.read(handle.child(MOB_DATA_FILE))
 
             handle.child("regions").list(FileFilter {
                 return@FileFilter it.nameWithoutExtension.matches(Regex("rg-?[\\d]*_-?[\\d]*"))
@@ -60,7 +66,9 @@ class MapState(val name: String, var map: Map, var player: ActorPlayer) {
             }
 
             Gdx.app.log("LOAD", "No saved game state: '$name'. Using a new game state...")
-            return MapState(name, Map(), ActorPlayer())
+            val state = MapState(name, Map(), MobMap())
+            state.mobMap.add(PlayerHandler, Vector2(0f, 0f))
+            return state
         }
     }
 }

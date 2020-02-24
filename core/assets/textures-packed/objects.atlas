@@ -6,12 +6,18 @@ filter: Nearest,Nearest
 repeat: none
 placeholder
   rotate: false
-  xy: 2, 30
+  xy: 2, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-player
+
+objects2.png
+size: 32,32
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+entities/player
   rotate: false
   xy: 2, 2
   size: 26, 26
@@ -19,7 +25,7 @@ player
   offset: 4, 2
   index: -1
 
-objects2.png
+objects3.png
 size: 32,64
 format: RGBA8888
 filter: Nearest,Nearest

@@ -1,9 +1,9 @@
-package ph.adamw.bitbash.game.data.widget.handlers
+package ph.adamw.bitbash.game.data.entity.widget.handlers
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
-import ph.adamw.bitbash.game.actor.physics.PhysicsData
-import ph.adamw.bitbash.game.data.widget.WidgetHandler
+import ph.adamw.bitbash.game.data.PhysicsData
+import ph.adamw.bitbash.game.data.entity.widget.WidgetHandler
 
 object LampWidgetHandler : WidgetHandler("lamp") {
     override val physicsData: PhysicsData?
