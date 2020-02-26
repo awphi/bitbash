@@ -5,9 +5,9 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import ph.adamw.bitbash.BitbashApplication
+import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.game.data.entity.widget.WidgetWrapper
 import ph.adamw.bitbash.scene.BitbashCoreScene
 import ph.adamw.bitbash.util.SimplexNoise
 import java.io.Serializable
@@ -90,11 +90,11 @@ class Map(private var seed: Long) : Serializable {
         }
     }
 
-    fun setWidgetAt(tilePosition: TilePosition, w : WidgetWrapper, scene: BitbashCoreScene) {
+    fun setWidgetAt(tilePosition: TilePosition, w : ActorWidget<*>, scene: BitbashCoreScene) {
         getRegionAt(tilePosition)?.setWidgetAt(tilePosition, w, scene)
     }
 
-    fun getWidgetAt(tilePosition: TilePosition, scene: BitbashCoreScene): WidgetWrapper? {
+    fun getWidgetAt(tilePosition: TilePosition, scene: BitbashCoreScene): ActorWidget<*>? {
         return getRegionAt(tilePosition)?.getWidgetAt(tilePosition)
     }
 

@@ -22,16 +22,17 @@ import ph.adamw.bitbash.scene.BitbashCoreScene
  * the actor's physics body affecting the position of the player data object) and drawing/animating the data object.
  */
 
-abstract class ActorGameObject<T : ActorHandler<*>>(protected var handler: T) : Actor() {
+abstract class ActorGameObject : Actor() {
     val readOnlyTilePosition: TilePosition = TilePosition.fromWorldPosition(x, y)
-    private val tempCoords  = Vector2(0f, 0f)
 
     init {
-        this.name = handler.name
+        this.name = actorName
         if(BitbashApplication.DEBUG && this !is ActorTile) {
             debug = true
         }
     }
+
+    protected abstract val actorName : String
 
     // Animation vars
     private val animations = HashMap<String, Animation<TextureAtlas.AtlasRegion>>()
@@ -42,8 +43,7 @@ abstract class ActorGameObject<T : ActorHandler<*>>(protected var handler: T) : 
 
     private var bodyInternal : Body? = null
 
-    open val physicsData: PhysicsData?
-        get() = handler.physicsData
+    abstract val physicsData: PhysicsData?
 
     val hasBody : Boolean
         get() = physicsData != null
@@ -82,9 +82,7 @@ abstract class ActorGameObject<T : ActorHandler<*>>(protected var handler: T) : 
             height = texture.regionHeight.toFloat()
         }
 
-    fun addAdditionalFixtures(body: Body) {
-        handler.addAdditionalFixtures(body)
-    }
+    open fun addAdditionalFixtures(body: Body) {}
 
     fun buildBody() {
         val bodyDef = BodyDef()

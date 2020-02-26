@@ -1,4 +1,4 @@
-package ph.adamw.bitbash.game.data.entity.mob
+package ph.adamw.bitbash.game.actor.entity
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
@@ -6,25 +6,19 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.Shape
 import com.badlogic.gdx.utils.Json
-import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.GameManager
-import ph.adamw.bitbash.game.actor.ActorGameObject
-import ph.adamw.bitbash.game.actor.ActorMob
+import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.TilePosition
 
-object PlayerHandler : MobHandler("player") {
-    private const val STEP = 100f
-    private const val SPRINT_MODIFIER = 1.5f;
+class ActorPlayer : ActorEntity<ActorPlayer>(), Json.Serializable {
+    override val initialTexturePath: String
+        get() = "entities/player"
 
-    override val physicsData: PhysicsData?
-        get() = Physics
+    override val actorName: String
+        get() = "player"
 
-    override fun write(json: Json?) {}
-
-    override fun read(json: Json?, jsonData: JsonValue?) {}
-
-    override fun act(actorEntity: ActorMob, delta: Float, tilePosition: TilePosition) {
+    override fun actEntity(actorEntity: ActorPlayer, delta: Float, tilePosition: TilePosition) {
         val step = STEP * if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) SPRINT_MODIFIER else 1f
 
         var x = 0f
@@ -53,6 +47,8 @@ object PlayerHandler : MobHandler("player") {
         }
     }
 
+    override val physicsData: PhysicsData?
+        get() = Physics
 
     object Physics : PhysicsData() {
         override val principleWidth: Float
@@ -66,5 +62,10 @@ object PlayerHandler : MobHandler("player") {
 
         override val principleFixtureType: Shape.Type
             get() = Shape.Type.Polygon
+    }
+
+    companion object {
+        private const val STEP = 100f
+        private const val SPRINT_MODIFIER = 1.5f;
     }
 }

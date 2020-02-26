@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.Json
 import com.kotcrab.vis.ui.VisUI
 import org.nustaq.serialization.FSTConfiguration
+import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.actor.ActorGameObject
+import ph.adamw.bitbash.game.actor.entity.ActorPlayer
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.scene.BitbashInfiniteScene
+import ph.adamw.bitbash.util.JsonFSTSerializer
 import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
 
 
@@ -69,6 +72,7 @@ class BitbashApplication : ApplicationAdapter() {
 
         init {
             IO.setInstantiator(TweakedFSTClassInstantiator())
+            IO.registerSerializer(ActorEntity::class.java, JsonFSTSerializer, true)
             IO.registerClass(MapRegion::class.java)
             IO.registerClass(Map::class.java)
         }

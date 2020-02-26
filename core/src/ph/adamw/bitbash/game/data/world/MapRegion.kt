@@ -4,19 +4,20 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.game.actor.ActorTile
+import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.DirtTileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
-import ph.adamw.bitbash.game.data.entity.widget.WidgetWrapper
 import ph.adamw.bitbash.scene.BitbashCoreScene
 import java.io.Serializable
 import kotlin.math.ceil
 
 class MapRegion(val x: Int, val y: Int) : Serializable {
     val coords : Vector2 = Vector2(x.toFloat(), y.toFloat())
-    val widgets = HashMap<TilePosition, WidgetWrapper>()
+    val widgets = HashMap<TilePosition, ActorWidget<*>>()
 
     val tiles = Array<Array<TileHandler>>(REGION_SIZE) {
         Array<TileHandler>(REGION_SIZE) {
@@ -24,12 +25,12 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
         }
     }
 
-    fun setWidgetAt(np: TilePosition, w: WidgetWrapper, scene: BitbashCoreScene) {
-        widgets[np] = w
-        scene.addDrawnWidget(this.coords, np, w)
+    fun setWidgetAt(np: TilePosition, widget: ActorWidget<*>, scene: BitbashCoreScene) {
+        widgets[np] = widget
+        scene.addDrawnWidget(this.coords, np, widget)
     }
 
-    fun getWidgetAt(np: TilePosition): WidgetWrapper? {
+    fun getWidgetAt(np: TilePosition): ActorWidget<*>? {
         return widgets[np]
     }
 

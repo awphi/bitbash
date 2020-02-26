@@ -1,27 +1,40 @@
 package ph.adamw.bitbash.game.actor
 
-import ph.adamw.bitbash.game.data.entity.EntityHandler
-import ph.adamw.bitbash.game.data.entity.mob.PlayerHandler
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.SortedLayer
+import java.io.Externalizable
+import java.io.Serializable
+import java.util.*
 
-abstract class ActorEntity<T, B : EntityHandler<T>>(handler: B) : ActorGameObject<B>(handler) {
+abstract class ActorEntity<Self : ActorEntity<Self>> : ActorGameObject(), Json.Serializable {
     init {
-        setTexture(handler.getTexturePath())
+        setTexture(initialTexturePath)
     }
 
-    open fun actEntity(actorEntity: T, delta: Float, tilePosition: TilePosition) {
-        handler.act(this as T, delta, tilePosition)
-    }
+    open fun actEntity(actorEntity: Self, delta: Float, tilePosition: TilePosition) {}
+
+    abstract val initialTexturePath : String
 
     override fun act(delta: Float) {
         super.act(delta)
-        actEntity(this as T, delta, readOnlyTilePosition)
+        actEntity(this as Self, delta, readOnlyTilePosition)
         if(hasBody) {
             val bx = body.position.x - (physicsData!!.principleWidth / 2f)
             val by = body.position.y - (physicsData!!.principleHeight / 2f)
             setPosition(bx, by)
         }
+    }
+
+    override fun read(json: Json?, jsonData: JsonValue?) {
+        x = jsonData!!.getFloat("x")
+        y = jsonData.getFloat("y")
+    }
+
+    override fun write(json: Json?) {
+        json!!.writeValue("x", x)
+        json.writeValue("y", y)
     }
 
     override fun positionChanged() {

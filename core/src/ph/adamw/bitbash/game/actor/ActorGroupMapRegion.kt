@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.game.data.entity.widget.WidgetWrapper
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.game.data.world.TilePosition
 import java.rmi.UnexpectedException
@@ -18,7 +17,7 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    private val drawnWidgets = HashMap<TilePosition, ActorWidget>()
+    private val drawnWidgets = HashMap<TilePosition, ActorWidget<*>>()
 
     var region : MapRegion? = null
 
@@ -46,7 +45,7 @@ class ActorGroupMapRegion : Pool.Poolable {
             for (j in region!!.tiles[i].indices) {
                 np.set(i + region!!.x * MapRegion.REGION_SIZE.toFloat(), j + region!!.y * MapRegion.REGION_SIZE.toFloat())
                 val tile : TileHandler? = region!!.tiles[i][j]
-                val widget : WidgetWrapper? = region!!.widgets[np]
+                val widget = region!!.widgets[np]
 
                 tile?.let {
                     drawnTiles[i][j].set(tile, np)
@@ -55,16 +54,16 @@ class ActorGroupMapRegion : Pool.Poolable {
                 }
 
                 widget?.let {
-                    drawWidget(widget, np.copy(), widgetGroup)
+                    drawWidget(it, np.copy(), widgetGroup)
                 }
             }
         }
     }
 
-    fun drawWidget(widget: WidgetWrapper, np: TilePosition, g: Group) {
-        val ac = ActorWidget(widget, np)
-        drawnWidgets[np] = ac
-        g.addActor(ac)
+    fun drawWidget(widget: ActorWidget<*>, np: TilePosition, g: Group) {
+        drawnWidgets[np] = widget
+        widget.setPositionWithBody(np.getWorldX(), np.getWorldY())
+        g.addActor(widget)
     }
 
     fun removeFromStage() {

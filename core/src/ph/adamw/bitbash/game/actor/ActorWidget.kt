@@ -1,16 +1,29 @@
 package ph.adamw.bitbash.game.actor
 
-import ph.adamw.bitbash.game.data.entity.widget.WidgetHandler
-import ph.adamw.bitbash.game.data.entity.widget.WidgetWrapper
+import com.badlogic.gdx.math.Vector2
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.BitbashCoreScene
 import kotlin.math.*
 
 //TODO pool these if performance gets bad
-class ActorWidget(var wrapper: WidgetWrapper, val initialPos: TilePosition) : ActorEntity<ActorWidget, WidgetHandler>(wrapper.handler) {
-    init {
-        setPositionWithBody(calculateX(), calculateY())
+abstract class ActorWidget<Self : ActorWidget<Self>>() : ActorEntity<Self>() {
+    val initialPos: TilePosition = TilePosition(0f, 0f)
+
+    fun at(position: TilePosition) : ActorWidget<Self> {
+        initialPos.set(position)
+        return this
     }
+
+    var offsetX = 0f
+        set(value) {
+            field = value
+            setPositionWithBody(calculateX(), calculateY())
+        }
+
+    var offsetY = 0f
+        set(value) {
+            field = value
+            setPositionWithBody(calculateX(), calculateY())
+        }
 
     private fun calculateX() : Float {
         var c = abs(ActorTile.SIZE - width)
@@ -18,7 +31,7 @@ class ActorWidget(var wrapper: WidgetWrapper, val initialPos: TilePosition) : Ac
             c = ActorTile.SIZE - c
         }
 
-        return initialPos.getWorldX() + c / 2f + wrapper.offsetX
+        return initialPos.getWorldX() + c / 2f + offsetX
     }
 
     private fun calculateY() : Float {
@@ -27,7 +40,7 @@ class ActorWidget(var wrapper: WidgetWrapper, val initialPos: TilePosition) : Ac
             c = ActorTile.SIZE - c
         }
 
-        return initialPos.getWorldY() + c / 2f + wrapper.offsetY
+        return initialPos.getWorldY() + c / 2f + offsetY
     }
 
     private fun calculateOffsetX(cx: Float) : Float {
@@ -49,21 +62,9 @@ class ActorWidget(var wrapper: WidgetWrapper, val initialPos: TilePosition) : Ac
             oy = 4f * round(oy / 4f)
         }
 
-        wrapper.offsetX = ox
-        wrapper.offsetY = oy
+        offsetX = ox
+        offsetY = oy
 
         setPositionWithBody(calculateX(), calculateY())
-    }
-
-    override fun actEntity(actorEntity: ActorWidget, delta: Float, tilePosition: TilePosition) {
-        handler.act(this, delta, tilePosition)
-    }
-
-    override fun mouseClicked(button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {
-        handler.mouseClicked(this, button, tilePosition, x, y, scene)
-    }
-
-    override fun mouseDragged(button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {
-        handler.mouseDragged(this, button, tilePosition, x, y, scene)
     }
 }

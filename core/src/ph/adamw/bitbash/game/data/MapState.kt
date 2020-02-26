@@ -2,23 +2,19 @@ package ph.adamw.bitbash.game.data
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.math.Vector2
 import ph.adamw.bitbash.BitbashApplication
-import ph.adamw.bitbash.game.actor.ActorMob
-import ph.adamw.bitbash.util.MobMap
-import ph.adamw.bitbash.game.data.entity.mob.PlayerHandler
+import ph.adamw.bitbash.game.actor.ActorEntity
+import ph.adamw.bitbash.game.actor.entity.ActorPlayer
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import java.io.FileFilter
+import java.io.InputStream
+import java.util.*
 
 
-class MapState(val name: String, var map: Map, val mobMap : MobMap) {
+class MapState(val name: String, var map: Map, val player: ActorPlayer) {
     val handle : FileHandle = Gdx.files.local("$MAPS_DIR/$name")
-
-    val player : ActorMob
-        get() {
-            return mobMap[PlayerHandler]!!.first
-        }
+    val mobs = LinkedList<ActorEntity<*>>()
 
     init {
         handle.mkdirs()
@@ -30,8 +26,14 @@ class MapState(val name: String, var map: Map, val mobMap : MobMap) {
         map.unload()
         val mobFile = handle.child(MOB_DATA_FILE)
         val dataFile = handle.child(MAP_DATA_FILE)
+        val playerFile = handle.child(PLAYER_DATA_FILE)
+
+        playerFile.writeBytes(BitbashApplication.IO.asByteArray(player), false)
+        BitbashApplication.IO.objectOutput.buffer
+        playerFile.writeBytes(BitbashApplication.IO.asByteArray(player), false)
         dataFile.writeBytes(BitbashApplication.IO.asByteArray(map), false)
-        mobMap.write(mobFile)
+        mobFile.writeBytes(BitbashApplication.IO.asByteArray(mobs), false)
+
         Gdx.app.log("CLOSE","Saved game state!")
     }
 
@@ -39,13 +41,18 @@ class MapState(val name: String, var map: Map, val mobMap : MobMap) {
         const val MAPS_DIR = "maps"
         const val MAP_DATA_FILE = "data.bin"
         const val MOB_DATA_FILE = "mobs.bin"
+        const val PLAYER_DATA_FILE = "player.bin"
 
         fun build(name: String, handle : FileHandle) : MapState {
             val m = BitbashApplication.IO.asObject(handle.child(MAP_DATA_FILE).readBytes()) as Map
+            val p = BitbashApplication.IO.asObject(handle.child(PLAYER_DATA_FILE).readBytes()) as ActorPlayer
+            val mobsIn = BitbashApplication.IO.asObject(handle.child(MOB_DATA_FILE).readBytes()) as LinkedList<*>
 
-            val gs = MapState(name, m, MobMap())
+            val gs = MapState(name, m, p)
 
-            gs.mobMap.read(handle.child(MOB_DATA_FILE))
+            for(i in mobsIn) {
+                gs.mobs.add(i as ActorEntity<*>)
+            }
 
             handle.child("regions").list(FileFilter {
                 return@FileFilter it.nameWithoutExtension.matches(Regex("rg-?[\\d]*_-?[\\d]*"))
@@ -66,9 +73,7 @@ class MapState(val name: String, var map: Map, val mobMap : MobMap) {
             }
 
             Gdx.app.log("LOAD", "No saved game state: '$name'. Using a new game state...")
-            val state = MapState(name, Map(), MobMap())
-            state.mobMap.add(PlayerHandler, Vector2(0f, 0f))
-            return state
+            return MapState(name, Map(), ActorPlayer())
         }
     }
 }
