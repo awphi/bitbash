@@ -52,7 +52,6 @@ class BitbashApplication : ApplicationAdapter() {
 
         GameManager.physicsWorld.step(1/60f, 6, 2)
         GameManager.STAGE.act(Gdx.graphics.deltaTime)
-        Gdx.app.log("ACT", "----")
 
         GameManager.STAGE.draw()
 

@@ -92,7 +92,6 @@ class Map(private var seed: Long) : Serializable {
 
     fun setWidgetAt(tilePosition: TilePosition, w : ActorWidget, scene: BitbashCoreScene) {
         w.tilePosition.set(tilePosition)
-        Gdx.app.log("TE", tilePosition.toString())
         getRegionAt(tilePosition)?.setWidgetAt(tilePosition, w, scene)
     }
 

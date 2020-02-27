@@ -45,7 +45,6 @@ abstract class ActorEntity : ActorGameObject(), Json.Serializable {
     final override fun act(delta: Float) {
         super.act(delta)
         actEntity(delta, readOnlyTilePosition)
-        Gdx.app.log("ACT", this.toString())
         if(hasBody) {
             val bx = body.position.x - (physicsData!!.principleWidth / 2f)
             val by = body.position.y - (physicsData!!.principleHeight / 2f)

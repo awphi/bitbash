@@ -36,10 +36,6 @@ open class Layer : Group() {
         }
     }
 
-    override fun childrenChanged() {
-        Gdx.app.log("TEX", actOrder.size.toString())
-    }
-
     override fun act(delta: Float) {
         if (actions.size > 0) {
             if (stage != null && stage.actionsRequestRendering) Gdx.graphics.requestRendering()

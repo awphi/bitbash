@@ -8,9 +8,6 @@ import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashCoreScene
 
 object GrassTileHandler : TileHandler("grass") {
-    override val hasBody: Boolean
-        get() = false
-
     override fun mouseClicked(actor: ActorTile, button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {
         super.mouseClicked(actor, button, tilePosition, x, y, scene)
 

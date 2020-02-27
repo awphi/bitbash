@@ -1,5 +1,6 @@
 package ph.adamw.bitbash.game.actor
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
@@ -23,23 +24,20 @@ abstract class ActorWidget : ActorEntity() {
 
     override fun parentChanged(old: Group?) {
         super.parentChanged(old)
+        Gdx.app.log("COORDS", "${calculateX()}, ${calculateY()}")
         setPositionWithBody(calculateX(), calculateY())
     }
 
     private fun calculateX() : Float {
-        var c = abs(ActorTile.SIZE - width)
-        if(width > ActorTile.SIZE) {
-            c = ActorTile.SIZE - c
-        }
+        val r = ceil(width / ActorTile.SIZE)
+        val c = ActorTile.SIZE * r - width
 
         return tilePosition.getWorldX() + c / 2f + offsetX
     }
 
     private fun calculateY() : Float {
-        var c = abs(ActorTile.SIZE - height)
-        if(height > ActorTile.SIZE) {
-            c = ActorTile.SIZE - c
-        }
+        val r = ceil(height / ActorTile.SIZE)
+        val c = ActorTile.SIZE * r - height
 
         return tilePosition.getWorldY() + c / 2f + offsetY
     }
@@ -71,7 +69,7 @@ abstract class ActorWidget : ActorEntity() {
 
     override fun read(json: Json?, jsonData: JsonValue?) {
         super.read(json, jsonData)
-        tilePosition.set(jsonData!!.getFloat("initialX"), jsonData!!.getFloat("initialY"))
+        tilePosition.set(jsonData!!.getFloat("initialX"), jsonData.getFloat("initialY"))
     }
 
     override fun write(json: Json?) {

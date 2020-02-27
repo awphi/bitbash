@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import ph.adamw.bitbash.draw.ShaderBatch
 import ph.adamw.bitbash.scene.Scene
 import ph.adamw.bitbash.scene.layer.Layer
 import java.util.*
@@ -24,7 +25,7 @@ object GameManager {
 
     private val STAGE_LAYERS = TreeMap<Int, Layer>()
     val UI_LAYERS = ArrayList<Layer>()
-    val STAGE: Stage = Stage(ExtendViewport(MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT))
+    val STAGE: Stage = Stage(ExtendViewport(MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT), ShaderBatch(1000))
     val MAIN_CAMERA = STAGE.camera
 
     fun loadScene(scene: Scene) : Scene {

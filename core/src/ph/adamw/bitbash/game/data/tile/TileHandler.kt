@@ -11,19 +11,6 @@ abstract class TileHandler(name : String) : ActorHandler<ActorTile>(name), Seria
         return name
     }
 
-    abstract override val hasBody: Boolean
-
     override val physicsData: PhysicsData?
-        get() = Physics
-
-    object Physics : PhysicsData() {
-        override val principleWidth: Float
-            get() = ActorTile.SIZE
-
-        override val principleHeight: Float
-            get() = ActorTile.SIZE
-
-        override val principleFixtureType: Shape.Type
-            get() = Shape.Type.Polygon
-    }
+        get() = null
 }

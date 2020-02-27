@@ -12,8 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Align
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
+import ph.adamw.bitbash.draw.ShaderBatch
 import ph.adamw.bitbash.game.data.PhysicsData
-import ph.adamw.bitbash.game.data.ActorHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashCoreScene
 import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
@@ -139,22 +139,23 @@ abstract class ActorGameObject : Actor() {
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
-        batch?.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        val shaderBatch = batch as ShaderBatch
+        shaderBatch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
 
         if(animActive == null || animations[animActive!!] == null) {
-            batch?.draw(texture, x, y, width * scaleX, height * scaleY)
-            return
-        }
+            shaderBatch.draw(texture, x, y, width * scaleX, height * scaleY)
+        } else {
 
-        if(!animPause) {
-            animStateTime += Gdx.graphics.deltaTime
-        }
+            if (!animPause) {
+                animStateTime += Gdx.graphics.deltaTime
+            }
 
-        texture = animations[animActive!!]!!.getKeyFrame(animStateTime, animLoop)
-        batch?.draw(texture, x, y, width * scaleX, height * scaleY)
+            texture = animations[animActive!!]!!.getKeyFrame(animStateTime, animLoop)
+            shaderBatch.draw(texture, x, y, width * scaleX, height * scaleY)
 
-        if(animations[animActive!!]!!.isAnimationFinished(animStateTime)) {
-            stopCurrentAnimation()
+            if (animations[animActive!!]!!.isAnimationFinished(animStateTime)) {
+                stopCurrentAnimation()
+            }
         }
     }
 
@@ -186,9 +187,8 @@ abstract class ActorGameObject : Actor() {
     }
 
     fun setPositionWithBody(x: Float, y: Float) {
-        if(hasBody && (x != this.x || y != this.y)) {
-            body.setTransform(x + physicsData!!.principleWidth / 2f,
-                    y + physicsData!!.principleHeight / 2f, 0f)
+        if(hasBody) {
+            body.setTransform(x + physicsData!!.principleWidth / 2f, y + physicsData!!.principleHeight / 2f, 0f)
         }
 
         setPosition(x, y)
