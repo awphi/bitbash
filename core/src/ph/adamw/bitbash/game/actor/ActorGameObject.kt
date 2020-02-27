@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Align
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
@@ -31,6 +32,14 @@ abstract class ActorGameObject : Actor() {
             debug = true
         }
     }
+
+    override fun setParent(parent: Group?) {
+        val old = this.parent
+        super.setParent(parent)
+        parentChanged(old)
+    }
+
+    open fun parentChanged(parent: Group?) {}
 
     protected abstract val actorName : String
 

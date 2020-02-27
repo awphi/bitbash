@@ -13,7 +13,7 @@ placeholder
   index: -1
 
 objects2.png
-size: 32,32
+size: 128,32
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -23,6 +23,48 @@ entities/player
   size: 26, 26
   orig: 32, 32
   offset: 4, 2
+  index: -1
+entities/player_left
+  rotate: false
+  xy: 2, 2
+  size: 26, 26
+  orig: 32, 32
+  offset: 4, 2
+  index: -1
+entities/player_right
+  rotate: false
+  xy: 2, 2
+  size: 26, 26
+  orig: 32, 32
+  offset: 4, 2
+  index: -1
+entities/player_up
+  rotate: false
+  xy: 2, 2
+  size: 26, 26
+  orig: 32, 32
+  offset: 4, 2
+  index: -1
+entities/shadow-large
+  rotate: false
+  xy: 30, 16
+  size: 28, 12
+  orig: 32, 32
+  offset: 2, 10
+  index: -1
+entities/shadow-med
+  rotate: false
+  xy: 30, 4
+  size: 24, 10
+  orig: 32, 32
+  offset: 4, 10
+  index: -1
+entities/shadow-small
+  rotate: false
+  xy: 60, 21
+  size: 16, 7
+  orig: 32, 32
+  offset: 8, 12
   index: -1
 
 objects3.png

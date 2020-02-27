@@ -17,7 +17,7 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    private val drawnWidgets = HashMap<TilePosition, ActorWidget<*>>()
+    private val drawnWidgets = HashMap<TilePosition, ActorWidget>()
 
     var region : MapRegion? = null
 
@@ -60,9 +60,8 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    fun drawWidget(widget: ActorWidget<*>, np: TilePosition, g: Group) {
+    fun drawWidget(widget: ActorWidget, np: TilePosition, g: Group) {
         drawnWidgets[np] = widget
-        widget.setPositionWithBody(np.getWorldX(), np.getWorldY())
         g.addActor(widget)
     }
 
@@ -81,7 +80,7 @@ class ActorGroupMapRegion : Pool.Poolable {
     fun undrawWidget(np: TilePosition) : Boolean {
         drawnWidgets[np]?.let {
             it.remove()
-            drawnWidgets.remove(it.initialPos)
+            drawnWidgets.remove(it.tilePosition)
             it.deleteBody()
 
             return true

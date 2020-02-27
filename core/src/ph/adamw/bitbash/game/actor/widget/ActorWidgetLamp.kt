@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.Shape
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.PhysicsData
 
-class ActorWidgetLamp : ActorWidget<ActorWidgetLamp>() {
+class ActorWidgetLamp : ActorWidget() {
     override val physicsData: PhysicsData?
         get() = Physics
 

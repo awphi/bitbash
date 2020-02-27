@@ -1,17 +1,13 @@
 package ph.adamw.bitbash.game.actor
 
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.game.data.world.TilePosition
 import kotlin.math.*
 
-//TODO pool these if performance gets bad
-abstract class ActorWidget<Self : ActorWidget<Self>>() : ActorEntity<Self>() {
-    val initialPos: TilePosition = TilePosition(0f, 0f)
-
-    fun at(position: TilePosition) : ActorWidget<Self> {
-        initialPos.set(position)
-        return this
-    }
+abstract class ActorWidget : ActorEntity() {
+    val tilePosition: TilePosition = TilePosition(0f, 0f)
 
     var offsetX = 0f
         set(value) {
@@ -25,13 +21,18 @@ abstract class ActorWidget<Self : ActorWidget<Self>>() : ActorEntity<Self>() {
             setPositionWithBody(calculateX(), calculateY())
         }
 
+    override fun parentChanged(old: Group?) {
+        super.parentChanged(old)
+        setPositionWithBody(calculateX(), calculateY())
+    }
+
     private fun calculateX() : Float {
         var c = abs(ActorTile.SIZE - width)
         if(width > ActorTile.SIZE) {
             c = ActorTile.SIZE - c
         }
 
-        return initialPos.getWorldX() + c / 2f + offsetX
+        return tilePosition.getWorldX() + c / 2f + offsetX
     }
 
     private fun calculateY() : Float {
@@ -40,16 +41,16 @@ abstract class ActorWidget<Self : ActorWidget<Self>>() : ActorEntity<Self>() {
             c = ActorTile.SIZE - c
         }
 
-        return initialPos.getWorldY() + c / 2f + offsetY
+        return tilePosition.getWorldY() + c / 2f + offsetY
     }
 
     private fun calculateOffsetX(cx: Float) : Float {
-        val a =  cx - (initialPos.getWorldX() + ActorTile.SIZE / 2f)
+        val a =  cx - (tilePosition.getWorldX() + ActorTile.SIZE / 2f)
         return min(max(a, -ActorTile.SIZE / 2f), ActorTile.SIZE / 2f)
     }
 
     private fun calculateOffsetY(cy: Float) : Float {
-        val a = cy - (initialPos.getWorldY() + ActorTile.SIZE / 2f)
+        val a = cy - (tilePosition.getWorldY() + ActorTile.SIZE / 2f)
         return min(max(a, -ActorTile.SIZE / 2f), ActorTile.SIZE / 2f)
     }
 
@@ -66,5 +67,16 @@ abstract class ActorWidget<Self : ActorWidget<Self>>() : ActorEntity<Self>() {
         offsetY = oy
 
         setPositionWithBody(calculateX(), calculateY())
+    }
+
+    override fun read(json: Json?, jsonData: JsonValue?) {
+        super.read(json, jsonData)
+        tilePosition.set(jsonData!!.getFloat("initialX"), jsonData!!.getFloat("initialY"))
+    }
+
+    override fun write(json: Json?) {
+        super.write(json)
+        json!!.writeValue("initialX", tilePosition.x)
+        json.writeValue("initialY", tilePosition.y)
     }
 }

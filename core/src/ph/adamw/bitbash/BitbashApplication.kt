@@ -50,10 +50,11 @@ class BitbashApplication : ApplicationAdapter() {
             i.setSize(GameManager.STAGE.width, GameManager.STAGE.height)
         }
 
-        GameManager.STAGE.act(Gdx.graphics.deltaTime)
-        GameManager.STAGE.draw()
-
         GameManager.physicsWorld.step(1/60f, 6, 2)
+        GameManager.STAGE.act(Gdx.graphics.deltaTime)
+        Gdx.app.log("ACT", "----")
+
+        GameManager.STAGE.draw()
 
         if(DEBUG) {
             GameManager.debugRenderer.render(GameManager.physicsWorld, GameManager.MAIN_CAMERA.combined)

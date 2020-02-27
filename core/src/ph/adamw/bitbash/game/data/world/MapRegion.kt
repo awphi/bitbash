@@ -17,7 +17,7 @@ import kotlin.math.ceil
 
 class MapRegion(val x: Int, val y: Int) : Serializable {
     val coords : Vector2 = Vector2(x.toFloat(), y.toFloat())
-    val widgets = HashMap<TilePosition, ActorWidget<*>>()
+    val widgets = HashMap<TilePosition, ActorWidget>()
 
     val tiles = Array<Array<TileHandler>>(REGION_SIZE) {
         Array<TileHandler>(REGION_SIZE) {
@@ -25,12 +25,12 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
         }
     }
 
-    fun setWidgetAt(np: TilePosition, widget: ActorWidget<*>, scene: BitbashCoreScene) {
+    fun setWidgetAt(np: TilePosition, widget: ActorWidget, scene: BitbashCoreScene) {
         widgets[np] = widget
         scene.addDrawnWidget(this.coords, np, widget)
     }
 
-    fun getWidgetAt(np: TilePosition): ActorWidget<*>? {
+    fun getWidgetAt(np: TilePosition): ActorWidget? {
         return widgets[np]
     }
 

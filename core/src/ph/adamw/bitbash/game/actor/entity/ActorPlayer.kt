@@ -9,16 +9,17 @@ import com.badlogic.gdx.utils.Json
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.data.PhysicsData
+import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.TilePosition
 
-class ActorPlayer : ActorEntity<ActorPlayer>(), Json.Serializable {
+class ActorPlayer : ActorEntity(), Json.Serializable {
     override val initialTexturePath: String
         get() = "entities/player"
 
     override val actorName: String
         get() = "player"
 
-    override fun actEntity(actorEntity: ActorPlayer, delta: Float, tilePosition: TilePosition) {
+    override fun actEntity(delta: Float, tilePosition: TilePosition) {
         val step = STEP * if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) SPRINT_MODIFIER else 1f
 
         var x = 0f
@@ -26,24 +27,28 @@ class ActorPlayer : ActorEntity<ActorPlayer>(), Json.Serializable {
 
         if(Gdx.input.isKeyPressed(Input.Keys.W)) {
             y += step
+            facing = Direction.UP
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.S)) {
             y -= step
+            facing = Direction.DOWN
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.A)) {
             x -= step
+            facing = Direction.LEFT
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             x += step
+            facing = Direction.RIGHT
         }
 
         if(!GameManager.lockInput) {
-            actorEntity.body.setLinearVelocity(x, y)
+            body.setLinearVelocity(x, y)
         } else {
-            actorEntity.body.setLinearVelocity(0f, 0f)
+            body.setLinearVelocity(0f, 0f)
         }
     }
 

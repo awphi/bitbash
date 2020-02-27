@@ -14,7 +14,7 @@ import java.util.*
 
 class MapState(val name: String, var map: Map, val player: ActorPlayer) {
     val handle : FileHandle = Gdx.files.local("$MAPS_DIR/$name")
-    val mobs = LinkedList<ActorEntity<*>>()
+    val mobs = LinkedList<ActorEntity>()
 
     init {
         handle.mkdirs()
@@ -51,7 +51,7 @@ class MapState(val name: String, var map: Map, val player: ActorPlayer) {
             val gs = MapState(name, m, p)
 
             for(i in mobsIn) {
-                gs.mobs.add(i as ActorEntity<*>)
+                gs.mobs.add(i as ActorEntity)
             }
 
             handle.child("regions").list(FileFilter {
