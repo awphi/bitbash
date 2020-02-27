@@ -3,12 +3,16 @@ package ph.adamw.bitbash.game.actor.entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import ph.adamw.bitbash.game.actor.ActorEntity
+import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.TilePosition
 
 class ActorShadow : ActorEntity() {
     override val drawPriority: Int
         get() = 10
+
+    override val actPriority: Int
+        get() = ActorGameObject.DEFAULT_ACT_PRIORITY + 1
 
     var shadowing : ActorEntity? = null
         set(value) {

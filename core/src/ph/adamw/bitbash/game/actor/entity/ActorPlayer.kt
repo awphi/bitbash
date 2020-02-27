@@ -13,6 +13,9 @@ import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.TilePosition
 
 class ActorPlayer : ActorEntity(), Json.Serializable {
+    override val actPriority: Int
+        get() = 0
+
     override val initialTexturePath: String
         get() = "entities/player"
 

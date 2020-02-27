@@ -69,12 +69,8 @@ object GameManager {
     }
 
     fun getStageLayer(layer : Int) : Layer {
-        return getStageLayer(layer, Layer())
-    }
-
-    fun getStageLayer(layer : Int, g: Layer) : Layer {
         if(!STAGE_LAYERS.containsKey(layer)) {
-            addStageLayer(layer, g)
+            addStageLayer(layer, Layer())
         }
 
         return STAGE_LAYERS[layer]!!

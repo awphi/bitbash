@@ -15,7 +15,7 @@ import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.Layer
 import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 import ph.adamw.bitbash.util.CameraUtils
-import ph.adamw.bitbash.util.EntityComparator
+import ph.adamw.bitbash.scene.layer.DrawOrderComparator
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -32,7 +32,7 @@ abstract class BitbashCoreScene : Scene() {
     protected val activeRegionCoords = HashSet<Vector2>()
 
     private var GAME_OBJECT_LAYER : Layer? = null
-    private val ENTITY_LAYER : Layer = OrderedDrawLayer(EntityComparator)
+    private val ENTITY_LAYER : Layer = OrderedDrawLayer(DrawOrderComparator)
     private val TILE_LAYER : Layer = Layer()
 
     // Highest priority first

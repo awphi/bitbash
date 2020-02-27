@@ -10,8 +10,6 @@ import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 
 abstract class ActorEntity : ActorGameObject(), Json.Serializable {
-    open val drawPriority : Int = DEFAULT_DRAW_PRIORITY
-
     var facing : Direction = Direction.DOWN
         set(value) {
             val cache = field
@@ -72,9 +70,5 @@ abstract class ActorEntity : ActorGameObject(), Json.Serializable {
         if(parent != null) {
             (parent as OrderedDrawLayer).update(this)
         }
-    }
-
-    companion object {
-        const val DEFAULT_DRAW_PRIORITY = 5
     }
 }

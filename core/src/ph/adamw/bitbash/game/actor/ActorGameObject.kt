@@ -16,6 +16,7 @@ import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.ActorHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashCoreScene
+import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 
 /**
  * The actor of a game object in the current instance of game - not saved, only the gameObject itself is saved. This
@@ -24,6 +25,16 @@ import ph.adamw.bitbash.scene.BitbashCoreScene
  */
 
 abstract class ActorGameObject : Actor() {
+    /**
+     * Lower value = acts first, higher value = acts last
+     */
+    open val actPriority = DEFAULT_ACT_PRIORITY
+
+    /**
+     * Lower value = draws on top, higher value = draws further back (if equal it's based on y-coords)
+     */
+    open val drawPriority : Int = DEFAULT_DRAW_PRIORITY
+
     val readOnlyTilePosition: TilePosition = TilePosition.fromWorldPosition(x, y)
 
     init {
@@ -119,6 +130,11 @@ abstract class ActorGameObject : Actor() {
 
     override fun positionChanged() {
         readOnlyTilePosition.set(TilePosition.fromWorldX(x), TilePosition.fromWorldY(y))
+
+        if(parent is OrderedDrawLayer) {
+            (parent as OrderedDrawLayer).update(this)
+        }
+
         super.positionChanged()
     }
 
@@ -196,6 +212,9 @@ abstract class ActorGameObject : Actor() {
     companion object {
         private val tilesAtlas = TextureAtlas("textures-packed/tiles.atlas")
         private val objectsAtlas = TextureAtlas("textures-packed/objects.atlas")
+
+        const val DEFAULT_ACT_PRIORITY : Int = 5
+        const val DEFAULT_DRAW_PRIORITY : Int = 5
 
         private val atlasCache = HashMap<String, TextureAtlas.AtlasRegion>()
         val PLACEHOLDER = getTexture("placeholder")
