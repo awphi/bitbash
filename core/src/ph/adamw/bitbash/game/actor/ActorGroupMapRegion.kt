@@ -4,11 +4,15 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
+import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.scene.BitbashInfiniteScene
+import ph.adamw.bitbash.scene.layer.Layer
 import java.rmi.UnexpectedException
 import java.util.*
+import kotlin.collections.HashSet
 
 class ActorGroupMapRegion : Pool.Poolable {
     private val drawnTiles : Array<Array<ActorTile>> = Array<Array<ActorTile>>(MapRegion.REGION_SIZE) {
@@ -17,16 +21,14 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    private val drawnWidgets = HashMap<TilePosition, ActorWidget>()
-
     var region : MapRegion? = null
 
     override fun reset() {
-        for(i in drawnWidgets.keys) {
-            drawnWidgets[i]!!.remove()
+        for(i in region!!.widgets.keys) {
+            for(j in region!!.widgets[i]!!) {
+                undrawWidget(j)
+            }
         }
-
-        drawnWidgets.clear()
 
         for (i in drawnTiles.indices) {
             for (j in drawnTiles[i].indices) {
@@ -35,7 +37,7 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    fun loadToStage(tileGroup: Group, widgetGroup: Group) {
+    fun loadToStage(tileGroup: Layer, widgetGroup: Layer) {
         if(region == null) {
             throw UnexpectedException("Attempted to call draw() on a drawn map region without a data region assigned!")
         }
@@ -54,14 +56,15 @@ class ActorGroupMapRegion : Pool.Poolable {
                 }
 
                 widget?.let {
-                    drawWidget(it, np.copy(), widgetGroup)
+                    for(wid in it) {
+                        drawWidget(wid, widgetGroup)
+                    }
                 }
             }
         }
     }
 
-    fun drawWidget(widget: ActorWidget, np: TilePosition, g: Group) {
-        drawnWidgets[np] = widget
+    fun drawWidget(widget: ActorWidget, g: Group) {
         g.addActor(widget)
     }
 
@@ -77,13 +80,13 @@ class ActorGroupMapRegion : Pool.Poolable {
         return drawnTiles[Math.floorMod(MathUtils.floor(np.x), MapRegion.REGION_SIZE)][Math.floorMod(MathUtils.floor(np.y), MapRegion.REGION_SIZE)]
     }
 
-    fun undrawWidget(np: TilePosition) : Boolean {
-        drawnWidgets[np]?.let {
-            it.remove()
-            drawnWidgets.remove(it.tilePosition)
-            it.deleteBody()
+    fun undrawWidget(actorWidget: ActorWidget) : Boolean {
+        region!!.widgets[actorWidget.tilePosition]?.let {
+            val y = it.remove(actorWidget)
+            actorWidget.deleteBody()
+            actorWidget.remove()
 
-            return true
+            return y
         }
 
         return false

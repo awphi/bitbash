@@ -38,8 +38,8 @@ class ActorTile : ActorGameObject() {
             return null
         }
 
-    override fun mouseClicked(button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {
-        handler.mouseClicked(this, button, tilePosition, x, y, scene)
+    override fun mouseClicked(button: Int, tilePosition: TilePosition, x: Float, y: Float) {
+        handler.mouseClicked(this, button, tilePosition, x, y)
     }
 
     companion object {

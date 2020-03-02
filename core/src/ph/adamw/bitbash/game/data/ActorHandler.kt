@@ -9,9 +9,9 @@ abstract class ActorHandler<T>(val name : String) : Serializable {
     open val hasBody : Boolean
         get() = physicsData != null
 
-    open fun mouseClicked(actor: T, button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {}
+    open fun mouseClicked(actor: T, button: Int, tilePosition: TilePosition, x: Float, y: Float) {}
 
-    open fun mouseDragged(actor: T, button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {}
+    open fun mouseDragged(actor: T, button: Int, tilePosition: TilePosition, x: Float, y: Float) {}
 
     open fun addAdditionalFixtures(body: Body) {}
 

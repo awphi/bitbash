@@ -10,6 +10,7 @@ import ph.adamw.bitbash.game.data.world.MapRegion
 import java.io.FileFilter
 import java.io.InputStream
 import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
 
 class MapState(val name: String, var map: Map, val player: ActorPlayer) {

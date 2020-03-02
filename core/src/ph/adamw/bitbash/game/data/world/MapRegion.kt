@@ -4,7 +4,6 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.game.actor.ActorTile
 import ph.adamw.bitbash.game.actor.ActorWidget
@@ -12,12 +11,13 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.DirtTileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.scene.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashInfiniteScene
 import java.io.Serializable
 import kotlin.math.ceil
 
 class MapRegion(val x: Int, val y: Int) : Serializable {
     val coords : Vector2 = Vector2(x.toFloat(), y.toFloat())
-    val widgets = HashMap<TilePosition, ActorWidget>()
+    val widgets = HashMap<TilePosition, HashSet<ActorWidget>>()
 
     val tiles = Array<Array<TileHandler>>(REGION_SIZE) {
         Array<TileHandler>(REGION_SIZE) {
@@ -25,35 +25,50 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
         }
     }
 
-    fun setWidgetAt(np: TilePosition, widget: ActorWidget, scene: BitbashCoreScene) {
-        widgets[np] = widget
-        scene.addDrawnWidget(this.coords, np, widget)
+    fun addWidgetAt(np: TilePosition, widget: ActorWidget) : Boolean {
+        if(!widgets.containsKey(np)) {
+            widgets[np] = HashSet()
+        }
+
+        val added = widgets[np]!!.add(widget)
+
+        if(added) {
+            BitbashInfiniteScene.addDrawnWidget(this.coords, widget)
+        }
+
+        return added
     }
 
-    fun getWidgetAt(np: TilePosition): ActorWidget? {
+    fun localTileIndexToWorldTilePosition(i : Int, j : Int) : TilePosition {
+        return localTileIndexToWorldTilePosition(i, j, TilePosition(0f, 0f))
+    }
+
+    fun localTileIndexToWorldTilePosition(i : Int, j : Int, np: TilePosition) : TilePosition {
+        np.set(i + x * REGION_SIZE.toFloat(), j + y * REGION_SIZE.toFloat())
+        return np
+    }
+
+    fun getWidgetsAt(np: TilePosition): HashSet<ActorWidget>? {
         return widgets[np]
     }
 
-    fun deleteWidgetAt(np: TilePosition, scene: BitbashCoreScene) : Boolean {
+    fun deleteWidgetAt(np: TilePosition, actorWidget: ActorWidget) : Boolean {
         if(widgets.containsKey(np)) {
             return false
         }
 
-        if(scene.removeDrawnWidget(this.coords, np)) {
-            widgets.remove(np)
-            return true
-        }
-
-        return false
+        val y = widgets[np]!!.remove(actorWidget)
+        BitbashInfiniteScene.removeDrawnWidget(coords, actorWidget)
+        return y
     }
 
     fun getTile(np : TilePosition) : TileHandler {
         return tiles[Math.floorMod(MathUtils.floor(np.x), REGION_SIZE)][Math.floorMod(MathUtils.floor(np.y), REGION_SIZE)]
     }
 
-    fun setTileAt(np: TilePosition, tile: TileHandler, scene: BitbashCoreScene) {
+    fun setTileAt(np: TilePosition, tile: TileHandler) {
         tiles[Math.floorMod(MathUtils.floor(np.x), REGION_SIZE)][Math.floorMod(MathUtils.floor(np.y), REGION_SIZE)] = tile
-        scene.updateDrawnTile(this, np, tile)
+        BitbashInfiniteScene.updateDrawnTile(this, np, tile)
     }
 
     fun unload(folder: FileHandle) {
@@ -69,19 +84,6 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
     companion object {
         const val REGION_SIZE = 12
         const val LIMIT = 1000000000
-
-        //TODO world gen
-        fun generate(x: Int, y: Int) : MapRegion {
-            val region = MapRegion(x, y)
-
-            for (i in region.tiles.indices) {
-                for (j in region.tiles[i].indices) {
-                    region.tiles[i][j] = GrassTileHandler
-                }
-            }
-
-            return region
-        }
 
         fun resolveRegionBounds(regionCoords: Vector2): Rectangle {
             return Rectangle(regionCoords.x * REGION_SIZE.toFloat() * ActorTile.SIZE, regionCoords.y * REGION_SIZE.toFloat() * ActorTile.SIZE, REGION_SIZE * ActorTile.SIZE, REGION_SIZE * ActorTile.SIZE)

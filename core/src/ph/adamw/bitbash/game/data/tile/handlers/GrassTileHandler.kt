@@ -6,15 +6,16 @@ import ph.adamw.bitbash.game.actor.widget.ActorWidgetLamp
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashCoreScene
+import ph.adamw.bitbash.scene.BitbashInfiniteScene
 
 object GrassTileHandler : TileHandler("grass") {
-    override fun mouseClicked(actor: ActorTile, button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {
-        super.mouseClicked(actor, button, tilePosition, x, y, scene)
+    override fun mouseClicked(actor: ActorTile, button: Int, tilePosition: TilePosition, x: Float, y: Float) {
+        super.mouseClicked(actor, button, tilePosition, x, y)
 
         if(button == Input.Buttons.LEFT) {
-            scene.map.setTileAt(tilePosition, StoneBrickTileHandler, scene)
+            BitbashInfiniteScene.map.setTileAt(tilePosition, StoneBrickTileHandler)
         } else if(button == Input.Buttons.RIGHT) {
-            scene.map.setWidgetAt(tilePosition, ActorWidgetLamp(), scene)
+            BitbashInfiniteScene.map.addWidgetAt(tilePosition, ActorWidgetLamp())
         }
     }
 }

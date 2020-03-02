@@ -50,7 +50,7 @@ abstract class ActorGameObject : Actor() {
         parentChanged(old)
     }
 
-    open fun parentChanged(parent: Group?) {}
+    open fun parentChanged(old: Group?) {}
 
     protected abstract val actorName : String
 
@@ -205,9 +205,9 @@ abstract class ActorGameObject : Actor() {
         animations[name] = Animation(frameInterval, *frames)
     }
 
-    open fun mouseClicked(button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {}
+    open fun mouseClicked(button: Int, tilePosition: TilePosition, x: Float, y: Float) {}
 
-    open fun mouseDragged(button: Int, tilePosition: TilePosition, x: Float, y: Float, scene: BitbashCoreScene) {}
+    open fun mouseDragged(button: Int, tilePosition: TilePosition, x: Float, y: Float) {}
 
     companion object {
         private val tilesAtlas = TextureAtlas("textures-packed/tiles.atlas")

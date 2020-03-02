@@ -1,3 +1,5 @@
+@file:Suppress("CanBeParameter")
+
 package ph.adamw.bitbash.game.data.world
 
 import com.badlogic.gdx.Gdx
@@ -8,31 +10,32 @@ import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.scene.BitbashCoreScene
-import ph.adamw.bitbash.util.SimplexNoise
+import ph.adamw.bitbash.game.data.tile.handlers.DirtTileHandler
+import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
+import ph.adamw.bitbash.game.data.tile.handlers.SandTileHandler
+import ph.adamw.bitbash.util.OpenSimplexNoise
 import java.io.Serializable
 import java.util.*
-import kotlin.random.Random
+import java.util.concurrent.ThreadLocalRandom
 
-class Map(private var seed: Long) : Serializable {
+class Map(val seed: Long) : Serializable {
+    private val featureSize : Double = 80.0
+
     @Transient
     private val regionMap = HashMap<Vector2, MapRegion>()
 
     @Transient
     private var regionsFolder : FileHandle? = null
 
-    @delegate:Transient
-    private val random by lazy {
-        Random(seed)
-    }
+    @Transient
+    private val heightNoise : OpenSimplexNoise = OpenSimplexNoise(seed)
 
-    @delegate:Transient
-    private val biomeNoise by lazy {
-        SimplexNoise(random)
-    }
+    @Transient
+    private val tempCoords : TilePosition = TilePosition(0f, 0f)
 
-    constructor() : this(Random.nextLong())
+    constructor(st: String) : this(st.hashCode().toLong())
 
+    constructor() : this(ThreadLocalRandom.current().nextLong())
 
     fun setMapState(mapState: MapState) {
         regionsFolder = mapState.handle.child("regions")
@@ -41,7 +44,24 @@ class Map(private var seed: Long) : Serializable {
 
     fun generateRegionAt(vec2: Vector2) {
         Gdx.app.log("MAP","Generating region: $vec2")
-        regionMap[Vector2(vec2.x, vec2.y)] = MapRegion.generate(vec2.x.toInt(), vec2.y.toInt())
+
+        val region = MapRegion(vec2.x.toInt(), vec2.y.toInt())
+
+        for (i in region.tiles.indices) {
+            for (j in region.tiles[i].indices) {
+                region.localTileIndexToWorldTilePosition(i, j, tempCoords)
+                val noiseVal = heightNoise.eval(tempCoords.x / featureSize, tempCoords.y / featureSize, 0.0)
+
+                //TODO proper world generation
+                if(noiseVal > 0) {
+                    region.tiles[i][j] = GrassTileHandler
+                } else if(noiseVal <= 0) {
+                    region.tiles[i][j] = DirtTileHandler
+                }
+            }
+        }
+
+        regionMap[Vector2(vec2.x, vec2.y)] = region
     }
 
     fun getRegionAt(np: TilePosition) : MapRegion? {
@@ -90,21 +110,21 @@ class Map(private var seed: Long) : Serializable {
         }
     }
 
-    fun setWidgetAt(tilePosition: TilePosition, w : ActorWidget, scene: BitbashCoreScene) {
+    fun addWidgetAt(tilePosition: TilePosition, w : ActorWidget) {
         w.tilePosition.set(tilePosition)
-        getRegionAt(tilePosition)?.setWidgetAt(tilePosition, w, scene)
+        getRegionAt(tilePosition)?.addWidgetAt(tilePosition, w)
     }
 
-    fun getWidgetAt(tilePosition: TilePosition, scene: BitbashCoreScene): ActorWidget? {
-        return getRegionAt(tilePosition)?.getWidgetAt(tilePosition)
+    fun getWidgetsAt(tilePosition: TilePosition): HashSet<ActorWidget>? {
+        return getRegionAt(tilePosition)?.getWidgetsAt(tilePosition)
     }
 
-    fun deleteWidgetAt(tilePosition: TilePosition, scene: BitbashCoreScene) {
-        getRegionAt(tilePosition)?.deleteWidgetAt(tilePosition, scene)
+    fun deleteWidgetAt(tilePosition: TilePosition, actorWidget: ActorWidget) {
+        getRegionAt(tilePosition)?.deleteWidgetAt(tilePosition, actorWidget)
     }
 
-    fun setTileAt(tilePosition: TilePosition, tile: TileHandler, scene: BitbashCoreScene) {
-        getRegionAt(tilePosition)?.setTileAt(tilePosition, tile, scene)
+    fun setTileAt(tilePosition: TilePosition, tile: TileHandler) {
+        getRegionAt(tilePosition)?.setTileAt(tilePosition, tile)
     }
 
     fun getTileAt(np: TilePosition): TileHandler? {

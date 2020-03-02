@@ -24,7 +24,6 @@ abstract class ActorWidget : ActorEntity() {
 
     override fun parentChanged(old: Group?) {
         super.parentChanged(old)
-        Gdx.app.log("COORDS", "${calculateX()}, ${calculateY()}")
         setPositionWithBody(calculateX(), calculateY())
     }
 

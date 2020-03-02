@@ -13,6 +13,7 @@ import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.scene.BitbashInfiniteScene
+import ph.adamw.bitbash.scene.ui.UIConstants
 import ph.adamw.bitbash.util.JsonFSTSerializer
 import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
 
@@ -21,7 +22,7 @@ class BitbashApplication : ApplicationAdapter() {
     override fun create() {
         Gdx.input.inputProcessor = GameManager.STAGE
 
-        //VisUI.load(UIConstants.SKIN)
+        VisUI.load(UIConstants.SKIN)
 
         //TODO load main menu here instead
         BitbashInfiniteScene.mapState = MapState.load("Game3")

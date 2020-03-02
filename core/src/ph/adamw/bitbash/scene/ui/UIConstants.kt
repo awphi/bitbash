@@ -1,9 +1,19 @@
 package ph.adamw.bitbash.scene.ui
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+
 object UIConstants {
-    //val SKIN : Skin = Skin(Gdx.files.local("ui/neutralizer-ui.json"))
+    private val fontGenerator = FreeTypeFontGenerator(Gdx.files.local("ui/fonts/PIXELADE.ttf"))
+    val SKIN : Skin = Skin(Gdx.files.local("ui/neutralizer-ui.json"))
+    val PIXEL_FONT_15 : BitmapFont
 
     init {
-        //SKIN.getFont("font").setUseIntegerPositions(false)
+        val fontParams = FreeTypeFontGenerator.FreeTypeFontParameter()
+        fontParams.size = 15
+        PIXEL_FONT_15 = fontGenerator.generateFont(fontParams)
+        PIXEL_FONT_15.setUseIntegerPositions(false)
     }
 }

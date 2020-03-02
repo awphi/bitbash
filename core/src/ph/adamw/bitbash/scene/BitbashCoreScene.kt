@@ -135,15 +135,15 @@ abstract class BitbashCoreScene : Scene() {
         }
     }
 
-    fun addDrawnWidget(vec: Vector2, np: TilePosition, widget: ActorWidget) {
+    fun addDrawnWidget(vec: Vector2, widget: ActorWidget) {
         if(isDrawn(vec)) {
-            drawnRegions[vec]?.drawWidget(widget, np, ENTITY_LAYER)
+            drawnRegions[vec]?.drawWidget(widget, ENTITY_LAYER)
         }
     }
 
-    fun removeDrawnWidget(vec: Vector2, np: TilePosition) : Boolean {
+    fun removeDrawnWidget(vec: Vector2, actorWidget: ActorWidget) : Boolean {
         if(isDrawn(vec)) {
-            return drawnRegions[vec]?.undrawWidget(np) ?: false
+            return drawnRegions[vec]?.undrawWidget(actorWidget) ?: false
         }
 
         return false

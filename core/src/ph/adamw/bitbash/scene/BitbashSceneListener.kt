@@ -20,7 +20,7 @@ class BitbashSceneListener : ClickListener(-1) {
             draggedOn = hit
         }
 
-        hit.mouseClicked(button, hit.readOnlyTilePosition, x, y, BitbashInfiniteScene)
+        hit.mouseClicked(button, hit.readOnlyTilePosition, x, y)
 
 
         return super.touchDown(event, x, y, pointer, button)
@@ -38,6 +38,6 @@ class BitbashSceneListener : ClickListener(-1) {
             return
         }
 
-        draggedOn!!.mouseDragged(pressedButton, draggedOn!!.readOnlyTilePosition, x, y, BitbashInfiniteScene)
+        draggedOn!!.mouseDragged(pressedButton, draggedOn!!.readOnlyTilePosition, x, y)
     }
 }
