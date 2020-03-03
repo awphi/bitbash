@@ -33,6 +33,8 @@ task packTextures {
         TexturePacker.Settings otherSettings = new TexturePacker.Settings()
 
         tileSettings.duplicatePadding = true
+        tileSettings.stripWhitespaceX = true
+        tileSettings.stripWhitespaceY = true
 
         otherSettings.stripWhitespaceX = true
         otherSettings.stripWhitespaceY = true

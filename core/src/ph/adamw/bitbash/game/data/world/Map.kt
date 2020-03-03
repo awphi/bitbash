@@ -12,7 +12,6 @@ import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.DirtTileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
-import ph.adamw.bitbash.game.data.tile.handlers.SandTileHandler
 import ph.adamw.bitbash.util.OpenSimplexNoise
 import java.io.Serializable
 import java.util.*

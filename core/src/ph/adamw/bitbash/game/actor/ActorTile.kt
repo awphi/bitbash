@@ -4,14 +4,13 @@ import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.BitbashCoreScene
 
 class ActorTile : ActorGameObject() {
     var handler : TileHandler = GrassTileHandler
 
     fun set(handler: TileHandler, tilePosition: TilePosition) {
         setPosition(tilePosition.getWorldX(), tilePosition.getWorldY())
-        setTexture(handler.getTexturePath())
+        setTexture(handler.getTextureName())
 
         deleteBody()
 

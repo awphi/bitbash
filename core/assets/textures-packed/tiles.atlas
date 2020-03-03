@@ -6,28 +6,84 @@ filter: Nearest,Nearest
 repeat: none
 dirt
   rotate: false
-  xy: 1, 1
+  xy: 1, 28
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass
   rotate: false
-  xy: 35, 1
+  xy: 35, 28
   size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+grass_edge_down
+  rotate: false
+  xy: 1, 19
+  size: 32, 7
+  orig: 32, 32
+  offset: 0, 25
+  index: -1
+grass_edge_downleft
+  rotate: false
+  xy: 35, 19
+  size: 7, 7
+  orig: 32, 32
+  offset: 25, 25
+  index: -1
+grass_edge_downright
+  rotate: false
+  xy: 155, 53
+  size: 7, 7
+  orig: 32, 32
+  offset: 0, 25
+  index: -1
+grass_edge_left
+  rotate: false
+  xy: 137, 28
+  size: 7, 32
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+grass_edge_right
+  rotate: false
+  xy: 146, 28
+  size: 7, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+grass_edge_up
+  rotate: false
+  xy: 1, 10
+  size: 32, 7
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+grass_edge_upleft
+  rotate: false
+  xy: 1, 1
+  size: 7, 7
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+grass_edge_upright
+  rotate: false
+  xy: 35, 10
+  size: 7, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 marble_floor
   rotate: false
-  xy: 69, 1
+  xy: 69, 28
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 stone_brick
   rotate: false
-  xy: 103, 1
+  xy: 103, 28
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

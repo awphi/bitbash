@@ -15,7 +15,7 @@ abstract class ActorHandler<T>(val name : String) : Serializable {
 
     open fun addAdditionalFixtures(body: Body) {}
 
-    abstract fun getTexturePath() : String
+    abstract fun getTextureName() : String
 
     abstract val physicsData : PhysicsData?
 

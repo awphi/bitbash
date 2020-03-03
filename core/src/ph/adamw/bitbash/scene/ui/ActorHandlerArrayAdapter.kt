@@ -18,7 +18,7 @@ class ActorHandlerArrayAdapter<T : ActorHandler<*>>(array: com.badlogic.gdx.util
         table.center()
         table.background(DESELECTED)
         table.add(VisLabel(item!!.name)).fillX().expandX().padRight(5f)
-        val img = Image(ActorGameObject.getTexture(item.getTexturePath()).texture)
+        val img = Image(ActorGameObject.getTexture(item.getTextureName()).texture)
         table.add(img)
 
         return table

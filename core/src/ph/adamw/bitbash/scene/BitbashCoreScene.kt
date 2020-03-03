@@ -9,6 +9,7 @@ import ph.adamw.bitbash.game.actor.ActorGroupMapRegion
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
+import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.game.data.world.TilePosition
@@ -30,6 +31,8 @@ abstract class BitbashCoreScene : Scene() {
 
     private val drawnRegions = HashMap<Vector2, ActorGroupMapRegion>()
     protected val activeRegionCoords = HashSet<Vector2>()
+
+    private val freshRegions = LinkedList<ActorGroupMapRegion>()
 
     private var GAME_OBJECT_LAYER : Layer? = null
     private val ENTITY_LAYER : Layer = OrderedDrawLayer(DrawOrderComparator)
@@ -70,16 +73,6 @@ abstract class BitbashCoreScene : Scene() {
     }
 
     fun restageMap() {
-        for (vec : Vector2 in activeRegionCoords) {
-            val region = mapState!!.map.getRegion(vec)
-            if (region != null && !isDrawn(vec)) {
-                val drawnMapRegion = ActorGroupMapRegion.POOL.obtain()
-                drawnMapRegion.region = region
-                drawnMapRegion.loadToStage(TILE_LAYER, ENTITY_LAYER)
-                drawnRegions[vec] = drawnMapRegion
-            }
-        }
-
         val it = drawnRegions.keys.iterator()
         while(it.hasNext()) {
             val i = it.next()
@@ -89,6 +82,30 @@ abstract class BitbashCoreScene : Scene() {
                 unloadRegion(drawnMapRegion?.region!!.coords)
                 it.remove()
             }
+        }
+
+        freshRegions.clear()
+
+        for (vec : Vector2 in activeRegionCoords) {
+            val region = mapState!!.map.getRegion(vec)
+            if (region != null && !isDrawn(vec)) {
+                val drawnMapRegion = ActorGroupMapRegion.POOL.obtain()
+                drawnMapRegion.region = region
+                drawnMapRegion.loadToStage(TILE_LAYER, ENTITY_LAYER)
+                drawnRegions[vec] = drawnMapRegion
+                freshRegions.add(drawnMapRegion)
+                for(j in Direction.values()) {
+                    tempCoords.set(vec.x + j.x, vec.y + j.y)
+
+                    drawnRegions[tempCoords]?.let {
+                        freshRegions.add(it)
+                    }
+                }
+            }
+        }
+
+        for(i in freshRegions) {
+            i.edgeRegion(TILE_LAYER)
         }
     }
 
