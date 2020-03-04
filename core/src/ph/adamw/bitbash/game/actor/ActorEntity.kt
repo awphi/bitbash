@@ -24,9 +24,11 @@ abstract class ActorEntity : ActorGameObject(), Json.Serializable {
     override fun parentChanged(old: Group?) {
         facingChanged(facing)
 
-        val shadow = ActorShadow()
+        val shadow = ActorShadow.POOL.obtain()
         shadow.shadowing = this
-        parent.addActor(shadow)
+        if(parent != null) {
+            parent.addActor(shadow)
+        }
     }
 
     open fun facingChanged(oldFacing: Direction) {

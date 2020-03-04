@@ -84,9 +84,8 @@ abstract class ActorGameObject : Actor() {
             val nx = x + this.x
             val ny = y + this.y
 
-            //TODO account for PPM
             for(i in body.fixtureList) {
-                if(i.testPoint(nx, ny)) {
+                if(i.testPoint(nx / PhysicsData.PPM, ny / PhysicsData.PPM)) {
                     return this
                 }
             }
