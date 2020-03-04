@@ -2,6 +2,7 @@ package ph.adamw.bitbash.scene.layer
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import ph.adamw.bitbash.game.actor.ActorGameObject
+import ph.adamw.bitbash.game.data.PhysicsData
 
 object DrawOrderComparator : Comparator<Actor> {
     override fun compare(o1: Actor?, o2: Actor?): Int {
@@ -19,7 +20,7 @@ object DrawOrderComparator : Comparator<Actor> {
             d1 = o1.drawPriority
 
             if(o1.hasBody) {
-                y1 = o1.body.transform.position.y
+                y1 = o1.body.transform.position.y * PhysicsData.PPM
             }
         }
 
@@ -27,7 +28,7 @@ object DrawOrderComparator : Comparator<Actor> {
             d2 = o2.drawPriority
 
             if(o2.hasBody) {
-                y2 = o2.body.transform.position.y
+                y2 = o2.body.transform.position.y * PhysicsData.PPM
             }
         }
 

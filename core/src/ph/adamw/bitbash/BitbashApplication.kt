@@ -4,11 +4,13 @@ import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.TimeUtils
 import com.kotcrab.vis.ui.VisUI
 import org.nustaq.serialization.FSTConfiguration
 import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.data.MapState
+import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.scene.BitbashPlayScene
@@ -18,8 +20,12 @@ import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
 
 
 class BitbashApplication : ApplicationAdapter() {
+    private var lastTimeCounted: Long = 0
+    private var sinceChange = 0f
+    private var frameRate = 0f
+
     override fun create() {
-        Gdx.input.inputProcessor = GameManager.STAGE
+        Gdx.input.inputProcessor = GameManager.PLAY_STAGE
 
         VisUI.load(UIUtils.SKIN)
 
@@ -30,7 +36,7 @@ class BitbashApplication : ApplicationAdapter() {
 
     override fun dispose() {
         ActorGameObject.disposeTextureAtlas()
-        GameManager.STAGE.dispose()
+        GameManager.PLAY_STAGE.dispose()
         VisUI.dispose()
         GameManager.physicsWorld.dispose()
         GameManager.rayHandler.dispose()
@@ -40,23 +46,38 @@ class BitbashApplication : ApplicationAdapter() {
         GameManager.getScene()?.pause()
     }
 
+    fun updateFps() {
+        val delta = TimeUtils.timeSinceMillis(lastTimeCounted)
+        lastTimeCounted = TimeUtils.millis()
+
+        sinceChange += delta
+        if (sinceChange >= 1000) {
+            sinceChange = 0f
+            frameRate = Gdx.graphics.framesPerSecond.toFloat()
+        }
+    }
+
     override fun render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
+        updateFps()
+
         GameManager.getScene()?.preDraw()
         for(i in GameManager.UI_LAYERS) {
-            i.setPosition(GameManager.MAIN_CAMERA.position.x - (GameManager.STAGE.width / 2f),
-                    GameManager.MAIN_CAMERA.position.y - (GameManager.STAGE.height / 2f))
-            i.setSize(GameManager.STAGE.width, GameManager.STAGE.height)
+            i.setPosition(GameManager.MAIN_CAMERA.position.x - (GameManager.PLAY_STAGE.width / 2f),
+                    GameManager.MAIN_CAMERA.position.y - (GameManager.PLAY_STAGE.height / 2f))
+            i.setSize(GameManager.PLAY_STAGE.width, GameManager.PLAY_STAGE.height)
         }
 
         GameManager.physicsWorld.step(1/60f, 6, 2)
-        GameManager.STAGE.act(Gdx.graphics.deltaTime)
+        GameManager.PLAY_STAGE.act(Gdx.graphics.deltaTime)
 
-        GameManager.STAGE.draw()
+        GameManager.PLAY_STAGE.batch.projectionMatrix = GameManager.MAIN_CAMERA.combined
+        GameManager.PLAY_STAGE.draw()
+        Gdx.graphics.setTitle("bitbash - FPS: $frameRate")
 
         if(DEBUG) {
-            GameManager.debugRenderer.render(GameManager.physicsWorld, GameManager.MAIN_CAMERA.combined)
+            GameManager.debugRenderer.render(GameManager.physicsWorld, GameManager.MAIN_CAMERA.combined.scl(PhysicsData.PPM))
         }
         GameManager.getScene()?.postDraw()
     }

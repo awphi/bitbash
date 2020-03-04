@@ -10,6 +10,6 @@ abstract class Scene {
     abstract fun load()
 
     open fun resize(width: Int, height: Int) {
-        GameManager.STAGE.viewport.update(width, height, false)
+        GameManager.PLAY_STAGE.viewport.update(width, height, false)
     }
 }

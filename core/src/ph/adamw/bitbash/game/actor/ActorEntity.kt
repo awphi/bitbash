@@ -1,9 +1,11 @@
 package ph.adamw.bitbash.game.actor
 
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.game.actor.entity.ActorShadow
+import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
@@ -45,8 +47,8 @@ abstract class ActorEntity : ActorGameObject(), Json.Serializable {
         super.act(delta)
         actEntity(delta, readOnlyTilePosition)
         if(hasBody) {
-            val bx = body.position.x - (physicsData!!.principleWidth / 2f)
-            val by = body.position.y - (physicsData!!.principleHeight / 2f)
+            val bx = (body.position.x * PhysicsData.PPM) - (physicsData!!.principleWidth / 2f)
+            val by = (body.position.y * PhysicsData.PPM) - (physicsData!!.principleHeight / 2f)
             setPosition(bx, by)
         }
     }

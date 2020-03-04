@@ -73,7 +73,7 @@ class ActorPlayer : ActorEntity(), Json.Serializable {
     }
 
     companion object {
-        private const val STEP = 100f
+        private const val STEP = 20f
         private const val SPRINT_MODIFIER = 1.5f;
     }
 }

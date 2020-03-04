@@ -10,7 +10,7 @@ class BitbashSceneListener : ClickListener(-1) {
     var draggedOn : ActorGameObject? = null
 
     override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-        val hit : Actor? = GameManager.STAGE.hit(x, y, true)
+        val hit : Actor? = GameManager.PLAY_STAGE.hit(x, y, true)
 
         if(hit !is ActorGameObject || GameManager.lockInput) {
             return true

@@ -1,14 +1,14 @@
 package ph.adamw.bitbash.scene
 
-import ph.adamw.bitbash.scene.ui.BitbashUILoader
+import ph.adamw.bitbash.scene.ui.BitbashUIManager
 
 object BitbashPlayScene : BitbashCoreScene() {
     override fun load() {
         super.load()
-        BitbashUILoader.loadMapViewer(uiLayer!!)
+        //BitbashUIManager.loadMapViewer(uiLayer!!)
     }
 
     override fun activeRegionsUpdated() {
-        BitbashUILoader.updateMapViewer(map, activeRegionCoords)
+        //BitbashUIManager.updateMapViewer(map, activeRegionCoords)
     }
 }

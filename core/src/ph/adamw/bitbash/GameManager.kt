@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import com.badlogic.gdx.utils.viewport.ScreenViewport
 import ph.adamw.bitbash.draw.ShaderBatch
 import ph.adamw.bitbash.scene.Scene
 import ph.adamw.bitbash.scene.layer.Layer
@@ -26,15 +27,16 @@ object GameManager {
 
     private val STAGE_LAYERS = TreeMap<Int, Layer>()
     val UI_LAYERS = ArrayList<Layer>()
-    val STAGE: Stage = Stage(ExtendViewport(MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT), ShaderBatch(1000))
-    val MAIN_CAMERA = STAGE.camera
+    val UI_STAGE : Stage = Stage(ScreenViewport())
+    val PLAY_STAGE: Stage = Stage(ExtendViewport(MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT), ShaderBatch(1000))
+    val MAIN_CAMERA = PLAY_STAGE.camera
 
     fun loadScene(scene: Scene) : Scene {
         GameManager.scene = scene
 
         STAGE_LAYERS.clear()
         UI_LAYERS.clear()
-        STAGE.root.clearListeners()
+        PLAY_STAGE.root.clearListeners()
 
         physicsWorld.dispose()
         rayHandler.dispose()
@@ -57,14 +59,14 @@ object GameManager {
 
         for (i in STAGE_LAYERS.keys) {
             if (i > layer) {
-                STAGE.root.addActorBefore(STAGE_LAYERS[i], g)
+                PLAY_STAGE.root.addActorBefore(STAGE_LAYERS[i], g)
                 flag = true
                 break
             }
         }
 
         if(!flag) {
-            STAGE.addActor(g)
+            PLAY_STAGE.addActor(g)
         }
 
         STAGE_LAYERS[layer] = g

@@ -9,6 +9,7 @@ import ph.adamw.bitbash.game.actor.ActorTile
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.DirtTileHandler
+import ph.adamw.bitbash.game.data.tile.handlers.StoneBrickTileHandler
 import ph.adamw.bitbash.scene.BitbashPlayScene
 import java.io.Serializable
 import kotlin.math.ceil
@@ -17,9 +18,14 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
     val coords : Vector2 = Vector2(x.toFloat(), y.toFloat())
     val widgets = HashMap<TilePosition, HashSet<ActorWidget>>()
 
+    @Transient
+    var isDirty : Boolean = false
+
+    constructor() : this(0, 0)
+
     val tiles = Array<Array<TileHandler>>(REGION_SIZE) {
         Array<TileHandler>(REGION_SIZE) {
-            DirtTileHandler
+            StoneBrickTileHandler
         }
     }
 

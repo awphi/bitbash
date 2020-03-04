@@ -19,13 +19,16 @@ abstract class PhysicsData {
     fun addPrincipleFixture(body: Body, origin: Vector2) {
         val f = FixtureDef()
 
+        origin.x /= PPM
+        origin.y /= PPM
+
         var shape : Shape? = null
         if (principleFixtureType == Shape.Type.Polygon) {
             shape = PolygonShape()
-            shape.setAsBox(principleWidth / 2f, principleHeight / 2f, origin, 0f)
+            shape.setAsBox((principleWidth / PPM) / 2f, (principleHeight / PPM) / 2f, origin, 0f)
         } else if (principleFixtureType == Shape.Type.Circle) {
             shape = CircleShape()
-            shape.radius = principleWidth / 2f
+            shape.radius = (principleWidth / PPM) / 2f
             shape.position = origin
         }
 
@@ -38,5 +41,9 @@ abstract class PhysicsData {
         }
 
         shape?.dispose()
+    }
+
+    companion object {
+        const val PPM = 12f;
     }
 }

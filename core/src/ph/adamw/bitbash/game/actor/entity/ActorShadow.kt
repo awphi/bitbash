@@ -2,6 +2,7 @@ package ph.adamw.bitbash.game.actor.entity
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.data.PhysicsData
@@ -24,7 +25,9 @@ class ActorShadow : ActorEntity() {
         return ActorShadow.color
     }
 
-    override fun parentChanged(old: Group?) {}
+    override fun parentChanged(old: Group?) {
+        touchable = Touchable.disabled
+    }
 
     private fun setShadowSize() {
         val w = shadowing!!.width

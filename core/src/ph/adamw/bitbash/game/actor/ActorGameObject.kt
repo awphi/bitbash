@@ -84,6 +84,7 @@ abstract class ActorGameObject : Actor() {
             val nx = x + this.x
             val ny = y + this.y
 
+            //TODO account for PPM
             for(i in body.fixtureList) {
                 if(i.testPoint(nx, ny)) {
                     return this
@@ -108,7 +109,7 @@ abstract class ActorGameObject : Actor() {
     fun buildBody() {
         val bodyDef = BodyDef()
         bodyDef.type = physicsData!!.bodyType
-        bodyDef.position.set(x + width / 2f, y + height / 2f)
+        bodyDef.position.set((x + width / 2f) / PhysicsData.PPM, (y + height / 2f) / PhysicsData.PPM)
         bodyInternal = GameManager.physicsWorld.createBody(bodyDef)
         physicsData!!.addPrincipleFixture(bodyInternal!!, physicsData!!.origin)
         addAdditionalFixtures(bodyInternal!!)
@@ -184,7 +185,9 @@ abstract class ActorGameObject : Actor() {
 
     fun setPositionWithBody(x: Float, y: Float) {
         if(hasBody) {
-            body.setTransform(x + physicsData!!.principleWidth / 2f, y + physicsData!!.principleHeight / 2f, 0f)
+            val ox = x + physicsData!!.principleWidth / 2f
+            val oy = y + physicsData!!.principleHeight / 2f
+            body.setTransform(ox / PhysicsData.PPM, oy / PhysicsData.PPM, 0f)
         }
 
         setPosition(x, y)

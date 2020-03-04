@@ -35,8 +35,6 @@ abstract class BitbashCoreScene : Scene() {
     private val drawnRegions = HashMap<Vector2, ActorGroupMapRegion>()
     val activeRegionCoords = HashSet<Vector2>()
 
-    private val freshRegions = LinkedList<ActorGroupMapRegion>()
-
     protected var gameObjectLayer : Layer? = null
     private val entityLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
     private val tileLayer : Layer = Layer()
@@ -69,6 +67,10 @@ abstract class BitbashCoreScene : Scene() {
         GameManager.rayHandler.setCombinedMatrix(GameManager.MAIN_CAMERA as OrthographicCamera)
         GameManager.rayHandler.updateAndRender()
         updateActiveRegions()
+
+        for(i in activeRegionCoords) {
+            map.getRegion(i)?.isDirty = false
+        }
     }
 
     override fun preDraw() {
@@ -93,8 +95,6 @@ abstract class BitbashCoreScene : Scene() {
             }
         }
 
-        freshRegions.clear()
-
         for (vec : Vector2 in activeRegionCoords) {
             val region = mapState!!.map.getRegion(vec)
             if (region != null && !isDrawn(vec)) {
@@ -102,19 +102,23 @@ abstract class BitbashCoreScene : Scene() {
                 drawnMapRegion.region = region
                 drawnMapRegion.loadToStage(tileLayer, entityLayer)
                 drawnRegions[vec] = drawnMapRegion
-                freshRegions.add(drawnMapRegion)
+                drawnMapRegion.region!!.isDirty = true
+
                 for(j in Direction.values()) {
                     tempCoords.set(vec.x + j.x, vec.y + j.y)
 
-                    drawnRegions[tempCoords]?.let {
-                        freshRegions.add(it)
+                    drawnRegions[tempCoords]?.region?.let {
+                        it.isDirty = true
                     }
                 }
             }
         }
 
-        for(i in freshRegions) {
-            i.edgeRegion(tileLayer)
+        for(i in activeRegionCoords) {
+            val rg = map.getRegion(i)
+            if(rg!!.isDirty) {
+                drawnRegions[i]!!.edgeRegion(tileLayer)
+            }
         }
     }
 
@@ -179,7 +183,7 @@ abstract class BitbashCoreScene : Scene() {
 
     private fun applyOutlines() {
         tempCoords.set(Gdx.input.getX(0).toFloat(), Gdx.input.getY(0).toFloat())
-        GameManager.STAGE.screenToStageCoordinates(tempCoords)
+        GameManager.PLAY_STAGE.screenToStageCoordinates(tempCoords)
 
         var exit = false
         for(group in overlayLayers) {
@@ -221,6 +225,6 @@ abstract class BitbashCoreScene : Scene() {
     }
 
     companion object {
-        private const val BUILD_DISTANCE = 1000f
+        private const val BUILD_DISTANCE = 2000f
     }
 }
