@@ -63,21 +63,16 @@ class BitbashApplication : ApplicationAdapter() {
         updateFps()
 
         GameManager.getScene()?.preDraw()
-        for(i in GameManager.UI_LAYERS) {
-            i.setPosition(GameManager.MAIN_CAMERA.position.x - (GameManager.PLAY_STAGE.width / 2f),
-                    GameManager.MAIN_CAMERA.position.y - (GameManager.PLAY_STAGE.height / 2f))
-            i.setSize(GameManager.PLAY_STAGE.width, GameManager.PLAY_STAGE.height)
-        }
 
         GameManager.physicsWorld.step(1/60f, 6, 2)
         GameManager.PLAY_STAGE.act(Gdx.graphics.deltaTime)
 
-        GameManager.PLAY_STAGE.batch.projectionMatrix = GameManager.MAIN_CAMERA.combined
         GameManager.PLAY_STAGE.draw()
+        GameManager.UI_STAGE.draw()
         Gdx.graphics.setTitle("bitbash - FPS: $frameRate")
 
         if(DEBUG) {
-            GameManager.debugRenderer.render(GameManager.physicsWorld, GameManager.MAIN_CAMERA.combined.scl(PhysicsData.PPM))
+            GameManager.debugRenderer.render(GameManager.physicsWorld, GameManager.WORLD_CAMERA.combined.scl(PhysicsData.PPM))
         }
         GameManager.getScene()?.postDraw()
     }

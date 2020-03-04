@@ -38,7 +38,6 @@ abstract class BitbashCoreScene : Scene() {
     protected var gameObjectLayer : Layer? = null
     private val entityLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
     private val tileLayer : Layer = Layer()
-    protected var uiLayer : Layer? = null
 
     // Highest priority first
     private val overlayLayers = arrayOf(
@@ -47,8 +46,7 @@ abstract class BitbashCoreScene : Scene() {
     )
 
     override fun load() {
-        gameObjectLayer = GameManager.getStageLayer(0)
-        uiLayer = GameManager.getUiLayer(1)
+        gameObjectLayer = GameManager.getWorldLayer(0)
 
         // Lowest priority first
         gameObjectLayer!!.addActor(tileLayer)
@@ -57,14 +55,14 @@ abstract class BitbashCoreScene : Scene() {
         gameObjectLayer!!.addListener(BitbashSceneListener())
 
         entityLayer.addActor(mapState!!.player)
-        CameraUtils.setCameraPos(GameManager.MAIN_CAMERA, mapState!!.player.x, mapState!!.player.y)
+        CameraUtils.setCameraPos(GameManager.WORLD_CAMERA, mapState!!.player.x, mapState!!.player.y)
 
         GameManager.rayHandler.setAmbientLight(0f, 0f, 0f, 0.8f)
         GameManager.rayHandler.setBlurNum(3)
     }
 
     override fun postDraw() {
-        GameManager.rayHandler.setCombinedMatrix(GameManager.MAIN_CAMERA as OrthographicCamera)
+        GameManager.rayHandler.setCombinedMatrix(GameManager.WORLD_CAMERA as OrthographicCamera)
         GameManager.rayHandler.updateAndRender()
         updateActiveRegions()
 
@@ -75,7 +73,7 @@ abstract class BitbashCoreScene : Scene() {
 
     override fun preDraw() {
         restageMap()
-        CameraUtils.setCameraPos(GameManager.MAIN_CAMERA, mapState!!.player, Gdx.graphics.deltaTime)
+        CameraUtils.setCameraPos(GameManager.WORLD_CAMERA, mapState!!.player, Gdx.graphics.deltaTime)
         applyOutlines()
     }
 

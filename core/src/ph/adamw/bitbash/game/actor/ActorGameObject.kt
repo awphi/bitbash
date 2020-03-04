@@ -1,7 +1,6 @@
 package ph.adamw.bitbash.game.actor
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -11,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.utils.Align
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.draw.ShaderBatch
@@ -135,11 +133,10 @@ abstract class ActorGameObject : Actor() {
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
-        val shaderBatch = batch as ShaderBatch
-        shaderBatch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+        batch!!.setColor(color.r, color.g, color.b, color.a * parentAlpha)
 
         if(animActive == null || animations[animActive!!] == null) {
-            shaderBatch.draw(texture, x, y, width * scaleX, height * scaleY)
+            batch.draw(texture, x, y, width * scaleX, height * scaleY)
         } else {
 
             if (!animPause) {
@@ -147,7 +144,7 @@ abstract class ActorGameObject : Actor() {
             }
 
             texture = animations[animActive!!]!!.getKeyFrame(animStateTime, animLoop)
-            shaderBatch.draw(texture, x, y, width * scaleX, height * scaleY)
+            batch.draw(texture, x, y, width * scaleX, height * scaleY)
 
             if (animations[animActive!!]!!.isAnimationFinished(animStateTime)) {
                 stopCurrentAnimation()

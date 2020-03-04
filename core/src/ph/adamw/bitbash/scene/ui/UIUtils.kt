@@ -14,7 +14,8 @@ import ph.adamw.bitbash.game.data.world.MapRegion
 object UIUtils {
     //TODO replace this placeholder skin
     val SKIN : Skin = Skin(Gdx.files.local("ui/neutralizer-ui.json"))
-    const val MAP_REGION_VIEW_NAME = "map_ui_element_"
+
+    const val MAP_REGION_OVERVIEW_SCALE = 1f
 
     fun generateMapRegionOverview(mapRegion: MapRegion) : Actor {
         val baseTex = ActorGameObject.getTexture("grass")
@@ -36,9 +37,9 @@ object UIUtils {
 
         baseTex.texture.textureData.disposePixmap()
 
-        val actor = ActorSimple("$MAP_REGION_VIEW_NAME${mapRegion.coords}")
+        val actor = ActorSimple("map_ui_element_${mapRegion.coords}")
         actor.texture = TextureRegion(Texture(pixmap))
-        //actor.setScale(16f)
+        actor.setScale(MAP_REGION_OVERVIEW_SCALE)
         return actor
     }
 }

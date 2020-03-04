@@ -13,7 +13,6 @@ import ph.adamw.bitbash.scene.Scene
 import ph.adamw.bitbash.scene.layer.Layer
 import ph.adamw.bitbash.scene.layer.UILayer
 import java.util.*
-import kotlin.collections.ArrayList
 
 object GameManager {
     private var scene : Scene? =  null
@@ -25,17 +24,19 @@ object GameManager {
     const val MIN_WORLD_WIDTH = 640f
     const val MIN_WORLD_HEIGHT = 480f
 
-    private val STAGE_LAYERS = TreeMap<Int, Layer>()
-    val UI_LAYERS = ArrayList<Layer>()
+    private val PLAY_LAYERS = TreeMap<Int, Layer>()
+    internal val UI_LAYERS = TreeMap<Int, Layer>()
+
     val UI_STAGE : Stage = Stage(ScreenViewport())
     val PLAY_STAGE: Stage = Stage(ExtendViewport(MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT), ShaderBatch(1000))
-    val MAIN_CAMERA = PLAY_STAGE.camera
+
+    val WORLD_CAMERA = PLAY_STAGE.camera
 
     fun loadScene(scene: Scene) : Scene {
         GameManager.scene = scene
 
-        STAGE_LAYERS.clear()
-        UI_LAYERS.clear()
+        PLAY_LAYERS.clear()
+        UI_STAGE.clear()
         PLAY_STAGE.root.clearListeners()
 
         physicsWorld.dispose()
@@ -52,39 +53,39 @@ object GameManager {
         return scene
     }
 
-    private fun addStageLayer(layer: Int, g: Layer) {
+    private fun addLayerInternal(layer: Int, g: Layer, map: TreeMap<Int, Layer>, stage: Stage) {
         g.touchable = Touchable.childrenOnly
 
         var flag = false
 
-        for (i in STAGE_LAYERS.keys) {
+        for (i in map.keys) {
             if (i > layer) {
-                PLAY_STAGE.root.addActorBefore(STAGE_LAYERS[i], g)
+                stage.root.addActorBefore(map[i], g)
                 flag = true
                 break
             }
         }
 
         if(!flag) {
-            PLAY_STAGE.addActor(g)
+            stage.addActor(g)
         }
 
-        STAGE_LAYERS[layer] = g
+        map[layer] = g
     }
 
-    fun getStageLayer(layer: Int) : Layer {
-        return getStageLayer(layer, Layer())
+    fun getWorldLayer(layer: Int) : Layer {
+        return getLayer(layer, Layer(), PLAY_LAYERS, PLAY_STAGE)
     }
 
     fun getUiLayer(layer: Int) : Layer {
-        return getStageLayer(layer, UILayer())
+        return getLayer(layer, UILayer(), UI_LAYERS, UI_STAGE)
     }
 
-    fun getStageLayer(layer : Int, ly: Layer) : Layer {
-        if(!STAGE_LAYERS.containsKey(layer)) {
-            addStageLayer(layer, ly)
+    private fun getLayer(layer: Int, g: Layer, map: TreeMap<Int, Layer>, stage: Stage) : Layer {
+        if(!map.containsKey(layer)) {
+            addLayerInternal(layer, g, map, stage)
         }
 
-        return STAGE_LAYERS[layer]!!
+        return map[layer]!!
     }
 }
