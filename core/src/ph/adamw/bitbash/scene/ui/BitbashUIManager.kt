@@ -32,8 +32,6 @@ object BitbashUIManager {
         mapMarker.setTexture("marker")
         stage.addActor(mapMarker)
 
-        mapUiTable.debugAll()
-
         mapUiTable.setFillParent(true)
 
         mapUiTable.pad(50f)
@@ -53,8 +51,8 @@ object BitbashUIManager {
                 stage.root.removeActor(mapViewerCache[i])
                 val r = UIUtils.generateMapRegionOverview(rg)
                 r.setPosition(i.x * r.width, i.y * r.height)
-                mapMarker.toFront()
                 stage.addActor(r)
+                mapMarker.toFront()
                 mapViewerCache[i] = r
             }
         }

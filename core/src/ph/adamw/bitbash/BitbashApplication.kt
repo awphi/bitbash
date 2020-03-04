@@ -83,6 +83,7 @@ class BitbashApplication : ApplicationAdapter() {
 
     companion object {
         val DEBUG = System.getProperty("debug") == "true"
+        val GEN_TEST = System.getProperty("gentest") == "true"
         val IO : FSTConfiguration = FSTConfiguration.createDefaultConfiguration()
         val JSON = Json()
 
