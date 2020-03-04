@@ -15,8 +15,6 @@ object UIUtils {
     //TODO replace this placeholder skin
     val SKIN : Skin = Skin(Gdx.files.local("ui/neutralizer-ui.json"))
 
-    const val MAP_REGION_OVERVIEW_SCALE = 1f
-
     fun generateMapRegionOverview(mapRegion: MapRegion) : Actor {
         val baseTex = ActorGameObject.getTexture("grass")
 
@@ -39,7 +37,6 @@ object UIUtils {
 
         val actor = ActorSimple("map_ui_element_${mapRegion.coords}")
         actor.texture = TextureRegion(Texture(pixmap))
-        actor.setScale(MAP_REGION_OVERVIEW_SCALE)
         return actor
     }
 }
