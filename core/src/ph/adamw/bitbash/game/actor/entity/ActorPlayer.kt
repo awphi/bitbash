@@ -29,27 +29,33 @@ class ActorPlayer : ActorEntity(), Json.Serializable {
         var y = 0f
 
         if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-            y += step
+            y += 1f
             facing = Direction.UP
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            y -= step
+            y -= 1f
             facing = Direction.DOWN
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-            x -= step
+            x -= 1f
             facing = Direction.LEFT
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-            x += step
+            x += 1f
             facing = Direction.RIGHT
         }
 
         if(!GameManager.lockInput) {
-            body.setLinearVelocity(x, y)
+            val a = step / SQRT_2
+
+            if((x != 0f).xor(y != 0f)) {
+                body.setLinearVelocity(x * step , y * step)
+            } else {
+                body.setLinearVelocity(x * a, y * a)
+            }
         } else {
             body.setLinearVelocity(0f, 0f)
         }
