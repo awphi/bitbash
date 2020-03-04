@@ -31,7 +31,10 @@ object BitbashUILoader {
         //TODO implement a dirty region system to know whether this needs updating or not
         //  right now performance is terrible
         for(i in regions) {
-            //mapContent.addActor(UIUtils.generateMapRegionOverview(map.getRegion(i)!!))
+            val rg = map.getRegion(i)
+            if(rg!!.isDirty) {
+                mapContent.addActor(UIUtils.generateMapRegionOverview(rg))
+            }
         }
     }
 }
