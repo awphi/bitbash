@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorGroupMapRegion
@@ -210,12 +211,10 @@ abstract class BitbashCoreScene : Scene() {
         }
     }
 
-    fun removeDrawnWidget(vec: Vector2, actorWidget: ActorWidget) : Boolean {
+    fun removeDrawnWidget(vec: Vector2, actorWidget: ActorWidget) {
         if(isDrawn(vec)) {
-            return drawnRegions[vec]?.undrawWidget(actorWidget) ?: false
+            drawnRegions[vec]?.undrawWidget(actorWidget)
         }
-
-        return false
     }
 
     private fun setBuildRectangle() {
@@ -223,6 +222,13 @@ abstract class BitbashCoreScene : Scene() {
     }
 
     companion object {
-        private const val BUILD_DISTANCE = 2000f
+        private val BUILD_DISTANCE : Float
+            get() {
+                return if(BitbashApplication.GEN_TEST) {
+                    10000f
+                } else {
+                    2000f
+                }
+            }
     }
 }

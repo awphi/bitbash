@@ -28,9 +28,7 @@ class ActorGroupMapRegion : Pool.Poolable {
 
     override fun reset() {
         for(i in region!!.widgets.keys) {
-            for(j in region!!.widgets[i]!!) {
-                undrawWidget(j)
-            }
+            region!!.widgets[i]?.let { undrawWidget(it) }
         }
 
         for (i in drawnTiles.indices) {
@@ -102,9 +100,7 @@ class ActorGroupMapRegion : Pool.Poolable {
                 }
 
                 widget?.let {
-                    for(wid in it) {
-                        drawWidget(wid, widgetGroup)
-                    }
+                    drawWidget(widget, widgetGroup)
                 }
             }
         }
@@ -126,16 +122,9 @@ class ActorGroupMapRegion : Pool.Poolable {
         return drawnTiles[Math.floorMod(MathUtils.floor(np.x), MapRegion.REGION_SIZE)][Math.floorMod(MathUtils.floor(np.y), MapRegion.REGION_SIZE)]
     }
 
-    fun undrawWidget(actorWidget: ActorWidget) : Boolean {
-        region!!.widgets[actorWidget.tilePosition]?.let {
-            val y = it.remove(actorWidget)
-            actorWidget.deleteBody()
-            actorWidget.remove()
-
-            return y
-        }
-
-        return false
+    fun undrawWidget(actorWidget: ActorWidget) {
+        actorWidget.deleteBody()
+        actorWidget.remove()
     }
 
     companion object {

@@ -16,7 +16,7 @@ import kotlin.math.ceil
 
 class MapRegion(val x: Int, val y: Int) : Serializable {
     val coords : Vector2 = Vector2(x.toFloat(), y.toFloat())
-    val widgets = HashMap<TilePosition, HashSet<ActorWidget>>()
+    val widgets = HashMap<TilePosition, ActorWidget>()
 
     @Transient
     var isDirty : Boolean = false
@@ -29,18 +29,9 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
         }
     }
 
-    fun addWidgetAt(np: TilePosition, widget: ActorWidget) : Boolean {
-        if(!widgets.containsKey(np)) {
-            widgets[np] = HashSet()
-        }
-
-        val added = widgets[np]!!.add(widget)
-
-        if(added) {
-            BitbashPlayScene.addDrawnWidget(this.coords, widget)
-        }
-
-        return added
+    fun setWidgetAt(np: TilePosition, widget: ActorWidget) {
+        widgets[np] = widget
+        BitbashPlayScene.addDrawnWidget(this.coords, widget)
     }
 
     fun localTileIndexToWorldTilePosition(i : Int, j : Int) : TilePosition {
@@ -52,18 +43,14 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
         return np
     }
 
-    fun getWidgetsAt(np: TilePosition): HashSet<ActorWidget>? {
+    fun getWidgetAt(np: TilePosition): ActorWidget? {
         return widgets[np]
     }
 
     fun deleteWidgetAt(np: TilePosition, actorWidget: ActorWidget) : Boolean {
-        if(widgets.containsKey(np)) {
-            return false
-        }
-
-        val y = widgets[np]!!.remove(actorWidget)
+        val y = widgets.remove(np)
         BitbashPlayScene.removeDrawnWidget(coords, actorWidget)
-        return y
+        return y != null
     }
 
     fun getTile(np : TilePosition) : TileHandler {

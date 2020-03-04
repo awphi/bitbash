@@ -26,8 +26,10 @@ class Map(val seed: Long) : Serializable {
     @Transient
     private var regionsFolder : FileHandle? = null
 
-    @Transient
-    private val heightNoise : OpenSimplexNoise = OpenSimplexNoise(seed)
+    @delegate:Transient
+    private val heightNoise : OpenSimplexNoise by lazy {
+        OpenSimplexNoise(seed)
+    }
 
     @Transient
     private val tempCoords : TilePosition = TilePosition(0f, 0f)
@@ -111,11 +113,11 @@ class Map(val seed: Long) : Serializable {
 
     fun addWidgetAt(tilePosition: TilePosition, w : ActorWidget) {
         w.tilePosition.set(tilePosition)
-        getRegionAt(tilePosition)?.addWidgetAt(tilePosition, w)
+        getRegionAt(tilePosition)?.setWidgetAt(tilePosition, w)
     }
 
-    fun getWidgetsAt(tilePosition: TilePosition): HashSet<ActorWidget>? {
-        return getRegionAt(tilePosition)?.getWidgetsAt(tilePosition)
+    fun getWidgetsAt(tilePosition: TilePosition): ActorWidget? {
+        return getRegionAt(tilePosition)?.getWidgetAt(tilePosition)
     }
 
     fun deleteWidgetAt(tilePosition: TilePosition, actorWidget: ActorWidget) {
