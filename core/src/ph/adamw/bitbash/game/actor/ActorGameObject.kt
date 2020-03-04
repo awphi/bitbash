@@ -1,9 +1,11 @@
 package ph.adamw.bitbash.game.actor
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -15,7 +17,6 @@ import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.draw.ShaderBatch
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.BitbashCoreScene
 import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 
 /**
@@ -95,7 +96,7 @@ abstract class ActorGameObject : Actor() {
         return super.hit(x, y, touchable)
     }
 
-    var texture : TextureAtlas.AtlasRegion = PLACEHOLDER
+    var texture : TextureRegion = PLACEHOLDER
         set(value) {
             field = value
             width = texture.regionWidth.toFloat()
@@ -121,11 +122,6 @@ abstract class ActorGameObject : Actor() {
 
     fun setTexture(name: String) {
         texture = getTexture(name)
-    }
-
-    override fun sizeChanged() {
-        super.sizeChanged()
-        setOrigin(Align.center)
     }
 
     override fun positionChanged() {

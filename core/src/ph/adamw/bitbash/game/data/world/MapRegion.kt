@@ -9,9 +9,7 @@ import ph.adamw.bitbash.game.actor.ActorTile
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.DirtTileHandler
-import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
-import ph.adamw.bitbash.scene.BitbashCoreScene
-import ph.adamw.bitbash.scene.BitbashInfiniteScene
+import ph.adamw.bitbash.scene.BitbashPlayScene
 import java.io.Serializable
 import kotlin.math.ceil
 
@@ -33,7 +31,7 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
         val added = widgets[np]!!.add(widget)
 
         if(added) {
-            BitbashInfiniteScene.addDrawnWidget(this.coords, widget)
+            BitbashPlayScene.addDrawnWidget(this.coords, widget)
         }
 
         return added
@@ -58,7 +56,7 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
         }
 
         val y = widgets[np]!!.remove(actorWidget)
-        BitbashInfiniteScene.removeDrawnWidget(coords, actorWidget)
+        BitbashPlayScene.removeDrawnWidget(coords, actorWidget)
         return y
     }
 
@@ -68,7 +66,7 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
 
     fun setTileAt(np: TilePosition, tile: TileHandler) {
         tiles[Math.floorMod(MathUtils.floor(np.x), REGION_SIZE)][Math.floorMod(MathUtils.floor(np.y), REGION_SIZE)] = tile
-        BitbashInfiniteScene.updateDrawnTile(this, np, tile)
+        BitbashPlayScene.updateDrawnTile(this, np, tile)
     }
 
     fun unload(folder: FileHandle) {

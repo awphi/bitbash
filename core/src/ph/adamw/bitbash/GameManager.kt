@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ph.adamw.bitbash.draw.ShaderBatch
 import ph.adamw.bitbash.scene.Scene
 import ph.adamw.bitbash.scene.layer.Layer
+import ph.adamw.bitbash.scene.layer.UILayer
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -49,7 +50,7 @@ object GameManager {
         return scene
     }
 
-    fun addStageLayer(layer: Int, g: Layer) {
+    private fun addStageLayer(layer: Int, g: Layer) {
         g.touchable = Touchable.childrenOnly
 
         var flag = false
@@ -69,9 +70,17 @@ object GameManager {
         STAGE_LAYERS[layer] = g
     }
 
-    fun getStageLayer(layer : Int) : Layer {
+    fun getStageLayer(layer: Int) : Layer {
+        return getStageLayer(layer, Layer())
+    }
+
+    fun getUiLayer(layer: Int) : Layer {
+        return getStageLayer(layer, UILayer())
+    }
+
+    fun getStageLayer(layer : Int, ly: Layer) : Layer {
         if(!STAGE_LAYERS.containsKey(layer)) {
-            addStageLayer(layer, Layer())
+            addStageLayer(layer, ly)
         }
 
         return STAGE_LAYERS[layer]!!

@@ -1,6 +1,5 @@
 package ph.adamw.bitbash.game.actor
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Pool
@@ -10,7 +9,7 @@ import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.game.data.world.TileEdgeLocation
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.BitbashInfiniteScene
+import ph.adamw.bitbash.scene.BitbashPlayScene
 import ph.adamw.bitbash.scene.layer.Layer
 import java.rmi.UnexpectedException
 
@@ -69,7 +68,7 @@ class ActorGroupMapRegion : Pool.Poolable {
 
         for(i in Direction.values()) {
             np.set(x + i.x, y + i.y)
-            val t = BitbashInfiniteScene.map.getTileAt(np)
+            val t = BitbashPlayScene.map.getTileAt(np)
 
             if(t != null && t.edgePriority < ep) {
                 tempDirections.add(i)

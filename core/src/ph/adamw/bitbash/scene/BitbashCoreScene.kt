@@ -2,6 +2,7 @@ package ph.adamw.bitbash.scene
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorGameObject
@@ -19,10 +20,12 @@ import ph.adamw.bitbash.util.CameraUtils
 import ph.adamw.bitbash.scene.layer.DrawOrderComparator
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.abs
 
 abstract class BitbashCoreScene : Scene() {
     private var lastActorGameObjHit : ActorGameObject? = null
     private val tempCoords = Vector2(0f, 0f)
+    private val buildLimitRect = Rectangle()
 
     var mapState: MapState? = null
 
@@ -30,30 +33,32 @@ abstract class BitbashCoreScene : Scene() {
         get() = mapState!!.map
 
     private val drawnRegions = HashMap<Vector2, ActorGroupMapRegion>()
-    protected val activeRegionCoords = HashSet<Vector2>()
+    val activeRegionCoords = HashSet<Vector2>()
 
     private val freshRegions = LinkedList<ActorGroupMapRegion>()
 
-    private var GAME_OBJECT_LAYER : Layer? = null
-    private val ENTITY_LAYER : Layer = OrderedDrawLayer(DrawOrderComparator)
-    private val TILE_LAYER : Layer = Layer()
+    protected var gameObjectLayer : Layer? = null
+    private val entityLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
+    private val tileLayer : Layer = Layer()
+    protected var uiLayer : Layer? = null
 
     // Highest priority first
-    private val OVERLAY_LAYERS = arrayOf(
-            ENTITY_LAYER,
-            TILE_LAYER
+    private val overlayLayers = arrayOf(
+            entityLayer,
+            tileLayer
     )
 
     override fun load() {
-        GAME_OBJECT_LAYER = GameManager.getStageLayer(0)
+        gameObjectLayer = GameManager.getStageLayer(0)
+        uiLayer = GameManager.getUiLayer(1)
 
         // Lowest priority first
-        GAME_OBJECT_LAYER!!.addActor(TILE_LAYER)
-        GAME_OBJECT_LAYER!!.addActor(ENTITY_LAYER)
+        gameObjectLayer!!.addActor(tileLayer)
+        gameObjectLayer!!.addActor(entityLayer)
 
-        GAME_OBJECT_LAYER!!.addListener(BitbashSceneListener())
+        gameObjectLayer!!.addListener(BitbashSceneListener())
 
-        ENTITY_LAYER.addActor(mapState!!.player)
+        entityLayer.addActor(mapState!!.player)
         CameraUtils.setCameraPos(GameManager.MAIN_CAMERA, mapState!!.player.x, mapState!!.player.y)
 
         GameManager.rayHandler.setAmbientLight(0f, 0f, 0f, 0.8f)
@@ -72,7 +77,11 @@ abstract class BitbashCoreScene : Scene() {
         applyOutlines()
     }
 
-    fun restageMap() {
+    override fun pause() {
+        mapState!!.save()
+    }
+
+    private fun restageMap() {
         val it = drawnRegions.keys.iterator()
         while(it.hasNext()) {
             val i = it.next()
@@ -91,7 +100,7 @@ abstract class BitbashCoreScene : Scene() {
             if (region != null && !isDrawn(vec)) {
                 val drawnMapRegion = ActorGroupMapRegion.POOL.obtain()
                 drawnMapRegion.region = region
-                drawnMapRegion.loadToStage(TILE_LAYER, ENTITY_LAYER)
+                drawnMapRegion.loadToStage(tileLayer, entityLayer)
                 drawnRegions[vec] = drawnMapRegion
                 freshRegions.add(drawnMapRegion)
                 for(j in Direction.values()) {
@@ -105,17 +114,58 @@ abstract class BitbashCoreScene : Scene() {
         }
 
         for(i in freshRegions) {
-            i.edgeRegion(TILE_LAYER)
+            i.edgeRegion(tileLayer)
         }
     }
 
-    open fun unloadRegion(vec: Vector2) {}
-
-    abstract fun refreshActiveRegions(regions: MutableSet<Vector2>)
-
-    open fun updateActiveRegions() {
-        refreshActiveRegions(activeRegionCoords)
+    open fun unloadRegion(vec: Vector2) {
+        mapState!!.map.unloadRegion(vec)
     }
+
+    fun refreshActiveRegions(regions: MutableSet<Vector2>) {
+        regions.clear()
+        setBuildRectangle()
+
+        // get world pos of the top left corner of the renderRect
+        val regionCoords = MapRegion.resolveRegionCoords(TilePosition.fromWorldPosition(Vector2(buildLimitRect.getX(), buildLimitRect.getY() + buildLimitRect.height)))
+        val xCache = regionCoords.x
+
+        var dropOff = 0
+
+        do {
+            val regionRect = MapRegion.resolveRegionBounds(regionCoords)
+            // Move it along one region to the right
+            regionCoords.x++
+
+            if (regionRect.overlaps(buildLimitRect)) {
+                regions.add(Vector2(regionCoords))
+                dropOff = 0
+            } else {
+                // One over too many to the right so we switch back to column 0 and the next row
+                regionCoords.x = xCache
+                regionCoords.y--
+
+                // Increase the drop off i.e. if the region rectangle has not overlapped the camera twice in a row, it has been covered so this loop with terminate
+                dropOff++
+            }
+
+        } while (dropOff != 2)
+    }
+
+    private fun updateActiveRegions() {
+        refreshActiveRegions(activeRegionCoords)
+
+        // Generates new regions
+        for (vec in activeRegionCoords) {
+            if (mapState!!.map.getRegion(vec) == null && abs(vec.x) <= MapRegion.LIMIT && abs(vec.y) <= MapRegion.LIMIT) {
+                mapState!!.map.generateRegionAt(vec)
+            }
+        }
+
+        activeRegionsUpdated()
+    }
+
+    open fun activeRegionsUpdated() {}
 
     fun isDrawn(vec: Vector2) : Boolean {
         return drawnRegions.containsKey(vec)
@@ -132,7 +182,7 @@ abstract class BitbashCoreScene : Scene() {
         GameManager.STAGE.screenToStageCoordinates(tempCoords)
 
         var exit = false
-        for(group in OVERLAY_LAYERS) {
+        for(group in overlayLayers) {
             val hitActor = group.hit(tempCoords.x, tempCoords.y, true)
             hitActor?.let {
                 if (hitActor is ActorGameObject) {
@@ -154,7 +204,7 @@ abstract class BitbashCoreScene : Scene() {
 
     fun addDrawnWidget(vec: Vector2, widget: ActorWidget) {
         if(isDrawn(vec)) {
-            drawnRegions[vec]?.drawWidget(widget, ENTITY_LAYER)
+            drawnRegions[vec]?.drawWidget(widget, entityLayer)
         }
     }
 
@@ -164,5 +214,13 @@ abstract class BitbashCoreScene : Scene() {
         }
 
         return false
+    }
+
+    private fun setBuildRectangle() {
+        buildLimitRect.set(mapState!!.player.x - BUILD_DISTANCE, mapState!!.player.y - BUILD_DISTANCE, BUILD_DISTANCE * 2, BUILD_DISTANCE * 2)
+    }
+
+    companion object {
+        private const val BUILD_DISTANCE = 1000f
     }
 }

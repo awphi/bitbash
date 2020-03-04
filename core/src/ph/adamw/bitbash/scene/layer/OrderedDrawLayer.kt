@@ -1,7 +1,6 @@
 package ph.adamw.bitbash.scene.layer
 
 import com.badlogic.gdx.scenes.scene2d.Actor
-import ph.adamw.bitbash.game.actor.ActorEntity
 
 class OrderedDrawLayer(val comparator: Comparator<Actor>) : Layer() {
     fun update(actor: Actor) {

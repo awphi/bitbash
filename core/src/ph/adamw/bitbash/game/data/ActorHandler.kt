@@ -2,7 +2,6 @@ package ph.adamw.bitbash.game.data
 
 import com.badlogic.gdx.physics.box2d.Body
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.BitbashCoreScene
 import java.io.Serializable
 
 abstract class ActorHandler<T>(val name : String) : Serializable {

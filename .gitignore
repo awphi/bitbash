@@ -80,6 +80,9 @@ com_crashlytics_export_strings.xml
 #Maps
 /core/assets/maps/
 
+/art-wip/fonts/runnable-hiero.jar
+/art-wip/fonts/*.ttf
+
 /dist/
 /android/dist/
 /core/dist/

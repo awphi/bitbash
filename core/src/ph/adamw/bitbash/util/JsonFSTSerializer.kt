@@ -1,7 +1,9 @@
 package ph.adamw.bitbash.util
 
-import com.badlogic.gdx.utils.Json
-import org.nustaq.serialization.*
+import org.nustaq.serialization.FSTBasicObjectSerializer
+import org.nustaq.serialization.FSTClazzInfo
+import org.nustaq.serialization.FSTObjectInput
+import org.nustaq.serialization.FSTObjectOutput
 import ph.adamw.bitbash.BitbashApplication
 
 object JsonFSTSerializer : FSTBasicObjectSerializer() {

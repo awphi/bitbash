@@ -1,7 +1,6 @@
 package ph.adamw.bitbash.scene.layer
 
 import com.badlogic.gdx.scenes.scene2d.Actor
-import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.actor.ActorGameObject
 
 object DrawOrderComparator : Comparator<Actor> {
@@ -39,11 +38,9 @@ object DrawOrderComparator : Comparator<Actor> {
         } else {
             if (y1 > y2) {
                 return -1
-            } else if (y1 < y2) {
+            } else {
                 return 1
             }
         }
-
-        return 0
     }
 }

@@ -1,6 +1,5 @@
 package ph.adamw.bitbash.game.actor
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue

@@ -1,7 +1,6 @@
 package ph.adamw.bitbash.game.data.world
 
 import com.badlogic.gdx.math.Vector2
-import ph.adamw.bitbash.game.actor.ActorTile
 
 enum class TileEdgeLocation(val x : Float, val y : Float, val components : com.badlogic.gdx.utils.Array<Direction>?) {
     UPLEFT(Vector2(-1f, 1f), com.badlogic.gdx.utils.Array.with(Direction.UP, Direction.LEFT)),

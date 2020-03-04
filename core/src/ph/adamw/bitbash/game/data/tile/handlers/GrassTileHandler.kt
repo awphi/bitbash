@@ -5,8 +5,7 @@ import ph.adamw.bitbash.game.actor.ActorTile
 import ph.adamw.bitbash.game.actor.widget.ActorWidgetLamp
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.BitbashCoreScene
-import ph.adamw.bitbash.scene.BitbashInfiniteScene
+import ph.adamw.bitbash.scene.BitbashPlayScene
 
 object GrassTileHandler : TileHandler("grass") {
     override val edgePriority: Int
@@ -16,9 +15,9 @@ object GrassTileHandler : TileHandler("grass") {
         super.mouseClicked(actor, button, tilePosition, x, y)
 
         if(button == Input.Buttons.LEFT) {
-            BitbashInfiniteScene.map.setTileAt(tilePosition, StoneBrickTileHandler)
+            BitbashPlayScene.map.setTileAt(tilePosition, StoneBrickTileHandler)
         } else if(button == Input.Buttons.RIGHT) {
-            BitbashInfiniteScene.map.addWidgetAt(tilePosition, ActorWidgetLamp())
+            BitbashPlayScene.map.addWidgetAt(tilePosition, ActorWidgetLamp())
         }
     }
 }

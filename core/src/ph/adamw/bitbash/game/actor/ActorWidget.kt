@@ -1,11 +1,13 @@
 package ph.adamw.bitbash.game.actor
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.game.data.world.TilePosition
-import kotlin.math.*
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.round
 
 abstract class ActorWidget : ActorEntity() {
     val tilePosition: TilePosition = TilePosition(0f, 0f)
