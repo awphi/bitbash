@@ -68,7 +68,7 @@ abstract class BitbashCoreScene : Scene() {
         updateActiveRegions()
 
         for(i in activeRegionCoords) {
-            map.getRegion(i)?.isDirty = false
+            map.getOrLoadRegion(i)?.isDirty = false
         }
     }
 
@@ -95,7 +95,7 @@ abstract class BitbashCoreScene : Scene() {
         }
 
         for (vec : Vector2 in activeRegionCoords) {
-            val region = mapState!!.map.getRegion(vec)
+            val region = mapState!!.map.getOrLoadRegion(vec)
             if (region != null && !isDrawn(vec)) {
                 val drawnMapRegion = ActorGroupMapRegion.POOL.obtain()
                 drawnMapRegion.region = region
@@ -114,7 +114,7 @@ abstract class BitbashCoreScene : Scene() {
         }
 
         for(i in activeRegionCoords) {
-            val rg = map.getRegion(i)
+            val rg = map.getOrLoadRegion(i)
             if(rg!!.isDirty) {
                 drawnRegions[i]!!.edgeRegion(tileLayer)
             }
@@ -160,7 +160,7 @@ abstract class BitbashCoreScene : Scene() {
 
         // Generates new regions
         for (vec in activeRegionCoords) {
-            if (mapState!!.map.getRegion(vec) == null && abs(vec.x) <= MapRegion.LIMIT && abs(vec.y) <= MapRegion.LIMIT) {
+            if (mapState!!.map.getOrLoadRegion(vec) == null && abs(vec.x) <= MapRegion.LIMIT && abs(vec.y) <= MapRegion.LIMIT) {
                 mapState!!.map.generateRegionAt(vec)
             }
         }

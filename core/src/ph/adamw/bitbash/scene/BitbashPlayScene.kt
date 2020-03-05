@@ -25,7 +25,8 @@ object BitbashPlayScene : BitbashCoreScene() {
         devUi = GameManager.getUiLayer(0)
         mapUi = GameManager.getUiLayer(1)
         BitbashUIManager.loadDevUIInto(devUi!!)
-        BitbashUIManager.loadMapViewer(mapUi!!, mapViewer)
+        Gdx.app.log("TEX", "${map.discoveredRegions.size}")
+        BitbashUIManager.loadMapViewer(mapUi!!, mapViewer, map, map.discoveredRegions)
         mapViewer.root.isVisible = false
         mapUi!!.isVisible = false
     }

@@ -16,9 +16,13 @@ import ph.adamw.bitbash.util.OpenSimplexNoise
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
+import kotlin.collections.HashSet
 
 class Map(val seed: Long) : Serializable {
-    private val featureSize : Double = 80.0
+    private val heightFeatureSize : Double = 80.0
+    private val biomeFeatureSize : Double = 120.0
+
+    val discoveredRegions : HashSet<Vector2> = HashSet()
 
     @Transient
     private val regionMap = HashMap<Vector2, MapRegion>()
@@ -34,8 +38,6 @@ class Map(val seed: Long) : Serializable {
     @Transient
     private val tempCoords : TilePosition = TilePosition(0f, 0f)
 
-    constructor(st: String) : this(st.hashCode().toLong())
-
     constructor() : this(ThreadLocalRandom.current().nextLong())
 
     fun setMapState(mapState: MapState) {
@@ -44,14 +46,14 @@ class Map(val seed: Long) : Serializable {
     }
 
     fun generateRegionAt(vec2: Vector2) {
-        Gdx.app.log("MAP","Generating region: $vec2")
+        Gdx.app.log("MAP","Generating new region: $vec2")
 
         val region = MapRegion(vec2.x.toInt(), vec2.y.toInt())
 
         for (i in region.tiles.indices) {
             for (j in region.tiles[i].indices) {
                 region.localTileIndexToWorldTilePosition(i, j, tempCoords)
-                val noiseVal = heightNoise.eval(tempCoords.x / featureSize, tempCoords.y / featureSize, 0.0)
+                val noiseVal = heightNoise.eval(tempCoords.x / heightFeatureSize, tempCoords.y / heightFeatureSize, 0.0)
 
                 //TODO proper world generation
                 if(noiseVal > 0) {
@@ -62,20 +64,35 @@ class Map(val seed: Long) : Serializable {
             }
         }
 
-        regionMap[Vector2(vec2.x, vec2.y)] = region
+        val v = Vector2(vec2.x, vec2.y)
+        regionMap[v] = region
+        discoveredRegions.add(v)
     }
 
-    fun getRegionAt(np: TilePosition) : MapRegion? {
-        return getRegion(getRegionCoordsAt(np))
+    private fun getRegionAt(np: TilePosition) : MapRegion? {
+        return getOrLoadRegion(getRegionCoordsAt(np))
     }
 
-    fun getRegion(vec: Vector2): MapRegion? {
+    /**
+     * Key method of the map, does what it says on the tin.
+     * @return null if region couldn't be loaded or found in memory, the given MapRegion otherwise
+     */
+    fun getOrLoadRegion(vec: Vector2): MapRegion? {
         val v = Vector2(vec.x, vec.y)
-        if(regionMap[v] == null && regionsFolder!!.child(getRegionFileName(vec.x.toInt(), vec.y.toInt())).exists()) {
+
+        if(!isRegionLoaded(vec) && canRegionLoaded(vec)) {
             loadRegion(vec)
         }
 
         return regionMap[v]
+    }
+
+    fun canRegionLoaded(vec: Vector2) : Boolean {
+        return regionsFolder!!.child(getRegionFileName(vec.x.toInt(), vec.y.toInt())).exists()
+    }
+
+    fun isRegionLoaded(vec: Vector2) : Boolean {
+        return regionMap[vec] != null
     }
 
     fun getRegionCoordsAt(np: TilePosition): Vector2 {
@@ -93,7 +110,7 @@ class Map(val seed: Long) : Serializable {
 
     private fun unloadRegionInternal(vec: Vector2) {
         Gdx.app.log("MAP", "Unloading region: $vec")
-        getRegion(vec)?.unload(regionsFolder!!)
+        getOrLoadRegion(vec)?.unload(regionsFolder!!)
     }
 
     fun loadRegion(vec: Vector2) {

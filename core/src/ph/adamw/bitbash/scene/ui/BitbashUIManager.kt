@@ -6,9 +6,11 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
+import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorSimple
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.scene.BitbashPlayScene
@@ -28,25 +30,31 @@ object BitbashUIManager {
 
     private var mapViewerCell : Cell<Actor>? = null
 
-    fun loadMapViewer(layer: Layer, stage: Stage) {
+    private const val MAP_TABLE_PADDING : Float = 50f
+
+    fun loadMapViewer(layer: Layer, stage: Stage, map: Map, regions: HashSet<Vector2>) {
         mapMarker.setTexture("marker")
         stage.addActor(mapMarker)
 
         mapUiTable.setFillParent(true)
 
-        mapUiTable.pad(50f)
-        mapUiTable.add("Map Viewer").center()
+        mapUiTable.pad(MAP_TABLE_PADDING)
+        mapUiTable.add(Label("Map Viewer", UIUtils.SKIN, "title")).center()
         mapUiTable.row()
 
-        //TODO cull map viewer stage to this cell's bounds
+        updateMapViewer(map, regions, stage)
+        for(i in regions) {
+            map.unloadRegion(i)
+        }
+
         mapViewerCell = mapUiTable.add().fill().grow()
+        mapUiTable.debugAll()
         layer.addActor(mapUiTable)
     }
 
     fun updateMapViewer(map: Map, regions: HashSet<Vector2>, stage: Stage) {
-        //TODO when not in dev mode only show the active regions - not all of em
         for(i in regions) {
-            val rg = map.getRegion(i)
+            val rg = map.getOrLoadRegion(i)
             if(rg!!.isDirty) {
                 stage.root.removeActor(mapViewerCache[i])
                 val r = UIUtils.generateMapRegionOverview(rg)
@@ -67,9 +75,28 @@ object BitbashUIManager {
         if(mapViewerCell != null) {
             val w1 = mapViewerCell!!.actorWidth
             val h1 = mapViewerCell!!.actorHeight
+
+            // Account for the title row
             val r = mapUiTable.getRowHeight(0) / 2f
-            clipBounds.set(stage.camera.position.x - w1 / 2f, stage.camera.position.y - h1 / 2f - r, w1, h1)
-            ScissorStack.calculateScissors(stage.camera, 0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat(), stage.batch.transformMatrix, clipBounds, scissors)
+
+            clipBounds.set(
+                    stage.camera.position.x - (w1 / 2f),
+                    stage.camera.position.y - (h1 / 2f) - r,
+                    w1,
+                    h1
+            )
+
+            ScissorStack.calculateScissors(
+                    stage.camera,
+                    stage.viewport.screenX.toFloat(),
+                    stage.viewport.screenY.toFloat(),
+                    stage.viewport.worldWidth,
+                    stage.viewport.worldHeight,
+                    stage.batch.transformMatrix,
+                    clipBounds,
+                    scissors
+            )
+
             return scissors
         }
 

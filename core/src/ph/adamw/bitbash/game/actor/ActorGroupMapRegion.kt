@@ -20,7 +20,7 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    private val edges : com.badlogic.gdx.utils.Array<ActorTileEdge> =  com.badlogic.gdx.utils.Array()
+    private val edgeMap : HashMap<TilePosition, com.badlogic.gdx.utils.Array<ActorTileEdge>> = HashMap()
     private val tempDirections : com.badlogic.gdx.utils.Array<Direction> =  com.badlogic.gdx.utils.Array()
     private val tempCoords = TilePosition(0f, 0f)
 
@@ -37,8 +37,13 @@ class ActorGroupMapRegion : Pool.Poolable {
             }
         }
 
-        ActorTileEdge.POOL.freeAll(edges)
-        edges.clear()
+        for(i in edgeMap.keys) {
+            edgeMap[i]?.let {
+                ActorTileEdge.POOL.freeAll(it)
+            }
+        }
+
+        edgeMap.clear()
     }
 
     fun edgeRegion(layer: Layer) {
@@ -50,14 +55,31 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    private fun applyEdge(tile: TileHandler, np: TilePosition, i : TileEdgeLocation, layer: Layer) {
-        val edge = ActorTileEdge.POOL.obtain()
-        edge.set(tile, np, i)
-        layer.addActor(edge)
-        edges.add(edge)
+    private fun unedgeTile(np: TilePosition) {
+        edgeMap[np]?.let {
+            ActorTileEdge.POOL.freeAll(it)
+            it.clear()
+        }
     }
 
-    fun edgeTile(np: TilePosition, layer: Layer) {
+    private fun applyEdge(tile: TileHandler, x : Float, y : Float, np: TilePosition, i : TileEdgeLocation, layer: Layer) {
+        val edge = ActorTileEdge.POOL.obtain()
+        edge.set(tile, np, i)
+
+        layer.addActor(edge)
+
+        np.set(x, y)
+
+        if(!edgeMap.containsKey(np)) {
+            edgeMap[np] = com.badlogic.gdx.utils.Array()
+        }
+
+        edgeMap[np]!!.add(edge)
+    }
+
+    private fun edgeTile(np: TilePosition, layer: Layer) {
+        unedgeTile(np)
+
         val x = np.x
         val y = np.y
         val tile = region!!.getTile(np)
@@ -70,14 +92,14 @@ class ActorGroupMapRegion : Pool.Poolable {
 
             if(t != null && t.edgePriority < ep) {
                 tempDirections.add(i)
-                applyEdge(tile, np, TileEdgeLocation.from(i), layer)
+                applyEdge(tile, x, y, np, TileEdgeLocation.from(i), layer)
             }
         }
 
         for(i in TileEdgeLocation.COMPOSITES) {
             if(tempDirections.containsAll(i.components!!, true)) {
                 np.set(x + i.x, y + i.y)
-                applyEdge(tile, np, i, layer)
+                applyEdge(tile, x, y, np, i, layer)
             }
         }
     }

@@ -19,7 +19,7 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
     val widgets = HashMap<TilePosition, ActorWidget>()
 
     @Transient
-    var isDirty : Boolean = false
+    var isDirty : Boolean = true
 
     constructor() : this(0, 0)
 
