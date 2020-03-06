@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import com.badlogic.gdx.utils.viewport.FillViewport
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.kotcrab.vis.ui.widget.VisTable
@@ -17,7 +18,7 @@ object BitbashPlayScene : BitbashCoreScene() {
     var devUi : Layer? = null
     var mapUi : Layer? = null
 
-    val mapViewer : Stage = Stage(ScreenViewport())
+    val mapViewer : Stage = Stage(FillViewport(GameManager.MIN_WORLD_WIDTH, GameManager.MIN_WORLD_HEIGHT))
 
     override fun load() {
         super.load()

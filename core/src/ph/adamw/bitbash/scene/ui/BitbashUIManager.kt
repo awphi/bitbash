@@ -73,25 +73,27 @@ object BitbashUIManager {
         stage.camera.update()
 
         if(mapViewerCell != null) {
-            val w1 = mapViewerCell!!.actorWidth
-            val h1 = mapViewerCell!!.actorHeight
+            val wo = (stage.viewport.worldWidth / Gdx.graphics.width)
+            val ho = (stage.viewport.worldHeight / Gdx.graphics.height)
+
+            val w1 = mapViewerCell!!.actorWidth * wo
+            val h1 = mapViewerCell!!.actorHeight * ho
+
+            //818.0 0.5 480.0 960
+            //818.0 0.4790419 480.0 1002
 
             // Account for the title row
-            val r = mapUiTable.getRowHeight(0) / 2f
+            val r = mapUiTable.getRowHeight(0) * ho
 
             clipBounds.set(
                     stage.camera.position.x - (w1 / 2f),
-                    stage.camera.position.y - (h1 / 2f) - r,
+                    stage.camera.position.y - (h1 / 2f) - r / 2f,
                     w1,
                     h1
             )
 
             ScissorStack.calculateScissors(
                     stage.camera,
-                    stage.viewport.screenX.toFloat(),
-                    stage.viewport.screenY.toFloat(),
-                    stage.viewport.worldWidth,
-                    stage.viewport.worldHeight,
                     stage.batch.transformMatrix,
                     clipBounds,
                     scissors
