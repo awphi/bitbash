@@ -29,6 +29,7 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
     }
 
     fun markDirty() {
+        flags.clear()
         flags.addAll(MapRegionFlag.VALUES)
     }
 
@@ -91,7 +92,7 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
     }
 
     companion object {
-        const val REGION_SIZE = 12
+        const val REGION_SIZE = 16
         const val LIMIT = 1000000000
 
         fun resolveRegionBounds(regionCoords: Vector2): Rectangle {

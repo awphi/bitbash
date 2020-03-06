@@ -119,6 +119,10 @@ abstract class BitbashCoreScene : Scene() {
         }
     }
 
+    fun edgeRegion(vec: Vector2) {
+        drawnRegions[vec]!!.edgeRegion(tileLayer)
+    }
+
     open fun unloadRegion(vec: Vector2) {
         mapState!!.map.unloadRegion(vec)
     }

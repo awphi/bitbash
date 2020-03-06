@@ -14,7 +14,7 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
     private var handler : TileHandler = GrassTileHandler
 
     override val drawPriority: Int
-        get() = handler.edgePriority
+        get() = handler.edgePriority - 1
 
     override val actPriority: Int
         get() = 1000
@@ -26,6 +26,8 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
         get() = null
 
     fun set(handler: TileHandler, tilePosition: TilePosition, loc: TileEdgeLocation) {
+        isVisible = true
+
         this.handler = handler
         name = "tile_" + handler.name + "_edge_" + loc.toString().toLowerCase()
         setTexture("${handler.getTextureName()}_edge_${loc.toString().toLowerCase()}")
@@ -37,8 +39,6 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
         if(parent is OrderedDrawLayer) {
             (parent as OrderedDrawLayer).update(this)
         }
-
-        isVisible = true
     }
 
     private fun align(loc: TileEdgeLocation) {

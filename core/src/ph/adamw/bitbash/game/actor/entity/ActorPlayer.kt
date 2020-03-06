@@ -11,6 +11,7 @@ import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.scene.BitbashPlayScene
 
 class ActorPlayer : ActorEntity(), Json.Serializable {
     override val actPriority: Int

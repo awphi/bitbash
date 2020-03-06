@@ -5,6 +5,7 @@ import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 
 class ActorTile : ActorGameObject() {
     var handler : TileHandler = GrassTileHandler
@@ -18,6 +19,10 @@ class ActorTile : ActorGameObject() {
         deleteBody()
 
         this.handler = handler
+
+        if(parent is OrderedDrawLayer) {
+            (parent as OrderedDrawLayer).update(this)
+        }
 
         if(handler.hasBody) {
             buildBody()
