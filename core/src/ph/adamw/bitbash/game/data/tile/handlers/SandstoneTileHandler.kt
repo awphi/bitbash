@@ -4,5 +4,5 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 
 object SandstoneTileHandler : TileHandler("sandstone") {
     override val edgePriority: Int
-        get() = 10
+        get() = 30
 }

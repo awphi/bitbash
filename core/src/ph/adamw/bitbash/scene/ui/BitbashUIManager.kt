@@ -1,21 +1,28 @@
 package ph.adamw.bitbash.scene.ui
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
+import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
-import ph.adamw.bitbash.GameManager
+import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorSimple
 import ph.adamw.bitbash.game.data.world.Map
+import ph.adamw.bitbash.game.data.world.MapRegionFlag
 import ph.adamw.bitbash.scene.BitbashPlayScene
 import ph.adamw.bitbash.scene.layer.Layer
 import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import kotlin.collections.HashSet
 
 object BitbashUIManager {
@@ -28,9 +35,15 @@ object BitbashUIManager {
     private val clipBounds = Rectangle()
     private val scissors = Rectangle()
 
-    private var mapViewerCell : Cell<Actor>? = null
+    private var mapViewerCell : Cell<*>? = null
+
+    private var mapViewerThreadPool : ExecutorService = Executors.newCachedThreadPool()
 
     private const val MAP_TABLE_PADDING : Float = 50f
+
+    fun dispose() {
+        mapViewerThreadPool.shutdown()
+    }
 
     fun loadMapViewer(layer: Layer, stage: Stage, map: Map, regions: HashSet<Vector2>) {
         mapMarker.setTexture("marker")
@@ -47,23 +60,37 @@ object BitbashUIManager {
             map.unloadRegion(i)
         }
 
-        mapViewerCell = mapUiTable.add().fill().grow()
+        val a = Container<ActorSimple>()
+        a.background = TextureRegionDrawable(ActorGameObject.getTexture("map-background"))
+
+        mapViewerCell = mapUiTable.add(a).fill().grow().expand()
         mapUiTable.debugAll()
         layer.addActor(mapUiTable)
     }
 
     fun updateMapViewer(map: Map, regions: HashSet<Vector2>, stage: Stage) {
         for(i in regions) {
-            val rg = map.getOrLoadRegion(i)
-            if(rg!!.isDirty) {
-                stage.root.removeActor(mapViewerCache[i])
-                val r = UIUtils.generateMapRegionOverview(rg)
-                r.setPosition(i.x * r.width, i.y * r.height)
-                stage.addActor(r)
-                mapMarker.toFront()
-                mapViewerCache[i] = r
+            mapViewerThreadPool.submit {
+                val rg = map.getOrLoadRegion(i)
+
+                if(rg != null && rg.isDirty(MapRegionFlag.NEEDS_MINIMAP)) {
+                    rg.markUndirty(MapRegionFlag.NEEDS_MINIMAP)
+                    val pixmap = UIUtils.generateMapRegionOverview(rg)
+
+                    Gdx.app.postRunnable {
+                        val r = ActorSimple("map_ui_element_${rg.coords}")
+                        r.texture = TextureRegion(Texture(pixmap))
+                        r.setPosition(rg.coords.x * r.width, rg.coords.y * r.height)
+                        stage.root.removeActor(mapViewerCache[i])
+                        Gdx.app.log("MINIMAP", "Adding region ${rg.coords}")
+                        stage.addActor(r)
+                        mapViewerCache[i] = r
+                    }
+                }
             }
         }
+
+        mapMarker.toFront()
     }
 
     fun updateMapViewerMarker(stage: Stage) : Rectangle? {

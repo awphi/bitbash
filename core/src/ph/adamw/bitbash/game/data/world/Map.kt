@@ -49,9 +49,9 @@ class Map(val seed: Long) : Serializable {
         regionsFolder!!.mkdirs()
     }
 
+    // TODO fix performance hit from this
     fun generateRegionAt(vec2: Vector2) {
         Gdx.app.log("MAP","Generating new region: $vec2")
-
         val region = MapRegion(vec2.x.toInt(), vec2.y.toInt())
 
         for (i in region.tiles.indices) {

@@ -32,7 +32,7 @@ class ActorTile : ActorGameObject() {
         get() = "tile_empty"
 
     override val drawPriority: Int
-        get() = handler.drawPriority
+        get() = handler.edgePriority
 
     override val physicsData: PhysicsData?
         get() {

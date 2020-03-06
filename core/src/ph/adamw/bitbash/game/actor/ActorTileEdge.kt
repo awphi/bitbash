@@ -14,7 +14,7 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
     private var handler : TileHandler = GrassTileHandler
 
     override val drawPriority: Int
-        get() = handler.drawPriority
+        get() = handler.edgePriority
 
     override val actPriority: Int
         get() = 1000

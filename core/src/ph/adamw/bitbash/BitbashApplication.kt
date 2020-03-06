@@ -15,6 +15,7 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.scene.BitbashPlayScene
+import ph.adamw.bitbash.scene.ui.BitbashUIManager
 import ph.adamw.bitbash.scene.ui.UIUtils
 import ph.adamw.bitbash.util.JsonFSTSerializer
 import ph.adamw.bitbash.util.TileHandlerFSTSerializer
@@ -39,9 +40,12 @@ class BitbashApplication : ApplicationAdapter() {
     override fun dispose() {
         ActorGameObject.disposeTextureAtlas()
         GameManager.PLAY_STAGE.dispose()
+        UIUtils.dispose()
         VisUI.dispose()
         GameManager.physicsWorld.dispose()
         GameManager.rayHandler.dispose()
+        GameManager.getScene()?.dispose()
+        BitbashUIManager.dispose()
     }
 
     override fun pause() {

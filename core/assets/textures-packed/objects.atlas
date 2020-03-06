@@ -12,16 +12,23 @@ border
   orig: 8, 8
   offset: 0, 0
   index: -1
+map-background
+  rotate: false
+  xy: 2, 12
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 marker
   rotate: false
-  xy: 36, 36
+  xy: 12, 2
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 placeholder
   rotate: false
-  xy: 2, 12
+  xy: 2, 30
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

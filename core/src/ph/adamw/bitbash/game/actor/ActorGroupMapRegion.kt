@@ -7,10 +7,7 @@ import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.WaterTileHandler
-import ph.adamw.bitbash.game.data.world.Direction
-import ph.adamw.bitbash.game.data.world.MapRegion
-import ph.adamw.bitbash.game.data.world.TileEdgeLocation
-import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.game.data.world.*
 import ph.adamw.bitbash.scene.BitbashPlayScene
 import ph.adamw.bitbash.scene.layer.Layer
 import java.rmi.UnexpectedException
@@ -49,6 +46,7 @@ class ActorGroupMapRegion : Pool.Poolable {
     }
 
     fun edgeRegion(layer: Layer) {
+        region!!.markUndirty(MapRegionFlag.NEEDS_EDGE)
         for (i in region!!.tiles.indices) {
             for (j in region!!.tiles[i].indices) {
                 tempCoords.set(i + region!!.x * MapRegion.REGION_SIZE.toFloat(), j + region!!.y * MapRegion.REGION_SIZE.toFloat())
@@ -92,7 +90,7 @@ class ActorGroupMapRegion : Pool.Poolable {
             np.set(x + i.x, y + i.y)
             val t = BitbashPlayScene.map.getTileAt(np)
 
-            if(t != null && (t.edgePriority < ep || (ep == -1 && t.edgePriority != -1))) {
+            if(t != null && (t.edgePriority > ep || (ep != 0 && t.edgePriority == 0))) {
                 tempDirections.add(i)
                 applyEdge(tile, x, y, np, TileEdgeLocation.from(i), layer)
             }

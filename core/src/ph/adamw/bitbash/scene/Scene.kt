@@ -13,6 +13,7 @@ abstract class Scene {
      */
     open fun postDraw() {}
 
+    open fun dispose() {}
 
     open fun pause() {}
 

@@ -15,28 +15,31 @@ object UIUtils {
     //TODO replace this placeholder skin
     val SKIN : Skin = Skin(Gdx.files.local("ui/neutralizer-ui.json"))
 
-    fun generateMapRegionOverview(mapRegion: MapRegion) : Actor {
-        val baseTex = ActorGameObject.getTexture("grass")
+    private val TILE_TEX = ActorGameObject.getTexture("grass")
+    private val TILE_TEXTURES : Pixmap
 
-        baseTex.texture.textureData.prepare()
-        val tileTextures = baseTex.texture.textureData.consumePixmap()
+    init {
+        TILE_TEX.texture.textureData.prepare()
+        TILE_TEXTURES = TILE_TEX.texture.textureData.consumePixmap()
+    }
 
-        val pixmap = Pixmap(MapRegion.REGION_SIZE, MapRegion.REGION_SIZE, tileTextures.format)
+    fun generateMapRegionOverview(mapRegion: MapRegion) : Pixmap {
+        val pixmap = Pixmap(MapRegion.REGION_SIZE, MapRegion.REGION_SIZE, TILE_TEXTURES.format)
         pixmap.blending = Pixmap.Blending.None
 
         for(i in mapRegion.tiles.indices) {
             for(j in mapRegion.tiles[i].indices) {
                 val tile = mapRegion.tiles[i][MapRegion.REGION_SIZE - (j + 1)]
                 val tileTex = ActorGameObject.getTexture(tile.getTextureName())
-                val cl = tileTextures.getPixel(tileTex.regionX + 1, tileTex.regionY + 1)
+                val cl = TILE_TEXTURES.getPixel(tileTex.regionX + 1, tileTex.regionY + 1)
                 pixmap.drawPixel(i, j, cl)
             }
         }
 
-        baseTex.texture.textureData.disposePixmap()
+        return pixmap
+    }
 
-        val actor = ActorSimple("map_ui_element_${mapRegion.coords}")
-        actor.texture = TextureRegion(Texture(pixmap))
-        return actor
+    fun dispose() {
+        TILE_TEX.texture.textureData.disposePixmap()
     }
 }

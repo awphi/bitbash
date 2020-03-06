@@ -12,10 +12,8 @@ import ph.adamw.bitbash.game.actor.ActorGroupMapRegion
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.game.data.world.Direction
+import ph.adamw.bitbash.game.data.world.*
 import ph.adamw.bitbash.game.data.world.Map
-import ph.adamw.bitbash.game.data.world.MapRegion
-import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.Layer
 import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 import ph.adamw.bitbash.util.CameraUtils
@@ -69,10 +67,6 @@ abstract class BitbashCoreScene : Scene() {
         GameManager.rayHandler.setCombinedMatrix(GameManager.WORLD_CAMERA as OrthographicCamera)
         GameManager.rayHandler.updateAndRender()
         updateActiveRegions()
-
-        for(i in activeRegionCoords) {
-            map.getOrLoadRegion(i)?.isDirty = false
-        }
     }
 
     override fun preDraw() {
@@ -81,7 +75,7 @@ abstract class BitbashCoreScene : Scene() {
         applyOutlines()
     }
 
-    override fun pause() {
+    override fun dispose() {
         mapState!!.save()
     }
 
@@ -104,13 +98,13 @@ abstract class BitbashCoreScene : Scene() {
                 drawnMapRegion.region = region
                 drawnMapRegion.loadToStage(tileLayer, entityLayer)
                 drawnRegions[vec] = drawnMapRegion
-                drawnMapRegion.region!!.isDirty = true
+                drawnMapRegion.region!!.markDirty()
 
                 for(j in Direction.values()) {
                     tempCoords.set(vec.x + j.x, vec.y + j.y)
 
                     drawnRegions[tempCoords]?.region?.let {
-                        it.isDirty = true
+                        it.markDirty()
                     }
                 }
             }
@@ -118,7 +112,8 @@ abstract class BitbashCoreScene : Scene() {
 
         for(i in activeRegionCoords) {
             val rg = map.getOrLoadRegion(i)
-            if(rg!!.isDirty) {
+            if(rg != null && rg.isDirty(MapRegionFlag.NEEDS_EDGE)) {
+                //TODO fix performance hit from this
                 drawnRegions[i]!!.edgeRegion(tileLayer)
             }
         }

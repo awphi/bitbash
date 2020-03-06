@@ -26,7 +26,6 @@ object BitbashPlayScene : BitbashCoreScene() {
         devUi = GameManager.getUiLayer(0)
         mapUi = GameManager.getUiLayer(1)
         BitbashUIManager.loadDevUIInto(devUi!!)
-        Gdx.app.log("TEX", "${map.discoveredRegions.size}")
         BitbashUIManager.loadMapViewer(mapUi!!, mapViewer, map, map.discoveredRegions)
         mapViewer.root.isVisible = false
         mapUi!!.isVisible = false
@@ -55,6 +54,7 @@ object BitbashPlayScene : BitbashCoreScene() {
     }
 
     override fun activeRegionsUpdated() {
+        // TODO fix performance hit from this
         BitbashUIManager.updateMapViewer(map, activeRegionCoords, mapViewer)
     }
 }

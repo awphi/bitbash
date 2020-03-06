@@ -9,7 +9,7 @@ import ph.adamw.bitbash.scene.BitbashPlayScene
 
 object GrassTileHandler : TileHandler("grass") {
     override val edgePriority: Int
-        get() = 30
+        get() = 10
 
     override fun mouseClicked(actor: ActorTile, button: Int, tilePosition: TilePosition, x: Float, y: Float) {
         super.mouseClicked(actor, button, tilePosition, x, y)

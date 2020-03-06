@@ -5,11 +5,11 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 
 object WaterTileHandler : TileHandler("water") {
     override val drawPriority: Int
-        get() = -Integer.MAX_VALUE
+        get() = 0
 
     override val color: Color
         get() = Color(1f, 1f, 1f, 0.7f)
 
     override val edgePriority: Int
-        get() = -1
+        get() = 0
 }

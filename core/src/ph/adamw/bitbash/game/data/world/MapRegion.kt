@@ -19,9 +19,26 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
     val widgets = HashMap<TilePosition, ActorWidget>()
 
     @Transient
-    var isDirty : Boolean = true
+    val flags : HashSet<MapRegionFlag> = HashSet()
 
+    // For use of serializer
     constructor() : this(0, 0)
+
+    init {
+        markDirty()
+    }
+
+    fun markDirty() {
+        flags.addAll(MapRegionFlag.VALUES)
+    }
+
+    fun markUndirty(flag: MapRegionFlag) {
+        flags.remove(flag)
+    }
+
+    fun isDirty(flag: MapRegionFlag) : Boolean {
+        return flags.contains(flag)
+    }
 
     val tiles = Array<Array<TileHandler>>(REGION_SIZE) {
         Array<TileHandler>(REGION_SIZE) {
@@ -59,7 +76,7 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
 
     fun setTileAt(np: TilePosition, tile: TileHandler) {
         tiles[Math.floorMod(MathUtils.floor(np.x), REGION_SIZE)][Math.floorMod(MathUtils.floor(np.y), REGION_SIZE)] = tile
-        isDirty = true
+        markDirty()
         BitbashPlayScene.updateDrawnTile(this, np, tile)
     }
 
