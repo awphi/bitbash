@@ -18,7 +18,7 @@ object BitbashPlayScene : BitbashCoreScene() {
     var devUi : Layer? = null
     var mapUi : Layer? = null
 
-    val mapViewer : Stage = Stage(FillViewport(GameManager.MIN_WORLD_WIDTH, GameManager.MIN_WORLD_HEIGHT))
+    val mapViewer : Stage = Stage(ExtendViewport(GameManager.MIN_WORLD_WIDTH, GameManager.MIN_WORLD_HEIGHT))
 
     override fun load() {
         super.load()

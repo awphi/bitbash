@@ -6,85 +6,260 @@ filter: Nearest,Nearest
 repeat: none
 dirt
   rotate: false
-  xy: 1, 28
+  xy: 1, 30
   size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+dirt_edge_down
+  rotate: false
+  xy: 35, 21
+  size: 32, 7
+  orig: 32, 32
+  offset: 0, 25
+  index: -1
+dirt_edge_downleft
+  rotate: false
+  xy: 137, 21
+  size: 7, 7
+  orig: 32, 32
+  offset: 25, 25
+  index: -1
+dirt_edge_downright
+  rotate: false
+  xy: 137, 12
+  size: 7, 7
+  orig: 32, 32
+  offset: 0, 25
+  index: -1
+dirt_edge_left
+  rotate: false
+  xy: 197, 30
+  size: 7, 32
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+dirt_edge_right
+  rotate: false
+  xy: 206, 30
+  size: 7, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+dirt_edge_up
+  rotate: false
+  xy: 35, 12
+  size: 32, 7
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+dirt_edge_upleft
+  rotate: false
+  xy: 146, 21
+  size: 7, 7
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+dirt_edge_upright
+  rotate: false
+  xy: 146, 12
+  size: 7, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass
   rotate: false
-  xy: 35, 28
+  xy: 35, 30
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass_edge_down
   rotate: false
-  xy: 1, 19
+  xy: 69, 21
   size: 32, 7
   orig: 32, 32
   offset: 0, 25
   index: -1
 grass_edge_downleft
   rotate: false
-  xy: 35, 19
+  xy: 155, 21
   size: 7, 7
   orig: 32, 32
   offset: 25, 25
   index: -1
 grass_edge_downright
   rotate: false
-  xy: 155, 53
+  xy: 155, 12
   size: 7, 7
   orig: 32, 32
   offset: 0, 25
   index: -1
 grass_edge_left
   rotate: false
-  xy: 137, 28
+  xy: 215, 30
   size: 7, 32
   orig: 32, 32
   offset: 25, 0
   index: -1
 grass_edge_right
   rotate: false
-  xy: 146, 28
+  xy: 224, 30
   size: 7, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass_edge_up
   rotate: false
-  xy: 1, 10
+  xy: 69, 12
   size: 32, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass_edge_upleft
   rotate: false
-  xy: 1, 1
+  xy: 164, 21
   size: 7, 7
   orig: 32, 32
   offset: 25, 0
   index: -1
 grass_edge_upright
   rotate: false
-  xy: 35, 10
+  xy: 164, 12
   size: 7, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
-marble_floor
+sandstone
   rotate: false
-  xy: 69, 28
+  xy: 69, 30
   size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+sandstone_edge_down
+  rotate: false
+  xy: 103, 21
+  size: 32, 7
+  orig: 32, 32
+  offset: 0, 25
+  index: -1
+sandstone_edge_downleft
+  rotate: false
+  xy: 173, 21
+  size: 7, 7
+  orig: 32, 32
+  offset: 25, 25
+  index: -1
+sandstone_edge_downright
+  rotate: false
+  xy: 173, 12
+  size: 7, 7
+  orig: 32, 32
+  offset: 0, 25
+  index: -1
+sandstone_edge_left
+  rotate: false
+  xy: 233, 30
+  size: 7, 32
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+sandstone_edge_right
+  rotate: false
+  xy: 242, 30
+  size: 7, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+sandstone_edge_up
+  rotate: false
+  xy: 103, 12
+  size: 32, 7
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+sandstone_edge_upleft
+  rotate: false
+  xy: 182, 21
+  size: 7, 7
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+sandstone_edge_upright
+  rotate: false
+  xy: 182, 12
+  size: 7, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 stone_brick
   rotate: false
-  xy: 103, 28
+  xy: 103, 30
   size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+water
+  rotate: false
+  xy: 137, 30
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+water_edge_down
+  rotate: false
+  xy: 1, 17
+  size: 32, 11
+  orig: 32, 32
+  offset: 0, 21
+  index: -1
+water_edge_downleft
+  rotate: false
+  xy: 191, 21
+  size: 5, 7
+  orig: 32, 32
+  offset: 27, 25
+  index: -1
+water_edge_downright
+  rotate: false
+  xy: 1, 1
+  size: 1, 1
+  orig: 32, 32
+  offset: 31, 0
+  index: -1
+water_edge_left
+  rotate: false
+  xy: 171, 30
+  size: 11, 32
+  orig: 32, 32
+  offset: 21, 0
+  index: -1
+water_edge_right
+  rotate: false
+  xy: 184, 30
+  size: 11, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+water_edge_up
+  rotate: false
+  xy: 1, 4
+  size: 32, 11
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+water_edge_upleft
+  rotate: false
+  xy: 35, 5
+  size: 7, 5
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+water_edge_upright
+  rotate: false
+  xy: 191, 12
+  size: 5, 7
   orig: 32, 32
   offset: 0, 0
   index: -1

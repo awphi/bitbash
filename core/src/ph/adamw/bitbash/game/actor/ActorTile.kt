@@ -1,5 +1,6 @@
 package ph.adamw.bitbash.game.actor
 
+import com.badlogic.gdx.graphics.Color
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
@@ -25,8 +26,15 @@ class ActorTile : ActorGameObject() {
         isVisible = true
     }
 
+    override fun getColor(): Color {
+        return handler.color
+    }
+
     override val actorName: String
         get() = "tile_empty"
+
+    override val drawPriority: Int
+        get() = handler.drawPriority
 
     override val physicsData: PhysicsData?
         get() {

@@ -10,8 +10,7 @@ import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.game.data.tile.handlers.DirtTileHandler
-import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
+import ph.adamw.bitbash.game.data.world.generation.WorldGenerator
 import ph.adamw.bitbash.util.OpenSimplexNoise
 import java.io.Serializable
 import java.util.*
@@ -20,7 +19,7 @@ import kotlin.collections.HashSet
 
 class Map(val seed: Long) : Serializable {
     private val heightFeatureSize : Double = 80.0
-    private val biomeFeatureSize : Double = 120.0
+    private val temperatureFeatureSize : Double = 120.0
 
     val discoveredRegions : HashSet<Vector2> = HashSet()
 
@@ -33,6 +32,11 @@ class Map(val seed: Long) : Serializable {
     @delegate:Transient
     private val heightNoise : OpenSimplexNoise by lazy {
         OpenSimplexNoise(seed)
+    }
+
+    @delegate:Transient
+    private val temperatureNoise : OpenSimplexNoise by lazy {
+        OpenSimplexNoise(seed + 16)
     }
 
     @Transient
@@ -53,14 +57,10 @@ class Map(val seed: Long) : Serializable {
         for (i in region.tiles.indices) {
             for (j in region.tiles[i].indices) {
                 region.localTileIndexToWorldTilePosition(i, j, tempCoords)
-                val noiseVal = heightNoise.eval(tempCoords.x / heightFeatureSize, tempCoords.y / heightFeatureSize, 0.0)
+                val heightNoiseVal = heightNoise.eval(tempCoords.x / heightFeatureSize, tempCoords.y / heightFeatureSize, 0.0)
+                val temperatureNoiseVal = temperatureNoise.eval(tempCoords.x / temperatureFeatureSize, tempCoords.y / temperatureFeatureSize, 0.0)
 
-                //TODO proper world generation
-                if(noiseVal > 0) {
-                    region.tiles[i][j] = GrassTileHandler
-                } else if(noiseVal <= 0) {
-                    region.tiles[i][j] = DirtTileHandler
-                }
+                region.tiles[i][j] = WorldGenerator.getTileFor(heightNoiseVal, temperatureNoiseVal)
             }
         }
 

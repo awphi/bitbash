@@ -38,7 +38,7 @@ abstract class BitbashCoreScene : Scene() {
 
     protected var gameObjectLayer : Layer? = null
     private val entityLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
-    private val tileLayer : Layer = Layer()
+    private val tileLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
 
     // Highest priority first
     private val overlayLayers = arrayOf(

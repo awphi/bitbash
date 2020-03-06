@@ -11,11 +11,13 @@ import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.PhysicsData
+import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.scene.BitbashPlayScene
 import ph.adamw.bitbash.scene.ui.UIUtils
 import ph.adamw.bitbash.util.JsonFSTSerializer
+import ph.adamw.bitbash.util.TileHandlerFSTSerializer
 import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
 
 
@@ -90,6 +92,7 @@ class BitbashApplication : ApplicationAdapter() {
         init {
             IO.setInstantiator(TweakedFSTClassInstantiator())
             IO.registerSerializer(ActorEntity::class.java, JsonFSTSerializer, true)
+            IO.registerSerializer(TileHandler::class.java, TileHandlerFSTSerializer, true)
             IO.registerClass(MapRegion::class.java)
             IO.registerClass(Map::class.java)
         }
