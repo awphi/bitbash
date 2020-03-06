@@ -1,10 +1,12 @@
 package ph.adamw.bitbash.game.actor
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ph.adamw.bitbash.game.data.tile.TileHandler
+import ph.adamw.bitbash.game.data.tile.handlers.WaterTileHandler
 import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.game.data.world.TileEdgeLocation
@@ -90,7 +92,7 @@ class ActorGroupMapRegion : Pool.Poolable {
             np.set(x + i.x, y + i.y)
             val t = BitbashPlayScene.map.getTileAt(np)
 
-            if(t != null && t.edgePriority < ep) {
+            if(t != null && (t.edgePriority < ep || (ep == -1 && t.edgePriority != -1))) {
                 tempDirections.add(i)
                 applyEdge(tile, x, y, np, TileEdgeLocation.from(i), layer)
             }

@@ -17,7 +17,7 @@ abstract class TileHandler(name : String) : ActorHandler<ActorTile>(name) {
     @Transient
     open val color : Color = Color(1f, 1f, 1f, 1f)
 
-    open val drawPriority : Int = ActorGameObject.DEFAULT_DRAW_PRIORITY
+    open val drawPriority : Int = -edgePriority
 
     abstract val edgePriority : Int
 

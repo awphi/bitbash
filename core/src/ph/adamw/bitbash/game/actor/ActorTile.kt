@@ -13,6 +13,8 @@ class ActorTile : ActorGameObject() {
         setPosition(tilePosition.getWorldX(), tilePosition.getWorldY())
         setTexture(handler.getTextureName())
 
+        color.set(handler.color)
+
         deleteBody()
 
         this.handler = handler
@@ -24,10 +26,6 @@ class ActorTile : ActorGameObject() {
         name = "tile_" + handler.name
 
         isVisible = true
-    }
-
-    override fun getColor(): Color {
-        return handler.color
     }
 
     override val actorName: String

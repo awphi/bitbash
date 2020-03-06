@@ -1,6 +1,7 @@
 package ph.adamw.bitbash.scene
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
@@ -39,6 +40,8 @@ abstract class BitbashCoreScene : Scene() {
     protected var gameObjectLayer : Layer? = null
     private val entityLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
     private val tileLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
+
+    private var lastOverlayColor = Color.WHITE
 
     // Highest priority first
     private val overlayLayers = arrayOf(
@@ -192,8 +195,9 @@ abstract class BitbashCoreScene : Scene() {
                     exit = true
 
                     if(hitActor != lastActorGameObjHit) {
-                        lastActorGameObjHit?.setColor(1f, 1f, 1f, 1f)
-                        hitActor.setColor(0.8f, 0.8f, 0.8f, 1f)
+                        lastActorGameObjHit?.color = lastOverlayColor
+                        lastOverlayColor.set(hitActor.color)
+                        hitActor.color.mul(0.8f, 0.8f, 0.8f, 1f)
                         lastActorGameObjHit = hitActor
                     }
                 }
