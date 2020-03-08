@@ -69,20 +69,20 @@ object BitbashUIManager {
     }
 
     fun updateMapViewer(map: Map, regions: HashSet<Vector2>, stage: Stage) {
-        for(i in regions) {
-            mapViewerThreadPool.submit {
+        mapViewerThreadPool.submit {
+            for(i in regions) {
                 val rg = map.getOrLoadRegion(i)
 
-                if(rg != null && rg.isDirty(MapRegionFlag.NEEDS_MINIMAP)) {
+                if (rg != null && rg.isDirty(MapRegionFlag.NEEDS_MINIMAP)) {
                     rg.markUndirty(MapRegionFlag.NEEDS_MINIMAP)
                     val pixmap = UIUtils.generateMapRegionOverview(rg)
+                    Gdx.app.log("MINIMAP", "Adding region ${rg.coords}")
+                    val r = ActorSimple("map_ui_element_${rg.coords}")
 
                     Gdx.app.postRunnable {
-                        val r = ActorSimple("map_ui_element_${rg.coords}")
                         r.texture = TextureRegion(Texture(pixmap))
                         r.setPosition(rg.coords.x * r.width, rg.coords.y * r.height)
                         stage.root.removeActor(mapViewerCache[i])
-                        Gdx.app.log("MINIMAP", "Adding region ${rg.coords}")
                         stage.addActor(r)
                         mapViewerCache[i] = r
                     }

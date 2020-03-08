@@ -35,9 +35,10 @@ abstract class BitbashCoreScene : Scene() {
     private val drawnRegions = HashMap<Vector2, ActorGroupMapRegion>()
     val activeRegionCoords = HashSet<Vector2>()
 
-    protected var gameObjectLayer : Layer? = null
+    private var gameObjectLayer : Layer? = null
     private val entityLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
-    private val tileLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
+    private val tileLayer : Layer = Layer()
+    private val edgeLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
 
     private var lastOverlayColor = Color.WHITE
 
@@ -102,10 +103,7 @@ abstract class BitbashCoreScene : Scene() {
 
                 for(j in Direction.values()) {
                     tempCoords.set(vec.x + j.x, vec.y + j.y)
-
-                    drawnRegions[tempCoords]?.region?.let {
-                        it.markDirty()
-                    }
+                    drawnRegions[tempCoords]?.region?.markDirty(MapRegionFlag.NEEDS_EDGE)
                 }
             }
         }
@@ -114,13 +112,9 @@ abstract class BitbashCoreScene : Scene() {
             val rg = map.getOrLoadRegion(i)
             if(rg != null && rg.isDirty(MapRegionFlag.NEEDS_EDGE)) {
                 //TODO fix performance hit from this
-                drawnRegions[i]!!.edgeRegion(tileLayer)
+                //drawnRegions[i]!!.edgeRegion(edgeLayer)
             }
         }
-    }
-
-    fun edgeRegion(vec: Vector2) {
-        drawnRegions[vec]!!.edgeRegion(tileLayer)
     }
 
     open fun unloadRegion(vec: Vector2) {
@@ -162,8 +156,8 @@ abstract class BitbashCoreScene : Scene() {
 
         // Generates new regions
         for (vec in activeRegionCoords) {
-            if (mapState!!.map.getOrLoadRegion(vec) == null && abs(vec.x) <= MapRegion.LIMIT && abs(vec.y) <= MapRegion.LIMIT) {
-                mapState!!.map.generateRegionAt(vec)
+            if(map.getOrLoadRegion(vec) == null && !map.canRegionLoaded(vec)) {
+                map.generateRegionAt(vec)
             }
         }
 

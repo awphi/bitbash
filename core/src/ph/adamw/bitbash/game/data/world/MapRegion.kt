@@ -14,18 +14,28 @@ import ph.adamw.bitbash.scene.BitbashPlayScene
 import java.io.Serializable
 import kotlin.math.ceil
 
-class MapRegion(val x: Int, val y: Int) : Serializable {
-    val coords : Vector2 = Vector2(x.toFloat(), y.toFloat())
+class MapRegion(val coords: Vector2) : Serializable {
     val widgets = HashMap<TilePosition, ActorWidget>()
+
+    val x : Float
+        get() = coords.x
+
+    val y : Float
+        get() = coords.y
+
 
     @Transient
     val flags : HashSet<MapRegionFlag> = HashSet()
 
     // For use of serializer
-    constructor() : this(0, 0)
+    constructor() : this(DUMMY_COORDS)
 
     init {
         markDirty()
+    }
+
+    fun markDirty(vararg flag: MapRegionFlag) {
+        flags.addAll(flag)
     }
 
     fun markDirty() {
@@ -52,9 +62,6 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
         BitbashPlayScene.addDrawnWidget(this.coords, widget)
     }
 
-    fun localTileIndexToWorldTilePosition(i : Int, j : Int) : TilePosition {
-        return localTileIndexToWorldTilePosition(i, j, TilePosition(0f, 0f))
-    }
 
     fun localTileIndexToWorldTilePosition(i : Int, j : Int, np: TilePosition) : TilePosition {
         np.set(i + x * REGION_SIZE.toFloat(), j + y * REGION_SIZE.toFloat())
@@ -82,7 +89,7 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
     }
 
     fun unload(folder: FileHandle) {
-        val handle = folder.child(Map.getRegionFileName(x, y))
+        val handle = folder.child(Map.getRegionFileName(x.toInt(), y.toInt()))
         val bytes = BitbashApplication.IO.asByteArray(this)
         handle.writeBytes(bytes, false)
     }
@@ -92,8 +99,8 @@ class MapRegion(val x: Int, val y: Int) : Serializable {
     }
 
     companion object {
-        const val REGION_SIZE = 16
-        const val LIMIT = 1000000000
+        const val REGION_SIZE = 12
+        private val DUMMY_COORDS = Vector2(0f, 0f)
 
         fun resolveRegionBounds(regionCoords: Vector2): Rectangle {
             return Rectangle(regionCoords.x * REGION_SIZE.toFloat() * ActorTile.SIZE, regionCoords.y * REGION_SIZE.toFloat() * ActorTile.SIZE, REGION_SIZE * ActorTile.SIZE, REGION_SIZE * ActorTile.SIZE)

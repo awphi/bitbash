@@ -6,20 +6,26 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.PerformanceCounter
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
+import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
+import ph.adamw.bitbash.game.data.tile.handlers.WaterTileHandler
 import ph.adamw.bitbash.game.data.world.generation.WorldGenerator
-import ph.adamw.bitbash.util.OpenSimplexNoise
+import ph.adamw.bitbash.util.SimplexNoise
 import java.io.Serializable
 import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.collections.HashSet
 
 class Map(val seed: Long) : Serializable {
     private val heightFeatureSize : Double = 80.0
     private val temperatureFeatureSize : Double = 120.0
+    private val loadSet : HashSet<Vector2> = HashSet()
 
     val discoveredRegions : HashSet<Vector2> = HashSet()
 
@@ -30,17 +36,14 @@ class Map(val seed: Long) : Serializable {
     private var regionsFolder : FileHandle? = null
 
     @delegate:Transient
-    private val heightNoise : OpenSimplexNoise by lazy {
-        OpenSimplexNoise(seed)
+    private val heightNoise : SimplexNoise by lazy {
+        SimplexNoise(seed)
     }
 
     @delegate:Transient
-    private val temperatureNoise : OpenSimplexNoise by lazy {
-        OpenSimplexNoise(seed + 16)
+    private val temperatureNoise : SimplexNoise by lazy {
+        SimplexNoise(seed + 16)
     }
-
-    @Transient
-    private val tempCoords : TilePosition = TilePosition(0f, 0f)
 
     constructor() : this(ThreadLocalRandom.current().nextLong())
 
@@ -49,24 +52,26 @@ class Map(val seed: Long) : Serializable {
         regionsFolder!!.mkdirs()
     }
 
-    // TODO fix performance hit from this
     fun generateRegionAt(vec2: Vector2) {
-        Gdx.app.log("MAP","Generating new region: $vec2")
-        val region = MapRegion(vec2.x.toInt(), vec2.y.toInt())
-
-        for (i in region.tiles.indices) {
-            for (j in region.tiles[i].indices) {
-                region.localTileIndexToWorldTilePosition(i, j, tempCoords)
-                val heightNoiseVal = heightNoise.eval(tempCoords.x / heightFeatureSize, tempCoords.y / heightFeatureSize, 0.0)
-                val temperatureNoiseVal = temperatureNoise.eval(tempCoords.x / temperatureFeatureSize, tempCoords.y / temperatureFeatureSize, 0.0)
-
-                region.tiles[i][j] = WorldGenerator.getTileFor(heightNoiseVal, temperatureNoiseVal)
-            }
-        }
-
         val v = Vector2(vec2.x, vec2.y)
+        val region = MapRegion(v)
         regionMap[v] = region
         discoveredRegions.add(v)
+
+        threadPool.submit {
+            Gdx.app.log("MAP","Generating new region: $vec2")
+            val tempCoords = TilePosition(0f, 0f)
+
+            for (i in region.tiles.indices) {
+                for (j in region.tiles[i].indices) {
+                    region.localTileIndexToWorldTilePosition(i, j, tempCoords)
+                    val heightNoiseVal = heightNoise.noise(tempCoords.x / heightFeatureSize, tempCoords.y / heightFeatureSize)
+                    val temperatureNoiseVal = temperatureNoise.noise(tempCoords.x / temperatureFeatureSize, tempCoords.y / temperatureFeatureSize)
+
+                    region.tiles[i][j] = WorldGenerator.getTileFor(heightNoiseVal, temperatureNoiseVal)
+                }
+            }
+        }
     }
 
     private fun getRegionAt(np: TilePosition) : MapRegion? {
@@ -78,13 +83,11 @@ class Map(val seed: Long) : Serializable {
      * @return null if region couldn't be loaded or found in memory, the given MapRegion otherwise
      */
     fun getOrLoadRegion(vec: Vector2): MapRegion? {
-        val v = Vector2(vec.x, vec.y)
-
         if(!isRegionLoaded(vec) && canRegionLoaded(vec)) {
-            loadRegion(vec)
+            loadRegionInternal(vec)
         }
 
-        return regionMap[v]
+        return regionMap[vec]
     }
 
     fun canRegionLoaded(vec: Vector2) : Boolean {
@@ -108,12 +111,14 @@ class Map(val seed: Long) : Serializable {
         regionMap.remove(vec)
     }
 
+    //TODO thread - perf. hit
     private fun unloadRegionInternal(vec: Vector2) {
         Gdx.app.log("MAP", "Unloading region: $vec")
         getOrLoadRegion(vec)?.unload(regionsFolder!!)
     }
 
-    fun loadRegion(vec: Vector2) {
+    //TODO thread - perf. hit
+    private fun loadRegionInternal(vec: Vector2) {
         Gdx.app.log("MAP","Loading region: $vec")
         val y = regionsFolder!!.child(getRegionFileName(vec.x.toInt(), vec.y.toInt()))
         val rg : MapRegion = BitbashApplication.IO.asObject(y.readBytes()) as MapRegion
@@ -150,10 +155,10 @@ class Map(val seed: Long) : Serializable {
     }
 
     companion object {
+        val threadPool : ExecutorService = Executors.newCachedThreadPool()
+
         fun getRegionFileName(x: Int, y: Int) : String {
             return "rg${x}_${y}.bin"
         }
-
-        const val LIMIT : Int = (MapRegion.REGION_SIZE / 10) * MapRegion.LIMIT
     }
 }

@@ -42,6 +42,7 @@ class BitbashApplication : ApplicationAdapter() {
         GameManager.PLAY_STAGE.dispose()
         UIUtils.dispose()
         VisUI.dispose()
+        Map.threadPool.shutdown()
         GameManager.physicsWorld.dispose()
         GameManager.rayHandler.dispose()
         GameManager.getScene()?.dispose()
