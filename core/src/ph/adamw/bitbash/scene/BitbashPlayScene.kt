@@ -15,10 +15,10 @@ import ph.adamw.bitbash.scene.layer.Layer
 import ph.adamw.bitbash.scene.ui.BitbashUIManager
 
 object BitbashPlayScene : BitbashCoreScene() {
-    var devUi : Layer? = null
-    var mapUi : Layer? = null
+    private var devUi : Layer? = null
+    private var mapUi : Layer? = null
 
-    val mapViewer : Stage = Stage(ExtendViewport(GameManager.MIN_WORLD_WIDTH, GameManager.MIN_WORLD_HEIGHT))
+    private val mapViewer : Stage = Stage(ExtendViewport(GameManager.MIN_WORLD_WIDTH, GameManager.MIN_WORLD_HEIGHT))
 
     override fun load() {
         super.load()
@@ -51,10 +51,13 @@ object BitbashPlayScene : BitbashCoreScene() {
             mapViewer.root.isVisible = !mapViewer.root.isVisible
             mapUi!!.isVisible = !mapUi!!.isVisible
         }
+
+        BitbashUIManager.fpsLabel.setText(GameManager.getScene()?.frameRate.toString() + " fps")
+        BitbashUIManager.velocityLabel.setText("Velocity: " + mapState?.player?.body?.linearVelocity.toString())
+        BitbashUIManager.positionLabel.setText("Position: " + mapState?.player?.readOnlyTilePosition.toString())
     }
 
     override fun activeRegionsUpdated() {
-        // TODO fix performance hit from this
         BitbashUIManager.updateMapViewer(map, activeRegionCoords, mapViewer)
     }
 }

@@ -68,6 +68,7 @@ abstract class BitbashCoreScene : Scene() {
     }
 
     override fun preDraw() {
+        super.preDraw()
         restageMap()
         CameraUtils.setCameraPos(GameManager.WORLD_CAMERA, mapState!!.player, Gdx.graphics.deltaTime)
         applyOutlines()

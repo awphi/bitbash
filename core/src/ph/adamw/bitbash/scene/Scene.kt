@@ -1,12 +1,31 @@
 package ph.adamw.bitbash.scene
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.utils.TimeUtils
 import ph.adamw.bitbash.GameManager
 
 abstract class Scene {
+    private var lastTimeCounted: Long = 0
+    private var sinceChange = 0f
+    var frameRate = 0f
+
+    fun updateFps() {
+        val delta = TimeUtils.timeSinceMillis(lastTimeCounted)
+        lastTimeCounted = TimeUtils.millis()
+
+        sinceChange += delta
+        if (sinceChange >= 1000) {
+            sinceChange = 0f
+            frameRate = Gdx.graphics.framesPerSecond.toFloat()
+        }
+    }
+
     /**
      * Before anything has drawn
      */
-    open fun preDraw() {}
+    open fun preDraw() {
+        updateFps()
+    }
 
     /**
      * After everything has drawn

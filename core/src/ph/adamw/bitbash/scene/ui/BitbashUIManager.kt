@@ -41,6 +41,10 @@ object BitbashUIManager {
 
     private const val MAP_TABLE_PADDING : Float = 50f
 
+    val fpsLabel = Label("60 FPS", UIUtils.SKIN)
+    val positionLabel = Label("Position: (0, 0)", UIUtils.SKIN)
+    val velocityLabel = Label("Velocity: (0, 0)", UIUtils.SKIN)
+
     fun dispose() {
         mapViewerThreadPool.shutdown()
     }
@@ -133,20 +137,22 @@ object BitbashUIManager {
     }
 
     fun loadDevUIInto(layer: Layer) {
-        devUiTable.setFillParent(true)
+        val container = Container<VisTable>()
+        container.align(Align.topLeft)
+        container.setFillParent(true)
+        devUiTable.background = TextureRegionDrawable(ActorGameObject.getTexture("map-background"))
 
-        devUiTable.pad(10f)
+        container.pad(10f)
+        devUiTable.pad(5f)
 
-        //TODO update this data
-        devUiTable.add("Dev Tools:").left()
-        devUiTable.add().fillX().growX()
+        devUiTable.add(fpsLabel).left()
         devUiTable.row()
-        devUiTable.add(" Position: (0, 0)").left()
+        devUiTable.add(positionLabel).left()
         devUiTable.row()
-        devUiTable.add(" Velocity: (0, 0)").left()
-        devUiTable.row()
-        devUiTable.add().grow().fill().colspan(2)
+        devUiTable.add(velocityLabel).left()
 
-        layer.addActor(devUiTable)
+        container.actor = devUiTable
+
+        layer.addActor(container)
     }
 }

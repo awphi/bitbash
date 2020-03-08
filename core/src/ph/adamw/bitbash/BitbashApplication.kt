@@ -23,10 +23,6 @@ import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
 
 
 class BitbashApplication : ApplicationAdapter() {
-    private var lastTimeCounted: Long = 0
-    private var sinceChange = 0f
-    private var frameRate = 0f
-
     override fun create() {
         Gdx.input.inputProcessor = GameManager.PLAY_STAGE
 
@@ -53,21 +49,8 @@ class BitbashApplication : ApplicationAdapter() {
         GameManager.getScene()?.pause()
     }
 
-    fun updateFps() {
-        val delta = TimeUtils.timeSinceMillis(lastTimeCounted)
-        lastTimeCounted = TimeUtils.millis()
-
-        sinceChange += delta
-        if (sinceChange >= 1000) {
-            sinceChange = 0f
-            frameRate = Gdx.graphics.framesPerSecond.toFloat()
-        }
-    }
-
     override fun render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        updateFps()
 
         GameManager.getScene()?.preDraw()
 
@@ -76,7 +59,7 @@ class BitbashApplication : ApplicationAdapter() {
 
         GameManager.PLAY_STAGE.draw()
         GameManager.UI_STAGE.draw()
-        Gdx.graphics.setTitle("bitbash - FPS: $frameRate")
+        Gdx.graphics.setTitle("bitbash - FPS: ${GameManager.getScene()?.frameRate}")
 
         if(DEBUG) {
             GameManager.debugRenderer.render(GameManager.physicsWorld, GameManager.WORLD_CAMERA.combined.scl(PhysicsData.PPM))

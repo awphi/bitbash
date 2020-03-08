@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.PerformanceCounter
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
@@ -121,13 +120,13 @@ class Map(val seed: Long) : Serializable {
         regionMap.remove(vec)
     }
 
-    //TODO thread - perf. hit
+    //TODO thread?
     private fun unloadRegionInternal(vec: Vector2) {
         Gdx.app.log("MAP", "Unloading region: $vec")
         getOrLoadRegion(vec)?.unload(regionsFolder!!)
     }
 
-    //TODO thread - perf. hit
+    //TODO thread?
     private fun loadRegionInternal(vec: Vector2) {
         Gdx.app.log("MAP","Loading region: $vec")
         val y = regionsFolder!!.child(getRegionFileName(vec.x.toInt(), vec.y.toInt()))
