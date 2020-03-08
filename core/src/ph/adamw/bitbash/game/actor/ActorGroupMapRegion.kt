@@ -49,7 +49,7 @@ class ActorGroupMapRegion : Pool.Poolable {
         region!!.markUndirty(MapRegionFlag.NEEDS_EDGE)
         for (i in region!!.tiles.indices) {
             for (j in region!!.tiles[i].indices) {
-                tempCoords.set(i + region!!.x * MapRegion.REGION_SIZE.toFloat(), j + region!!.y * MapRegion.REGION_SIZE.toFloat())
+                region!!.localTileIndexToWorldTilePosition(i, j, tempCoords)
                 edgeTile(tempCoords, layer)
             }
         }
@@ -62,11 +62,17 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    private fun applyEdge(tile: TileHandler, x : Float, y : Float, np: TilePosition, i : TileEdgeLocation, layer: Layer) {
+    private fun applyEdge(tile: TileHandler, tileOnto: TileHandler?, x : Float, y : Float, np: TilePosition, i : TileEdgeLocation, layer: Layer) {
         val edge = ActorTileEdge.POOL.obtain()
         edge.set(tile, np, i)
 
         layer.addActor(edge)
+
+        if(tileOnto != null && tile.edgePriority < tileOnto.edgePriority) {
+            edge.toFront()
+        } else {
+            edge.toBack()
+        }
 
         np.set(x, y)
 
@@ -77,7 +83,8 @@ class ActorGroupMapRegion : Pool.Poolable {
         edgeMap[np]!!.add(edge)
     }
 
-    private fun edgeTile(np: TilePosition, layer: Layer) {
+    private fun edgeTile(tp: TilePosition, layer: Layer) {
+        val np = TilePosition(tp.x, tp.y)
         unedgeTile(np)
 
         val x = np.x
@@ -92,14 +99,14 @@ class ActorGroupMapRegion : Pool.Poolable {
 
             if(t != null && (t.edgePriority > ep || (ep != 0 && t.edgePriority == 0))) {
                 tempDirections.add(i)
-                applyEdge(tile, x, y, np, TileEdgeLocation.from(i), layer)
+                applyEdge(tile, t, x, y, np, TileEdgeLocation.from(i), layer)
             }
         }
 
         for(i in TileEdgeLocation.COMPOSITES) {
             if(tempDirections.containsAll(i.components!!, true)) {
                 np.set(x + i.x, y + i.y)
-                applyEdge(tile, x, y, np, i, layer)
+                applyEdge(tile, BitbashPlayScene.map.getTileAt(np), x, y, np, i, layer)
             }
         }
     }

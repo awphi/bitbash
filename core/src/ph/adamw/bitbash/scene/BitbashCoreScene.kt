@@ -17,10 +17,8 @@ import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.scene.layer.Layer
 import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 import ph.adamw.bitbash.util.CameraUtils
-import ph.adamw.bitbash.scene.layer.DrawOrderComparator
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.math.abs
 
 abstract class BitbashCoreScene : Scene() {
     private var lastActorGameObjHit : ActorGameObject? = null
@@ -36,9 +34,8 @@ abstract class BitbashCoreScene : Scene() {
     val activeRegionCoords = HashSet<Vector2>()
 
     private var gameObjectLayer : Layer? = null
-    private val entityLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
+    private val entityLayer : Layer = OrderedDrawLayer()
     private val tileLayer : Layer = Layer()
-    private val edgeLayer : Layer = OrderedDrawLayer(DrawOrderComparator)
 
     private var lastOverlayColor = Color.WHITE
 
@@ -99,20 +96,13 @@ abstract class BitbashCoreScene : Scene() {
                 drawnMapRegion.region = region
                 drawnMapRegion.loadToStage(tileLayer, entityLayer)
                 drawnRegions[vec] = drawnMapRegion
-                drawnMapRegion.region!!.markDirty()
-
-                for(j in Direction.values()) {
-                    tempCoords.set(vec.x + j.x, vec.y + j.y)
-                    drawnRegions[tempCoords]?.region?.markDirty(MapRegionFlag.NEEDS_EDGE)
-                }
             }
         }
 
         for(i in activeRegionCoords) {
             val rg = map.getOrLoadRegion(i)
             if(rg != null && rg.isDirty(MapRegionFlag.NEEDS_EDGE)) {
-                //TODO fix performance hit from this
-                //drawnRegions[i]!!.edgeRegion(edgeLayer)
+                drawnRegions[i]!!.edgeRegion(tileLayer)
             }
         }
     }

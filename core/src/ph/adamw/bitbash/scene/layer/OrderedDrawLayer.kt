@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import java.util.*
 
-class OrderedDrawLayer(val comparator: Comparator<Actor>) : Layer() {
+open class OrderedDrawLayer() : Layer() {
     fun update(actor: Actor) {
         val idx = findIndex(actor)
 
@@ -23,7 +23,7 @@ class OrderedDrawLayer(val comparator: Comparator<Actor>) : Layer() {
         addActorAt(findIndex(actor), actor)
     }
 
-    private fun findIndex(actor: Actor?) : Int {
+    protected open fun findIndex(actor: Actor?) : Int {
         for(idx in 0 until children.size) {
             val i = children[idx]
 
@@ -31,7 +31,7 @@ class OrderedDrawLayer(val comparator: Comparator<Actor>) : Layer() {
                 continue
             }
 
-            val c = comparator.compare(actor, i)
+            val c = DrawOrderComparator.compare(actor, i)
             if(c == 0 || c == -1) {
                 return idx
             }

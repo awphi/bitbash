@@ -25,7 +25,6 @@ import kotlin.collections.HashSet
 class Map(val seed: Long) : Serializable {
     private val heightFeatureSize : Double = 80.0
     private val temperatureFeatureSize : Double = 120.0
-    private val loadSet : HashSet<Vector2> = HashSet()
 
     val discoveredRegions : HashSet<Vector2> = HashSet()
 
@@ -34,6 +33,9 @@ class Map(val seed: Long) : Serializable {
 
     @Transient
     private var regionsFolder : FileHandle? = null
+
+    @Transient
+    private val tempCoords : Vector2 = Vector2()
 
     @delegate:Transient
     private val heightNoise : SimplexNoise by lazy {
@@ -60,7 +62,7 @@ class Map(val seed: Long) : Serializable {
 
         threadPool.submit {
             Gdx.app.log("MAP","Generating new region: $vec2")
-            val tempCoords = TilePosition(0f, 0f)
+            val tempCoords = Vector2(0f, 0f)
 
             for (i in region.tiles.indices) {
                 for (j in region.tiles[i].indices) {
@@ -71,6 +73,14 @@ class Map(val seed: Long) : Serializable {
                     region.tiles[i][j] = WorldGenerator.getTileFor(heightNoiseVal, temperatureNoiseVal)
                 }
             }
+
+            region.markDirty()
+
+            for(j in Direction.values()) {
+                tempCoords.set(region.x + j.x, region.y + j.y)
+                regionMap[tempCoords]?.markDirty(MapRegionFlag.NEEDS_EDGE)
+            }
+
         }
     }
 

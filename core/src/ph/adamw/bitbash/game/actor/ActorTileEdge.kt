@@ -26,8 +26,6 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
         get() = null
 
     fun set(handler: TileHandler, tilePosition: TilePosition, loc: TileEdgeLocation) {
-        isVisible = true
-
         this.handler = handler
         name = "tile_" + handler.name + "_edge_" + loc.toString().toLowerCase()
         setTexture("${handler.getTextureName()}_edge_${loc.toString().toLowerCase()}")
@@ -36,9 +34,7 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
 
         color.set(handler.color)
 
-        if(parent is OrderedDrawLayer) {
-            (parent as OrderedDrawLayer).update(this)
-        }
+        isVisible = true
     }
 
     private fun align(loc: TileEdgeLocation) {

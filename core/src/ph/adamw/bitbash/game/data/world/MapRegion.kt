@@ -23,7 +23,6 @@ class MapRegion(val coords: Vector2) : Serializable {
     val y : Float
         get() = coords.y
 
-
     @Transient
     val flags : HashSet<MapRegionFlag> = HashSet()
 
@@ -62,6 +61,10 @@ class MapRegion(val coords: Vector2) : Serializable {
         BitbashPlayScene.addDrawnWidget(this.coords, widget)
     }
 
+    fun localTileIndexToWorldTilePosition(i : Int, j : Int, np: Vector2) : Vector2 {
+        np.set(i + x * REGION_SIZE.toFloat(), j + y * REGION_SIZE.toFloat())
+        return np
+    }
 
     fun localTileIndexToWorldTilePosition(i : Int, j : Int, np: TilePosition) : TilePosition {
         np.set(i + x * REGION_SIZE.toFloat(), j + y * REGION_SIZE.toFloat())

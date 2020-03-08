@@ -1,6 +1,7 @@
 package ph.adamw.bitbash.scene.ui
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
@@ -31,7 +32,7 @@ object UIUtils {
             for(j in mapRegion.tiles[i].indices) {
                 val tile = mapRegion.tiles[i][MapRegion.REGION_SIZE - (j + 1)]
                 val tileTex = ActorGameObject.getTexture(tile.getTextureName())
-                val cl = TILE_TEXTURES.getPixel(tileTex.regionX + 1, tileTex.regionY + 1)
+                val cl = TILE_TEXTURES.getPixel(tileTex.regionX + 1, tileTex.regionY + 1) and Color.rgba8888(tile.color)
                 pixmap.drawPixel(i, j, cl)
             }
         }

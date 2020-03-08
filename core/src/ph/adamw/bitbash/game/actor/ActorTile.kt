@@ -10,6 +10,12 @@ import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 class ActorTile : ActorGameObject() {
     var handler : TileHandler = GrassTileHandler
 
+    override val actorName: String
+        get() = "tile_empty"
+
+    override val drawPriority: Int
+        get() = handler.edgePriority
+
     fun set(handler: TileHandler, tilePosition: TilePosition) {
         setPosition(tilePosition.getWorldX(), tilePosition.getWorldY())
         setTexture(handler.getTextureName())
@@ -20,10 +26,6 @@ class ActorTile : ActorGameObject() {
 
         this.handler = handler
 
-        if(parent is OrderedDrawLayer) {
-            (parent as OrderedDrawLayer).update(this)
-        }
-
         if(handler.hasBody) {
             buildBody()
         }
@@ -32,12 +34,6 @@ class ActorTile : ActorGameObject() {
 
         isVisible = true
     }
-
-    override val actorName: String
-        get() = "tile_empty"
-
-    override val drawPriority: Int
-        get() = handler.edgePriority
 
     override val physicsData: PhysicsData?
         get() {
