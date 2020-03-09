@@ -29,7 +29,6 @@ object BitbashUIManager {
     private val mapViewerCache = Hashtable<Vector2, Actor>()
     private val mapMarker = ActorSimple("map_marker")
 
-    private val devUiTable = VisTable()
     private val mapUiTable = VisTable()
 
     private val clipBounds = Rectangle()
@@ -137,22 +136,23 @@ object BitbashUIManager {
     }
 
     fun loadDevUIInto(layer: Layer) {
-        val container = Container<VisTable>()
-        container.align(Align.topLeft)
-        container.setFillParent(true)
-        devUiTable.background = TextureRegionDrawable(ActorGameObject.getTexture("map-background"))
+        val topLeftContainer = Container<VisTable>()
+        val topLeftTable = VisTable()
+        topLeftContainer.align(Align.topLeft)
+        topLeftContainer.setFillParent(true)
+        topLeftTable.background = TextureRegionDrawable(ActorGameObject.getTexture("map-background"))
 
-        container.pad(10f)
-        devUiTable.pad(5f)
+        topLeftContainer.pad(10f)
+        topLeftTable.pad(5f)
 
-        devUiTable.add(fpsLabel).left()
-        devUiTable.row()
-        devUiTable.add(positionLabel).left()
-        devUiTable.row()
-        devUiTable.add(velocityLabel).left()
+        topLeftTable.add(fpsLabel).left()
+        topLeftTable.row()
+        topLeftTable.add(positionLabel).left()
+        topLeftTable.row()
+        topLeftTable.add(velocityLabel).left()
 
-        container.actor = devUiTable
+        topLeftContainer.actor = topLeftTable
 
-        layer.addActor(container)
+        layer.addActor(topLeftContainer)
     }
 }

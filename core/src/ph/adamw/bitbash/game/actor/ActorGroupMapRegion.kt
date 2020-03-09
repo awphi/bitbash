@@ -103,6 +103,7 @@ class ActorGroupMapRegion : Pool.Poolable {
             }
         }
 
+        //TODO work out sometimes why corner draws even tho the two edges that
         for(i in TileEdgeLocation.COMPOSITES) {
             if(tempDirections.containsAll(i.components!!, true)) {
                 np.set(x + i.x, y + i.y)

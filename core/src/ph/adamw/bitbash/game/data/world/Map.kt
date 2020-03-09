@@ -22,9 +22,6 @@ import java.util.concurrent.ThreadLocalRandom
 import kotlin.collections.HashSet
 
 class Map(val seed: Long) : Serializable {
-    private val heightFeatureSize : Double = 80.0
-    private val temperatureFeatureSize : Double = 120.0
-
     val discoveredRegions : HashSet<Vector2> = HashSet()
 
     @Transient
@@ -33,17 +30,9 @@ class Map(val seed: Long) : Serializable {
     @Transient
     private var regionsFolder : FileHandle? = null
 
-    @Transient
-    private val tempCoords : Vector2 = Vector2()
-
     @delegate:Transient
-    private val heightNoise : SimplexNoise by lazy {
-        SimplexNoise(seed)
-    }
-
-    @delegate:Transient
-    private val temperatureNoise : SimplexNoise by lazy {
-        SimplexNoise(seed + 16)
+    private val worldGenerator : WorldGenerator by lazy {
+        WorldGenerator(seed)
     }
 
     constructor() : this(ThreadLocalRandom.current().nextLong())
@@ -66,10 +55,7 @@ class Map(val seed: Long) : Serializable {
             for (i in region.tiles.indices) {
                 for (j in region.tiles[i].indices) {
                     region.localTileIndexToWorldTilePosition(i, j, tempCoords)
-                    val heightNoiseVal = heightNoise.noise(tempCoords.x / heightFeatureSize, tempCoords.y / heightFeatureSize)
-                    val temperatureNoiseVal = temperatureNoise.noise(tempCoords.x / temperatureFeatureSize, tempCoords.y / temperatureFeatureSize)
-
-                    region.tiles[i][j] = WorldGenerator.getTileFor(heightNoiseVal, temperatureNoiseVal)
+                    region.tiles[i][j] = worldGenerator.getTileFor(tempCoords)
                 }
             }
 
