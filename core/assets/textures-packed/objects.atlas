@@ -8,7 +8,7 @@ border
   rotate: false
   xy: 2, 2
   size: 8, 8
-  split: 2, 2, 2, 2
+  split: 1, 1, 1, 1
   orig: 8, 8
   offset: 0, 0
   index: -1

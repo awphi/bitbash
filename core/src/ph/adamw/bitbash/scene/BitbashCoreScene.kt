@@ -3,8 +3,13 @@ package ph.adamw.bitbash.scene
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
+import com.badlogic.gdx.utils.Scaling
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorGameObject
@@ -21,7 +26,6 @@ import java.util.*
 import kotlin.collections.HashMap
 
 abstract class BitbashCoreScene : Scene() {
-    private var lastHitActor : ActorGameObject? = null
     private val tempCoords = Vector2(0f, 0f)
     private val buildLimitRect = Rectangle()
 
@@ -37,7 +41,7 @@ abstract class BitbashCoreScene : Scene() {
     private val entityLayer : Layer = OrderedDrawLayer()
     private val tileLayer : Layer = Layer()
 
-    private var lastHitColor = Color.WHITE
+    private val overlay : Image = Image(NinePatchDrawable(ActorGameObject.getPatch("border")))
 
     // Highest priority first
     private val overlayLayers = arrayOf(
@@ -51,6 +55,9 @@ abstract class BitbashCoreScene : Scene() {
         // Lowest priority first
         gameObjectLayer!!.addActor(tileLayer)
         gameObjectLayer!!.addActor(entityLayer)
+
+        gameObjectLayer!!.addActor(overlay)
+        overlay.color.mul(1f, 1f, 1f, 0.5f)
 
         gameObjectLayer!!.addListener(BitbashSceneListener())
 
@@ -177,14 +184,23 @@ abstract class BitbashCoreScene : Scene() {
             hitActor?.let {
                 if (hitActor is ActorGameObject) {
                     exit = true
+                    overlay.setBounds(hitActor.x, hitActor.y, hitActor.width, hitActor.height)
+
 
                     //TODO fix issue with this when changing a tile to a translucent one then moving cursor off of it
+                    // caused by tile handler changing but it's the same actor instance, an equals override doesn't fix
+                    // it, we need to change what we are storing here
+
+                    // I think just fix this by using the 9-patch as an overlay and scrap all the color business
+                    /*
                     if(hitActor != lastHitActor) {
+                        Gdx.app.log("CHANGE", "${hitActor.name} ${lastHitActor?.name}")
                         lastHitActor?.color = lastHitColor
                         lastHitColor.set(hitActor.color)
                         hitActor.color.mul(0.8f, 0.8f, 0.8f, 1f)
                         lastHitActor = hitActor
                     }
+                     */
                 }
             }
 

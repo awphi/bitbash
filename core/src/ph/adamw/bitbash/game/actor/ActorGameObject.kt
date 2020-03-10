@@ -1,10 +1,7 @@
 package ph.adamw.bitbash.game.actor
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.*
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -212,11 +209,21 @@ abstract class ActorGameObject : Actor() {
         const val DEFAULT_DRAW_PRIORITY : Int = 5
 
         private val atlasCache = HashMap<String, TextureAtlas.AtlasRegion>()
+        private val patchCache = HashMap<String, NinePatch>()
         val PLACEHOLDER = getTexture("placeholder")
 
         fun disposeTextureAtlas() {
             tilesAtlas.dispose()
             objectsAtlas.dispose()
+        }
+
+        fun getPatch(name: String) : NinePatch {
+            if(patchCache.containsKey(name)) {
+                return patchCache[name]!!
+            }
+
+            patchCache[name] = objectsAtlas.createPatch(name)
+            return patchCache[name]!!
         }
 
         fun getTexture(name: String) : TextureAtlas.AtlasRegion {
