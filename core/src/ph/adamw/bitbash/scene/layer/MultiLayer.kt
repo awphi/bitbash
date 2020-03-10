@@ -1,17 +1,25 @@
 package ph.adamw.bitbash.scene.layer
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
+import ph.adamw.bitbash.BitbashApplication
 import java.lang.RuntimeException
 import java.util.*
 
 class MultiLayer : Actor(), Updatable {
+    private val debugColor : Color = nextDebugColor()
+
     init {
         name = "MultiLayer" + hashCode()
+
+        if(BitbashApplication.DEBUG) {
+            debug = true
+        }
     }
 
     private val layers = TreeMap<Int, Actor>(Collections.reverseOrder())
@@ -99,10 +107,32 @@ class MultiLayer : Actor(), Updatable {
     override fun drawDebug(shapes: ShapeRenderer?) {
         for(i in layers) {
             if(i.value.isVisible) {
+                shapes!!.color = debugColor
                 i.value.drawDebug(shapes)
             }
         }
     }
 
     override fun update(actor: Actor) {}
+
+    companion object {
+        private var idx = 0
+
+        private val colors = arrayOf(
+                Color.WHITE, // Play layer
+                Color.WHITE, // UI layer
+                Color.MAGENTA,
+                Color.YELLOW,
+                Color.CYAN,
+                Color.RED,
+                Color.LIME,
+                Color.CORAL
+        )
+
+        private fun nextDebugColor() : Color {
+            val t = colors[idx]
+            idx = (idx + 1) % colors.size
+            return t
+        }
+    }
 }
