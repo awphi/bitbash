@@ -87,8 +87,9 @@ class MapRegion(val coords: Vector2) : Serializable {
 
     fun setTileAt(np: TilePosition, tile: TileHandler) {
         tiles[Math.floorMod(MathUtils.floor(np.x), REGION_SIZE)][Math.floorMod(MathUtils.floor(np.y), REGION_SIZE)] = tile
-        markDirty()
         BitbashPlayScene.updateDrawnTile(this, np, tile)
+
+        markDirty()
     }
 
     fun unload(folder: FileHandle) {

@@ -15,7 +15,7 @@ object GrassTileHandler : TileHandler("grass") {
         super.mouseClicked(actor, button, tilePosition, x, y)
 
         if(button == Input.Buttons.LEFT) {
-            BitbashPlayScene.map.setTileAt(tilePosition, StoneBrickTileHandler)
+            BitbashPlayScene.map.setTileAt(tilePosition, PavementTileHandler)
         } else if(button == Input.Buttons.RIGHT) {
             BitbashPlayScene.map.addWidgetAt(tilePosition, ActorWidgetLamp())
         }

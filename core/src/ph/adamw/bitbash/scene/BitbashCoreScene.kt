@@ -21,7 +21,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 abstract class BitbashCoreScene : Scene() {
-    private var lastActorGameObjHit : ActorGameObject? = null
+    private var lastHitActor : ActorGameObject? = null
     private val tempCoords = Vector2(0f, 0f)
     private val buildLimitRect = Rectangle()
 
@@ -37,7 +37,7 @@ abstract class BitbashCoreScene : Scene() {
     private val entityLayer : Layer = OrderedDrawLayer()
     private val tileLayer : Layer = Layer()
 
-    private var lastOverlayColor = Color.WHITE
+    private var lastHitColor = Color.WHITE
 
     // Highest priority first
     private val overlayLayers = arrayOf(
@@ -92,7 +92,7 @@ abstract class BitbashCoreScene : Scene() {
 
         for (vec : Vector2 in activeRegionCoords) {
             val region = mapState!!.map.getOrLoadRegion(vec)
-            if (region != null && !isDrawn(vec)) {
+            if (region != null && !isRegionDrawn(vec)) {
                 val drawnMapRegion = ActorGroupMapRegion.POOL.obtain()
                 drawnMapRegion.region = region
                 drawnMapRegion.loadToStage(tileLayer, entityLayer)
@@ -157,12 +157,12 @@ abstract class BitbashCoreScene : Scene() {
 
     open fun activeRegionsUpdated() {}
 
-    fun isDrawn(vec: Vector2) : Boolean {
+    private fun isRegionDrawn(vec: Vector2) : Boolean {
         return drawnRegions.containsKey(vec)
     }
 
     fun updateDrawnTile(rg: MapRegion, np: TilePosition, tile: TileHandler) {
-        if(isDrawn(rg.coords)) {
+        if(isRegionDrawn(rg.coords)) {
             drawnRegions[rg.coords]!!.drawTile(np, tile)
         }
     }
@@ -178,11 +178,12 @@ abstract class BitbashCoreScene : Scene() {
                 if (hitActor is ActorGameObject) {
                     exit = true
 
-                    if(hitActor != lastActorGameObjHit) {
-                        lastActorGameObjHit?.color = lastOverlayColor
-                        lastOverlayColor.set(hitActor.color)
+                    //TODO fix issue with this when changing a tile to a translucent one then moving cursor off of it
+                    if(hitActor != lastHitActor) {
+                        lastHitActor?.color = lastHitColor
+                        lastHitColor.set(hitActor.color)
                         hitActor.color.mul(0.8f, 0.8f, 0.8f, 1f)
-                        lastActorGameObjHit = hitActor
+                        lastHitActor = hitActor
                     }
                 }
             }
@@ -194,13 +195,13 @@ abstract class BitbashCoreScene : Scene() {
     }
 
     fun addDrawnWidget(vec: Vector2, widget: ActorWidget) {
-        if(isDrawn(vec)) {
+        if(isRegionDrawn(vec)) {
             drawnRegions[vec]?.drawWidget(widget, entityLayer)
         }
     }
 
     fun removeDrawnWidget(vec: Vector2, actorWidget: ActorWidget) {
-        if(isDrawn(vec)) {
+        if(isRegionDrawn(vec)) {
             drawnRegions[vec]?.undrawWidget(actorWidget)
         }
     }

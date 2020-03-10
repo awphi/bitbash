@@ -79,8 +79,8 @@ object BitbashUIManager {
                 if (rg != null && rg.isDirty(MapRegionFlag.NEEDS_MINIMAP)) {
                     rg.markUndirty(MapRegionFlag.NEEDS_MINIMAP)
                     val pixmap = UIUtils.generateMapRegionOverview(rg)
-                    Gdx.app.log("MINIMAP", "Adding region ${rg.coords}")
-                    val r = ActorSimple("map_ui_element_${rg.coords}")
+                    Gdx.app.log("MINIMAP", "Adding $rg to minimap.")
+                    val r = ActorSimple("map_ui_element_$rg")
 
                     Gdx.app.postRunnable {
                         r.texture = TextureRegion(Texture(pixmap))

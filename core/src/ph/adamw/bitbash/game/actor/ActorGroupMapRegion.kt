@@ -2,11 +2,11 @@ package ph.adamw.bitbash.game.actor
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.game.data.tile.handlers.WaterTileHandler
 import ph.adamw.bitbash.game.data.world.*
 import ph.adamw.bitbash.scene.BitbashPlayScene
 import ph.adamw.bitbash.scene.layer.Layer
@@ -19,9 +19,7 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    private val edgeMap : HashMap<TilePosition, com.badlogic.gdx.utils.Array<ActorTileEdge>> = HashMap()
-    private val tempDirections : com.badlogic.gdx.utils.Array<Direction> =  com.badlogic.gdx.utils.Array()
-    private val tempCoords = TilePosition(0f, 0f)
+    private val tempCoords : TilePosition = TilePosition(0f, 0f)
 
     var region : MapRegion? = null
 
@@ -36,78 +34,79 @@ class ActorGroupMapRegion : Pool.Poolable {
             }
         }
 
-        for(i in edgeMap.keys) {
-            edgeMap[i]?.let {
-                ActorTileEdge.POOL.freeAll(it)
-            }
-        }
-
-        edgeMap.clear()
-    }
-
-    fun edgeRegion(layer: Layer) {
-        region!!.markUndirty(MapRegionFlag.NEEDS_EDGE)
         for (i in region!!.tiles.indices) {
             for (j in region!!.tiles[i].indices) {
                 region!!.localTileIndexToWorldTilePosition(i, j, tempCoords)
-                edgeTile(tempCoords, layer)
+                unedgeTile(tempCoords)
             }
         }
+    }
+
+    fun edgeRegion(layer: Layer) {
+        Gdx.app.log("EDGE-" + Thread.currentThread().id, "Re-applying edges to ${region!!}.")
+        val temp = TilePosition(0f, 0f)
+
+        for (i in region!!.tiles.indices) {
+            for (j in region!!.tiles[i].indices) {
+                region!!.localTileIndexToWorldTilePosition(i, j, temp)
+                edgeTile(temp, layer)
+            }
+        }
+
+        region!!.markUndirty(MapRegionFlag.NEEDS_EDGE)
     }
 
     private fun unedgeTile(np: TilePosition) {
         edgeMap[np]?.let {
-            ActorTileEdge.POOL.freeAll(it)
+            for(i in it) {
+                ActorTileEdge.POOL.free(i)
+            }
+
             it.clear()
         }
     }
 
-    private fun applyEdge(tile: TileHandler, tileOnto: TileHandler?, x : Float, y : Float, np: TilePosition, i : TileEdgeLocation, layer: Layer) {
+    private fun applyEdge(tileFrom: TileHandler, tileOnto: TileHandler?, temp: TilePosition, tp: TilePosition, edgeLocation : TileEdgeLocation, layer: Layer) {
         val edge = ActorTileEdge.POOL.obtain()
-        edge.set(tile, np, i)
-
+        edge.set(tileFrom, temp, edgeLocation)
         layer.addActor(edge)
 
-        if(tileOnto != null && tile.edgePriority < tileOnto.edgePriority) {
+        if(tileOnto != null && tileFrom.edgePriority < tileOnto.edgePriority) {
             edge.toFront()
         } else {
             edge.toBack()
         }
 
-        np.set(x, y)
-
-        if(!edgeMap.containsKey(np)) {
-            edgeMap[np] = com.badlogic.gdx.utils.Array()
+        if(!edgeMap.containsKey(tp)) {
+            edgeMap[tp] = HashSet()
         }
 
-        edgeMap[np]!!.add(edge)
+        edgeMap[tp]!!.add(edge)
     }
 
-    private fun edgeTile(tp: TilePosition, layer: Layer) {
-        val np = TilePosition(tp.x, tp.y)
-        unedgeTile(np)
+    private fun edgeTile(originalPosition: TilePosition, layer: Layer) {
+        //TODO fix unedging
+        unedgeTile(originalPosition.copy())
 
-        val x = np.x
-        val y = np.y
-        val tile = region!!.getTile(np)
+        val tile = region!!.getTile(originalPosition)
         val ep = tile.edgePriority
-        tempDirections.clear()
+
+        val tempPosition = TilePosition(originalPosition.x, originalPosition.y)
+        val tempDirections : com.badlogic.gdx.utils.Array<Direction> =  com.badlogic.gdx.utils.Array()
 
         for(i in Direction.values()) {
-            np.set(x + i.x, y + i.y)
-            val t = BitbashPlayScene.map.getTileAt(np)
-
-            if(t != null && (t.edgePriority > ep || (ep != 0 && t.edgePriority == 0))) {
+            tempPosition.set(originalPosition).add(i.x, i.y)
+            val tileOnto = BitbashPlayScene.map.getTileAt(tempPosition)
+            if(tileOnto != null && (tileOnto.edgePriority > ep || (ep != 0 && tileOnto.edgePriority == 0))) {
                 tempDirections.add(i)
-                applyEdge(tile, t, x, y, np, TileEdgeLocation.from(i), layer)
+                applyEdge(tile, tileOnto, tempPosition, originalPosition, TileEdgeLocation.from(i), layer)
             }
         }
 
-        //TODO work out sometimes why corner draws even tho the two edges that
         for(i in TileEdgeLocation.COMPOSITES) {
             if(tempDirections.containsAll(i.components!!, true)) {
-                np.set(x + i.x, y + i.y)
-                applyEdge(tile, BitbashPlayScene.map.getTileAt(np), x, y, np, i, layer)
+                tempPosition.set(originalPosition).add(i.x, i.y)
+                applyEdge(tile, BitbashPlayScene.map.getTileAt(tempPosition), tempPosition, originalPosition, i, layer)
             }
         }
     }
@@ -159,5 +158,6 @@ class ActorGroupMapRegion : Pool.Poolable {
 
     companion object {
         val POOL : Pool<ActorGroupMapRegion> = Pools.get(ActorGroupMapRegion::class.java)!!
+        private val edgeMap : HashMap<TilePosition, HashSet<ActorTileEdge>> = HashMap()
     }
 }

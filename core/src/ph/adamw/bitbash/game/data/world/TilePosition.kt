@@ -34,6 +34,12 @@ class TilePosition(var x: Float, var y: Float) : Serializable {
         return this
     }
 
+    fun sub(x: Float, y: Float): TilePosition {
+        this.x -= x
+        this.y -= y
+        return this
+    }
+
     fun set(x: Float, y: Float) : TilePosition {
         this.x = x
         this.y = y

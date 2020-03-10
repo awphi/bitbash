@@ -1,264 +1,327 @@
 
 tiles.png
-size: 256,64
+size: 128,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 dirt
   rotate: false
-  xy: 1, 30
+  xy: 1, 95
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 dirt_edge_down
   rotate: false
-  xy: 35, 21
+  xy: 48, 52
   size: 32, 7
   orig: 32, 32
   offset: 0, 25
   index: -1
 dirt_edge_downleft
   rotate: false
-  xy: 137, 21
+  xy: 35, 18
   size: 7, 7
   orig: 32, 32
   offset: 25, 25
   index: -1
 dirt_edge_downright
   rotate: false
-  xy: 137, 12
+  xy: 35, 9
   size: 7, 7
   orig: 32, 32
   offset: 0, 25
   index: -1
 dirt_edge_left
   rotate: false
-  xy: 197, 30
+  xy: 103, 95
   size: 7, 32
   orig: 32, 32
   offset: 25, 0
   index: -1
 dirt_edge_right
   rotate: false
-  xy: 206, 30
+  xy: 82, 61
   size: 7, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 dirt_edge_up
   rotate: false
-  xy: 35, 12
+  xy: 48, 43
   size: 32, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 dirt_edge_upleft
   rotate: false
-  xy: 146, 21
+  xy: 44, 16
   size: 7, 7
   orig: 32, 32
   offset: 25, 0
   index: -1
 dirt_edge_upright
   rotate: false
-  xy: 146, 12
+  xy: 44, 7
   size: 7, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass
   rotate: false
-  xy: 35, 30
+  xy: 1, 61
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass_edge_down
   rotate: false
-  xy: 69, 21
+  xy: 48, 34
   size: 32, 7
   orig: 32, 32
   offset: 0, 25
   index: -1
 grass_edge_downleft
   rotate: false
-  xy: 155, 21
+  xy: 53, 16
   size: 7, 7
   orig: 32, 32
   offset: 25, 25
   index: -1
 grass_edge_downright
   rotate: false
-  xy: 155, 12
+  xy: 53, 7
   size: 7, 7
   orig: 32, 32
   offset: 0, 25
   index: -1
 grass_edge_left
   rotate: false
-  xy: 215, 30
+  xy: 112, 95
   size: 7, 32
   orig: 32, 32
   offset: 25, 0
   index: -1
 grass_edge_right
   rotate: false
-  xy: 224, 30
+  xy: 91, 61
   size: 7, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass_edge_up
   rotate: false
-  xy: 69, 12
+  xy: 82, 52
   size: 32, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 grass_edge_upleft
   rotate: false
-  xy: 164, 21
+  xy: 62, 16
   size: 7, 7
   orig: 32, 32
   offset: 25, 0
   index: -1
 grass_edge_upright
   rotate: false
-  xy: 164, 12
+  xy: 62, 7
+  size: 7, 7
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pavement
+  rotate: false
+  xy: 35, 95
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pavement_edge_down
+  rotate: false
+  xy: 82, 43
+  size: 32, 7
+  orig: 32, 32
+  offset: 0, 25
+  index: -1
+pavement_edge_downleft
+  rotate: false
+  xy: 71, 16
+  size: 7, 7
+  orig: 32, 32
+  offset: 25, 25
+  index: -1
+pavement_edge_downright
+  rotate: false
+  xy: 71, 7
+  size: 7, 7
+  orig: 32, 32
+  offset: 0, 25
+  index: -1
+pavement_edge_left
+  rotate: false
+  xy: 100, 61
+  size: 7, 32
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+pavement_edge_right
+  rotate: false
+  xy: 109, 61
+  size: 7, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pavement_edge_up
+  rotate: false
+  xy: 82, 34
+  size: 32, 7
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pavement_edge_upleft
+  rotate: false
+  xy: 80, 16
+  size: 7, 7
+  orig: 32, 32
+  offset: 25, 0
+  index: -1
+pavement_edge_upright
+  rotate: false
+  xy: 80, 7
   size: 7, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 sandstone
   rotate: false
-  xy: 69, 30
+  xy: 1, 27
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sandstone_edge_down
   rotate: false
-  xy: 103, 21
+  xy: 48, 25
   size: 32, 7
   orig: 32, 32
   offset: 0, 25
   index: -1
 sandstone_edge_downleft
   rotate: false
-  xy: 173, 21
+  xy: 89, 16
   size: 7, 7
   orig: 32, 32
   offset: 25, 25
   index: -1
 sandstone_edge_downright
   rotate: false
-  xy: 173, 12
+  xy: 89, 7
   size: 7, 7
   orig: 32, 32
   offset: 0, 25
   index: -1
 sandstone_edge_left
   rotate: false
-  xy: 233, 30
+  xy: 118, 61
   size: 7, 32
   orig: 32, 32
   offset: 25, 0
   index: -1
 sandstone_edge_right
   rotate: false
-  xy: 242, 30
+  xy: 116, 27
   size: 7, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sandstone_edge_up
   rotate: false
-  xy: 103, 12
+  xy: 82, 25
   size: 32, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 sandstone_edge_upleft
   rotate: false
-  xy: 182, 21
+  xy: 98, 16
   size: 7, 7
   orig: 32, 32
   offset: 25, 0
   index: -1
 sandstone_edge_upright
   rotate: false
-  xy: 182, 12
+  xy: 98, 7
   size: 7, 7
   orig: 32, 32
   offset: 0, 0
   index: -1
 stone_brick
   rotate: false
-  xy: 103, 30
+  xy: 35, 61
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 water
   rotate: false
-  xy: 137, 30
+  xy: 69, 95
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 water_edge_down
   rotate: false
-  xy: 1, 17
+  xy: 1, 14
   size: 32, 11
   orig: 32, 32
   offset: 0, 21
   index: -1
 water_edge_downleft
   rotate: false
-  xy: 191, 21
+  xy: 121, 120
   size: 5, 7
   orig: 32, 32
   offset: 27, 25
   index: -1
 water_edge_downright
   rotate: false
-  xy: 1, 1
+  xy: 121, 108
   size: 1, 1
   orig: 32, 32
   offset: 31, 0
   index: -1
 water_edge_left
   rotate: false
-  xy: 171, 30
+  xy: 35, 27
   size: 11, 32
   orig: 32, 32
   offset: 21, 0
   index: -1
 water_edge_right
   rotate: false
-  xy: 184, 30
+  xy: 69, 61
   size: 11, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 water_edge_up
   rotate: false
-  xy: 1, 4
+  xy: 1, 1
   size: 32, 11
   orig: 32, 32
   offset: 0, 0
   index: -1
 water_edge_upleft
   rotate: false
-  xy: 35, 5
+  xy: 35, 2
   size: 7, 5
   orig: 32, 32
   offset: 25, 0
   index: -1
 water_edge_upright
   rotate: false
-  xy: 191, 12
+  xy: 121, 111
   size: 5, 7
   orig: 32, 32
   offset: 0, 0
