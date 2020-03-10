@@ -4,9 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import java.lang.RuntimeException
 import java.util.*
+import kotlin.Comparator
 
-class MultiLayer : ILayer {
-    private val layers = TreeMap<Int, ILayer>()
+class MultiLayer : Actor(), Updatable {
+    private val layers = TreeMap<Int, Actor>(Collections.reverseOrder())
 
     fun addYOrderedLayer(prio: Int) : YOrderedLayer {
         return addLayer(prio, YOrderedLayer()) as YOrderedLayer
@@ -24,7 +25,7 @@ class MultiLayer : ILayer {
         return addLayer(prio, Layer()) as Layer
     }
 
-    fun addLayer(prio: Int, layer: ILayer) : ILayer {
+    fun addLayer(prio: Int, layer: Actor) : Actor {
         if(layers.containsKey(prio)) {
             throw RuntimeException("MultiLayer" + hashCode() +  " already contains a layer at " + prio + "!")
         }
@@ -33,8 +34,10 @@ class MultiLayer : ILayer {
         return layers[prio]!!
     }
 
-    fun getLayer(prio: Int) : ILayer? {
-        return layers[prio]
+    override fun act(delta: Float) {
+        for(i in layers) {
+            i.value.act(delta)
+        }
     }
 
     fun removeLayer(prio: Int) {
@@ -47,8 +50,22 @@ class MultiLayer : ILayer {
 
     override fun draw(batch: Batch, parentAlpha : Float) {
         for(i in layers) {
-            i.value.draw(batch, parentAlpha)
+            if(i.value.isVisible && i.value.color.a > 0f) {
+                i.value.draw(batch, parentAlpha)
+            }
         }
+    }
+
+    operator fun iterator(): MutableIterator<MutableMap.MutableEntry<Int, Actor>> {
+        return layers.iterator()
+    }
+
+    override fun clear() {
+        for(i in layers.values) {
+            i.clear()
+        }
+
+        layers.clear()
     }
 
     override fun update(actor: Actor) {}

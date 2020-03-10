@@ -3,6 +3,8 @@ package ph.adamw.bitbash.scene
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.TimeUtils
 import ph.adamw.bitbash.GameManager
+import ph.adamw.bitbash.scene.layer.MultiLayer
+import ph.adamw.bitbash.scene.layer.UILayer
 
 abstract class Scene {
     private var lastTimeCounted: Long = 0
@@ -36,14 +38,16 @@ abstract class Scene {
 
     open fun pause() {}
 
-    abstract fun load()
+    abstract fun load(playMultiLayer: MultiLayer, uiMultiLayer: MultiLayer)
 
     open fun resize(width: Int, height: Int) {
         GameManager.PLAY_STAGE.viewport.update(width, height, false)
         GameManager.UI_STAGE.viewport.update(width, height, true)
 
-        for(i in GameManager.UI_LAYERS) {
-            i.value.setSize(width.toFloat(), height.toFloat())
+        for(i in GameManager.uiMultiLayer) {
+            if(i.value is UILayer) {
+                (i.value as UILayer).setSize(width.toFloat(), height.toFloat())
+            }
         }
     }
 }

@@ -11,8 +11,7 @@ import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.layer.ILayer
-import ph.adamw.bitbash.scene.layer.YOrderedLayer
+import ph.adamw.bitbash.scene.layer.Updatable
 
 /**
  * The actor of a game object in the current instance of game - not saved, only the gameObject itself is saved. This
@@ -49,8 +48,8 @@ abstract class ActorGameObject : Actor() {
     open fun parentChanged(old: Group?) {}
 
     fun updateParent() {
-        if(parent is ILayer) {
-            (parent as ILayer).update(this)
+        if(parent is Updatable) {
+            (parent as Updatable).update(this)
         }
     }
 

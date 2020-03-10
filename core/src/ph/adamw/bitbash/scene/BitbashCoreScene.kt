@@ -17,6 +17,7 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.*
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.scene.layer.Layer
+import ph.adamw.bitbash.scene.layer.MultiLayer
 import ph.adamw.bitbash.scene.layer.YOrderedLayer
 import ph.adamw.bitbash.util.CameraUtils
 import java.util.*
@@ -34,9 +35,9 @@ abstract class BitbashCoreScene : Scene() {
     private val drawnRegions = HashMap<Vector2, ActorGroupMapRegion>()
     val activeRegionCoords = HashSet<Vector2>()
 
-    private var gameObjectLayer : Layer? = null
-    private val entityLayer : Layer = YOrderedLayer()
-    private val tileLayer : Layer = Layer()
+    private var gameObjectLayer : MultiLayer? = null
+    private var entityLayer : YOrderedLayer? = null
+    private var tileLayer : Layer? = null
 
     private val overlay : Image = Image(NinePatchDrawable(ActorGameObject.getPatch("border")))
 
@@ -46,20 +47,19 @@ abstract class BitbashCoreScene : Scene() {
             tileLayer
     )
 
-    override fun load() {
-        gameObjectLayer = GameManager.getWorldLayer(0)
+    override fun load(playMultiLayer: MultiLayer, uiMultiLayer: MultiLayer) {
+        gameObjectLayer = playMultiLayer.addMultiLayer(0)
 
-        // Lowest priority first
-        gameObjectLayer!!.addActor(tileLayer)
-        gameObjectLayer!!.addActor(entityLayer)
+        gameObjectLayer!!.addDefaultLayer(0).addActor(overlay)
+        entityLayer = gameObjectLayer!!.addYOrderedLayer(1)
+        tileLayer = gameObjectLayer!!.addDefaultLayer(2)
 
-        gameObjectLayer!!.addActor(overlay)
         overlay.color.mul(1f, 1f, 1f, 0.5f)
         overlay.touchable = Touchable.disabled
 
         gameObjectLayer!!.addListener(BitbashSceneListener())
 
-        entityLayer.addActor(mapState!!.player)
+        entityLayer!!.addActor(mapState!!.player)
         CameraUtils.setCameraPos(GameManager.WORLD_CAMERA, mapState!!.player.x, mapState!!.player.y)
 
         GameManager.rayHandler.setAmbientLight(0f, 0f, 0f, 0.8f)
@@ -101,7 +101,7 @@ abstract class BitbashCoreScene : Scene() {
             if (region != null && !isRegionDrawn(vec)) {
                 val drawnMapRegion = ActorGroupMapRegion.POOL.obtain()
                 drawnMapRegion.region = region
-                drawnMapRegion.loadToStage(tileLayer, entityLayer)
+                drawnMapRegion.loadToStage(tileLayer!!, entityLayer!!)
                 drawnRegions[vec] = drawnMapRegion
             }
         }
@@ -109,7 +109,7 @@ abstract class BitbashCoreScene : Scene() {
         for(i in activeRegionCoords) {
             val rg = map.getOrLoadRegion(i)
             if(rg != null && rg.isDirty(MapRegionFlag.NEEDS_EDGE)) {
-                drawnRegions[i]!!.edgeRegion(tileLayer)
+                drawnRegions[i]!!.edgeRegion(tileLayer!!)
             }
         }
     }
@@ -175,7 +175,7 @@ abstract class BitbashCoreScene : Scene() {
 
         var exit = false
         for(group in overlayLayers) {
-            val hitActor = group.hit(tempCoords.x, tempCoords.y, true)
+            val hitActor = group?.hit(tempCoords.x, tempCoords.y, true)
             hitActor?.let {
                 if (hitActor is ActorGameObject) {
                     exit = true
@@ -191,7 +191,7 @@ abstract class BitbashCoreScene : Scene() {
 
     fun addDrawnWidget(vec: Vector2, widget: ActorWidget) {
         if(isRegionDrawn(vec)) {
-            drawnRegions[vec]?.drawWidget(widget, entityLayer)
+            drawnRegions[vec]?.drawWidget(widget, entityLayer!!)
         }
     }
 

@@ -14,6 +14,7 @@ import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorTile
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.Layer
+import ph.adamw.bitbash.scene.layer.MultiLayer
 import ph.adamw.bitbash.scene.ui.BitbashUIManager
 
 object BitbashPlayScene : BitbashCoreScene() {
@@ -22,13 +23,14 @@ object BitbashPlayScene : BitbashCoreScene() {
 
     private val mapViewer : Stage = Stage(ExtendViewport(GameManager.MIN_WORLD_WIDTH, GameManager.MIN_WORLD_HEIGHT))
 
-    override fun load() {
-        super.load()
+    override fun load(playMultiLayer: MultiLayer, uiMultiLayer: MultiLayer) {
+        super.load(playMultiLayer, uiMultiLayer)
         mapViewer.root.debug()
-        devUi = GameManager.getUiLayer(0)
-        mapUi = GameManager.getUiLayer(1)
+        devUi = uiMultiLayer.addUiLayer(0)
+        mapUi = uiMultiLayer.addUiLayer(1)
         BitbashUIManager.loadDevUIInto(devUi!!)
         BitbashUIManager.loadMapViewer(mapUi!!, mapViewer, map, map.discoveredRegions)
+        Gdx.app.log("TEST", "HELLO")
         mapViewer.root.isVisible = false
         mapUi!!.isVisible = false
     }
