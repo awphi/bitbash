@@ -90,9 +90,12 @@ class MapRegion(val coords: Vector2) : Serializable {
         BitbashPlayScene.updateDrawnTile(this, np, tile)
 
         markDirty()
+        for(i in Direction.VALUES) {
+            BitbashPlayScene.map.getOrLoadRegion(Vector2(coords).add(i.x, i.y))?.markDirty(MapRegionFlag.NEEDS_EDGE)
+        }
     }
 
-    fun unload(folder: FileHandle) {
+    fun save(folder: FileHandle) {
         val handle = folder.child(Map.getRegionFileName(x.toInt(), y.toInt()))
         val bytes = BitbashApplication.IO.asByteArray(this)
         handle.writeBytes(bytes, false)

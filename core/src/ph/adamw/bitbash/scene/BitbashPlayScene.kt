@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.kotcrab.vis.ui.widget.VisTable
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
+import ph.adamw.bitbash.game.actor.ActorTile
+import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.Layer
 import ph.adamw.bitbash.scene.ui.BitbashUIManager
 

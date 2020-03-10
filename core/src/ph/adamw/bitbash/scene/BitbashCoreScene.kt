@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.utils.Scaling
@@ -14,6 +15,7 @@ import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorGroupMapRegion
+import ph.adamw.bitbash.game.actor.ActorTile
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
@@ -58,6 +60,7 @@ abstract class BitbashCoreScene : Scene() {
 
         gameObjectLayer!!.addActor(overlay)
         overlay.color.mul(1f, 1f, 1f, 0.5f)
+        overlay.touchable = Touchable.disabled
 
         gameObjectLayer!!.addListener(BitbashSceneListener())
 
@@ -81,8 +84,9 @@ abstract class BitbashCoreScene : Scene() {
         applyOutlines()
     }
 
-    override fun dispose() {
+    override fun pause() {
         mapState!!.save()
+        super.pause()
     }
 
     private fun restageMap() {
@@ -92,7 +96,7 @@ abstract class BitbashCoreScene : Scene() {
             if(!activeRegionCoords.contains(i)) {
                 val drawnMapRegion = drawnRegions[i]
                 drawnMapRegion?.removeFromStage()
-                unloadRegion(drawnMapRegion?.region!!.coords)
+                map.unloadRegion(drawnMapRegion?.region!!.coords)
                 it.remove()
             }
         }
@@ -113,10 +117,6 @@ abstract class BitbashCoreScene : Scene() {
                 drawnRegions[i]!!.edgeRegion(tileLayer)
             }
         }
-    }
-
-    open fun unloadRegion(vec: Vector2) {
-        mapState!!.map.unloadRegion(vec)
     }
 
     fun refreshActiveRegions(regions: MutableSet<Vector2>) {
@@ -185,22 +185,6 @@ abstract class BitbashCoreScene : Scene() {
                 if (hitActor is ActorGameObject) {
                     exit = true
                     overlay.setBounds(hitActor.x, hitActor.y, hitActor.width, hitActor.height)
-
-
-                    //TODO fix issue with this when changing a tile to a translucent one then moving cursor off of it
-                    // caused by tile handler changing but it's the same actor instance, an equals override doesn't fix
-                    // it, we need to change what we are storing here
-
-                    // I think just fix this by using the 9-patch as an overlay and scrap all the color business
-                    /*
-                    if(hitActor != lastHitActor) {
-                        Gdx.app.log("CHANGE", "${hitActor.name} ${lastHitActor?.name}")
-                        lastHitActor?.color = lastHitColor
-                        lastHitColor.set(hitActor.color)
-                        hitActor.color.mul(0.8f, 0.8f, 0.8f, 1f)
-                        lastHitActor = hitActor
-                    }
-                     */
                 }
             }
 

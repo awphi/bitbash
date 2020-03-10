@@ -5,4 +5,8 @@ enum class Direction(val x : Float, val y : Float) {
     DOWN(0f, -1f),
     LEFT(-1f, 0f),
     RIGHT(1f, 0f);
+
+    companion object {
+        val VALUES = values()
+    }
 }

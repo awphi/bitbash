@@ -22,13 +22,12 @@ class MapState(val name: String, var map: Map, val player: ActorPlayer) {
 
     fun save() {
         Gdx.app.log("CLOSE", "Saving game state: '$name'")
-        map.unload()
+        map.save()
         val mobFile = handle.child(MOB_DATA_FILE)
         val dataFile = handle.child(MAP_DATA_FILE)
         val playerFile = handle.child(PLAYER_DATA_FILE)
 
         playerFile.writeBytes(BitbashApplication.IO.asByteArray(player), false)
-        BitbashApplication.IO.objectOutput.buffer
         playerFile.writeBytes(BitbashApplication.IO.asByteArray(player), false)
         dataFile.writeBytes(BitbashApplication.IO.asByteArray(map), false)
         mobFile.writeBytes(BitbashApplication.IO.asByteArray(mobs), false)

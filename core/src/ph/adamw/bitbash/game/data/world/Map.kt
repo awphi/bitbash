@@ -10,10 +10,7 @@ import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
-import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
-import ph.adamw.bitbash.game.data.tile.handlers.WaterTileHandler
 import ph.adamw.bitbash.game.data.world.generation.WorldGenerator
-import ph.adamw.bitbash.util.SimplexNoise
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -102,14 +99,15 @@ class Map(val seed: Long) : Serializable {
     }
 
     fun unloadRegion(vec: Vector2) {
-        unloadRegionInternal(vec)
+        saveRegion(vec)
         regionMap.remove(vec)
+        //TODO Mark for GC, pool idk?
     }
 
     //TODO thread?
-    private fun unloadRegionInternal(vec: Vector2) {
-        Gdx.app.log("MAP", "Unloading region: $vec")
-        getOrLoadRegion(vec)?.unload(regionsFolder!!)
+    fun saveRegion(vec: Vector2) {
+        Gdx.app.log("MAP", "Saving region: $vec")
+        getOrLoadRegion(vec)?.save(regionsFolder!!)
     }
 
     //TODO thread?
@@ -120,11 +118,10 @@ class Map(val seed: Long) : Serializable {
         regionMap[vec] = rg
     }
 
-    fun unload() {
+    fun save() {
         val it = regionMap.keys.iterator()
         while(it.hasNext()) {
-            unloadRegionInternal(it.next())
-            it.remove()
+            saveRegion(it.next())
         }
     }
 
