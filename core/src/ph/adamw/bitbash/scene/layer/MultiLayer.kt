@@ -12,7 +12,6 @@ import java.util.*
 
 class MultiLayer : Group(), Updatable {
     private val debugColor : Color = nextDebugColor()
-    private val tempCoords = Vector2(0f, 0f)
 
     init {
         name = "MultiLayer" + hashCode()
@@ -42,28 +41,6 @@ class MultiLayer : Group(), Updatable {
         }
 
         return layers[prio] as Layer
-    }
-
-    override fun hit(x: Float, y: Float, touchable: Boolean): Actor? {
-        if (touchable && getTouchable() == Touchable.disabled) {
-            return null
-        }
-
-        if (!isVisible) {
-            return null
-        }
-
-        val point : Vector2 = tempCoords
-        for (i in layers) {
-            val child = i.value
-            child.parentToLocalCoordinates(point.set(x, y))
-            val hit = child.hit(point.x, point.y, touchable)
-            if (hit != null) {
-                return hit
-            }
-        }
-
-        return super.hit(x, y, touchable)
     }
 
     fun addDefaultLayer(prio: Int) : Layer {

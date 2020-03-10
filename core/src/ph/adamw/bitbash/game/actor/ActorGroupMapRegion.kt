@@ -59,7 +59,6 @@ class ActorGroupMapRegion : Pool.Poolable {
     private fun unedgeTile(np: TilePosition) {
         if(edgeMap.containsKey(np)) {
             val edges = edgeMap[np]!!
-            Gdx.app.log("EDGE", "Properly unedged $np " + edges.size)
 
             for(i in edges) {
                 ActorTileEdge.POOL.free(i)
@@ -73,6 +72,7 @@ class ActorGroupMapRegion : Pool.Poolable {
         val edge = ActorTileEdge.POOL.obtain()
         edge.set(tileFrom, temp, edgeLocation)
         layer.addOrGetDefaultLayer(tileFrom.drawPriority).addActor(edge)
+        edge.toBack()
 
         if(!edgeMap.containsKey(tp)) {
             edgeMap[tp] = HashSet()
