@@ -1,6 +1,5 @@
 package ph.adamw.bitbash.game.actor
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ph.adamw.bitbash.game.data.PhysicsData
@@ -8,7 +7,6 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TileEdgeLocation
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 
 class ActorTileEdge : ActorGameObject(), Pool.Poolable {
     private var handler : TileHandler = GrassTileHandler
@@ -34,6 +32,7 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
 
         color.set(handler.color)
 
+        updateParent()
         isVisible = true
     }
 

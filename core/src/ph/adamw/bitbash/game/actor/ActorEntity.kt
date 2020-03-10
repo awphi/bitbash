@@ -1,14 +1,13 @@
 package ph.adamw.bitbash.game.actor
 
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import ph.adamw.bitbash.game.actor.entity.ActorShadow
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
+import ph.adamw.bitbash.scene.layer.YOrderedLayer
 
 abstract class ActorEntity : ActorGameObject(), Json.Serializable {
     var facing : Direction = Direction.DOWN
@@ -22,12 +21,15 @@ abstract class ActorEntity : ActorGameObject(), Json.Serializable {
         }
 
     override fun parentChanged(old: Group?) {
+        super.parentChanged(old)
         facingChanged(facing)
 
-        val shadow = ActorShadow.POOL.obtain()
-        shadow.shadowing = this
-        if(parent != null) {
-            parent.addActor(shadow)
+        if(this !is ActorShadow) {
+            val shadow = ActorShadow.POOL.obtain()
+            shadow.shadowing = this
+            if (parent != null) {
+                parent.addActor(shadow)
+            }
         }
     }
 
@@ -65,12 +67,5 @@ abstract class ActorEntity : ActorGameObject(), Json.Serializable {
         json!!.writeValue("x", x)
         json.writeValue("y", y)
         json.writeValue("facing", facing.ordinal)
-    }
-
-    override fun positionChanged() {
-        super.positionChanged()
-        if(parent != null) {
-            (parent as OrderedDrawLayer).update(this)
-        }
     }
 }

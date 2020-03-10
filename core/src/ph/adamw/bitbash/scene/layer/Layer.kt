@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import java.util.*
 
-open class Layer : Group() {
+open class Layer : Group(), ILayer {
     private val actOrder : TreeSet<Actor> = TreeSet(ActOrderComparator)
 
     override fun addActorAt(index: Int, actor: Actor?) {
@@ -75,5 +75,11 @@ open class Layer : Group() {
         }
 
         return y
+    }
+
+    override fun update(actor: Actor) {
+        if(actOrder.remove(actor)) {
+            actOrder.add(actor)
+        }
     }
 }

@@ -17,6 +17,10 @@ class ActorShadow : ActorEntity(), Pool.Poolable {
     override val actPriority: Int
         get() = DEFAULT_ACT_PRIORITY + 1
 
+    init {
+        touchable = Touchable.disabled
+    }
+
     var shadowing : ActorEntity? = null
         set(value) {
             field = value
@@ -29,10 +33,6 @@ class ActorShadow : ActorEntity(), Pool.Poolable {
 
     override fun getColor(): Color {
         return ActorShadow.color
-    }
-
-    override fun parentChanged(old: Group?) {
-        touchable = Touchable.disabled
     }
 
     private fun setShadowSize() {

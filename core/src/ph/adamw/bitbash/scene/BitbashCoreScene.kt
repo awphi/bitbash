@@ -1,28 +1,23 @@
 package ph.adamw.bitbash.scene
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
-import com.badlogic.gdx.utils.Scaling
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorGroupMapRegion
-import ph.adamw.bitbash.game.actor.ActorTile
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.*
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.scene.layer.Layer
-import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
+import ph.adamw.bitbash.scene.layer.YOrderedLayer
 import ph.adamw.bitbash.util.CameraUtils
 import java.util.*
 import kotlin.collections.HashMap
@@ -40,7 +35,7 @@ abstract class BitbashCoreScene : Scene() {
     val activeRegionCoords = HashSet<Vector2>()
 
     private var gameObjectLayer : Layer? = null
-    private val entityLayer : Layer = OrderedDrawLayer()
+    private val entityLayer : Layer = YOrderedLayer()
     private val tileLayer : Layer = Layer()
 
     private val overlay : Image = Image(NinePatchDrawable(ActorGameObject.getPatch("border")))

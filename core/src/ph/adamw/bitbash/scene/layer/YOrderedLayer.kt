@@ -1,11 +1,9 @@
 package ph.adamw.bitbash.scene.layer
 
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
-import java.util.*
 
-open class OrderedDrawLayer() : Layer() {
-    fun update(actor: Actor) {
+open class YOrderedLayer : Layer() {
+    override fun update(actor: Actor) {
         val idx = findIndex(actor)
 
         if(idx == actor.zIndex) {
@@ -31,7 +29,7 @@ open class OrderedDrawLayer() : Layer() {
                 continue
             }
 
-            val c = DrawOrderComparator.compare(actor, i)
+            val c = YCoordinateComparator.compare(actor, i)
             if(c == 0 || c == -1) {
                 return idx
             }

@@ -1,11 +1,9 @@
 package ph.adamw.bitbash.game.actor
 
-import com.badlogic.gdx.graphics.Color
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
 
 class ActorTile : ActorGameObject() {
     var handler : TileHandler = GrassTileHandler
@@ -32,6 +30,7 @@ class ActorTile : ActorGameObject() {
 
         name = "tile_" + handler.name
 
+        updateParent()
         isVisible = true
     }
 

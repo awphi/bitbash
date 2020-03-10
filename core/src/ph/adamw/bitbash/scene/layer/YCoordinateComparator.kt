@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.data.PhysicsData
 
-object DrawOrderComparator : Comparator<Actor> {
+object YCoordinateComparator : Comparator<Actor> {
     override fun compare(o1: Actor?, o2: Actor?): Int {
         if(o1 == null || o2 == null) {
             return 0

@@ -9,10 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import ph.adamw.bitbash.BitbashApplication
 import ph.adamw.bitbash.GameManager
-import ph.adamw.bitbash.draw.ShaderBatch
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.layer.OrderedDrawLayer
+import ph.adamw.bitbash.scene.layer.ILayer
+import ph.adamw.bitbash.scene.layer.YOrderedLayer
 
 /**
  * The actor of a game object in the current instance of game - not saved, only the gameObject itself is saved. This
@@ -47,6 +47,12 @@ abstract class ActorGameObject : Actor() {
     }
 
     open fun parentChanged(old: Group?) {}
+
+    fun updateParent() {
+        if(parent is ILayer) {
+            (parent as ILayer).update(this)
+        }
+    }
 
     protected abstract val actorName : String
 
@@ -121,11 +127,7 @@ abstract class ActorGameObject : Actor() {
 
     override fun positionChanged() {
         readOnlyTilePosition.set(TilePosition.fromWorldX(x), TilePosition.fromWorldY(y))
-
-        if(parent is OrderedDrawLayer) {
-            (parent as OrderedDrawLayer).update(this)
-        }
-
+        updateParent()
         super.positionChanged()
     }
 
