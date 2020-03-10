@@ -1,18 +1,18 @@
 package ph.adamw.bitbash.scene.layer
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import ph.adamw.bitbash.BitbashApplication
-import java.lang.RuntimeException
 import java.util.*
 
-class MultiLayer : Actor(), Updatable {
+class MultiLayer : Group(), Updatable {
     private val debugColor : Color = nextDebugColor()
+    private val tempCoords = Vector2(0f, 0f)
 
     init {
         name = "MultiLayer" + hashCode()
@@ -45,10 +45,21 @@ class MultiLayer : Actor(), Updatable {
     }
 
     override fun hit(x: Float, y: Float, touchable: Boolean): Actor? {
-        for(i in layers) {
-            val t = i.value.hit(x, y, touchable)
-            if(t != null) {
-                return t
+        if (touchable && getTouchable() == Touchable.disabled) {
+            return null
+        }
+
+        if (!isVisible) {
+            return null
+        }
+
+        val point : Vector2 = tempCoords
+        for (i in layers) {
+            val child = i.value
+            child.parentToLocalCoordinates(point.set(x, y))
+            val hit = child.hit(point.x, point.y, touchable)
+            if (hit != null) {
+                return hit
             }
         }
 
@@ -64,6 +75,7 @@ class MultiLayer : Actor(), Updatable {
             throw RuntimeException("MultiLayer" + hashCode() +  " already contains a layer at " + prio + "!")
         }
 
+        addActor(layer)
         layers[prio] = layer
         return layers[prio]!!
     }

@@ -34,6 +34,8 @@ class ActorTile : ActorGameObject() {
         isVisible = true
     }
 
+
+
     override val physicsData: PhysicsData?
         get() {
             if(handler.hasBody) {
