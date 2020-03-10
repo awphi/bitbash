@@ -1,16 +1,23 @@
 package ph.adamw.bitbash.scene.layer
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import java.lang.RuntimeException
 import java.util.*
-import kotlin.Comparator
 
 class MultiLayer : Actor(), Updatable {
+    init {
+        name = "MultiLayer" + hashCode()
+    }
+
     private val layers = TreeMap<Int, Actor>(Collections.reverseOrder())
 
-    fun addYOrderedLayer(prio: Int) : YOrderedLayer {
-        return addLayer(prio, YOrderedLayer()) as YOrderedLayer
+    fun addSelfOrderedLayer(prio: Int) : SelfOrderedLayer {
+        return addLayer(prio, SelfOrderedLayer()) as SelfOrderedLayer
     }
 
     fun addMultiLayer(prio: Int) : MultiLayer {
@@ -19,6 +26,25 @@ class MultiLayer : Actor(), Updatable {
 
     fun addUiLayer(prio: Int) : UILayer {
         return addLayer(prio, UILayer()) as UILayer
+    }
+
+    fun addOrGetDefaultLayer(prio: Int) : Layer {
+        if(!layers.containsKey(prio)) {
+            addDefaultLayer(prio)
+        }
+
+        return layers[prio] as Layer
+    }
+
+    override fun hit(x: Float, y: Float, touchable: Boolean): Actor? {
+        for(i in layers) {
+            val t = i.value.hit(x, y, touchable)
+            if(t != null) {
+                return t
+            }
+        }
+
+        return super.hit(x, y, touchable)
     }
 
     fun addDefaultLayer(prio: Int) : Layer {
@@ -35,6 +61,8 @@ class MultiLayer : Actor(), Updatable {
     }
 
     override fun act(delta: Float) {
+        super.act(delta)
+
         for(i in layers) {
             i.value.act(delta)
         }
@@ -66,6 +94,14 @@ class MultiLayer : Actor(), Updatable {
         }
 
         layers.clear()
+    }
+
+    override fun drawDebug(shapes: ShapeRenderer?) {
+        for(i in layers) {
+            if(i.value.isVisible) {
+                i.value.drawDebug(shapes)
+            }
+        }
     }
 
     override fun update(actor: Actor) {}

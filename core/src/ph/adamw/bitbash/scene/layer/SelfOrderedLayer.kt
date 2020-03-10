@@ -2,7 +2,7 @@ package ph.adamw.bitbash.scene.layer
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 
-open class YOrderedLayer : Layer() {
+open class SelfOrderedLayer : Layer() {
     override fun update(actor: Actor) {
         val idx = findIndex(actor)
 
@@ -29,7 +29,7 @@ open class YOrderedLayer : Layer() {
                 continue
             }
 
-            val c = YCoordinateComparator.compare(actor, i)
+            val c = DrawOrderComparator.compare(actor, i)
             if(c == 0 || c == -1) {
                 return idx
             }

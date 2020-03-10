@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import java.util.*
 
+//TODO potentially create a non-actorder layer class to use for tile layers to reduce performance overhead
 open class Layer : Group(), Updatable {
     private val actOrder : TreeSet<Actor> = TreeSet(ActOrderComparator)
 

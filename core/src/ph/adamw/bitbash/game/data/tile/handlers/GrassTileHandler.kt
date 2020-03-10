@@ -8,6 +8,6 @@ import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashPlayScene
 
 object GrassTileHandler : TileHandler("grass") {
-    override val edgePriority: Int
+    override val drawPriority: Int
         get() = 10
 }

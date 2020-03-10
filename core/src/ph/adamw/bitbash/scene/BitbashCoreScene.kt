@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
@@ -18,7 +19,7 @@ import ph.adamw.bitbash.game.data.world.*
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.scene.layer.Layer
 import ph.adamw.bitbash.scene.layer.MultiLayer
-import ph.adamw.bitbash.scene.layer.YOrderedLayer
+import ph.adamw.bitbash.scene.layer.SelfOrderedLayer
 import ph.adamw.bitbash.util.CameraUtils
 import java.util.*
 import kotlin.collections.HashMap
@@ -36,26 +37,30 @@ abstract class BitbashCoreScene : Scene() {
     val activeRegionCoords = HashSet<Vector2>()
 
     private var gameObjectLayer : MultiLayer? = null
-    private var entityLayer : YOrderedLayer? = null
-    private var tileLayer : Layer? = null
+    private var entityLayer : SelfOrderedLayer? = null
+    private var tileMultiLayer : MultiLayer? = null
 
     private val overlay : Image = Image(NinePatchDrawable(ActorGameObject.getPatch("border")))
 
     // Highest priority first
-    private val overlayLayers = arrayOf(
-            entityLayer,
-            tileLayer
-    )
+    @Suppress("UNCHECKED_CAST")
+    private val overlayLayers : Sequence<Actor?> by lazy {
+        sequenceOf(
+                entityLayer,
+                tileMultiLayer
+        ) as Sequence<Actor?>
+    }
 
     override fun load(playMultiLayer: MultiLayer, uiMultiLayer: MultiLayer) {
         gameObjectLayer = playMultiLayer.addMultiLayer(0)
 
-        gameObjectLayer!!.addDefaultLayer(0).addActor(overlay)
-        entityLayer = gameObjectLayer!!.addYOrderedLayer(1)
-        tileLayer = gameObjectLayer!!.addDefaultLayer(2)
+        val overlayLayer = gameObjectLayer!!.addDefaultLayer(0)
+        entityLayer = gameObjectLayer!!.addSelfOrderedLayer(1)
+        tileMultiLayer = gameObjectLayer!!.addMultiLayer(2)
 
         overlay.color.mul(1f, 1f, 1f, 0.5f)
         overlay.touchable = Touchable.disabled
+        overlayLayer.addActor(overlay)
 
         gameObjectLayer!!.addListener(BitbashSceneListener())
 
@@ -101,7 +106,7 @@ abstract class BitbashCoreScene : Scene() {
             if (region != null && !isRegionDrawn(vec)) {
                 val drawnMapRegion = ActorGroupMapRegion.POOL.obtain()
                 drawnMapRegion.region = region
-                drawnMapRegion.loadToStage(tileLayer!!, entityLayer!!)
+                drawnMapRegion.loadToStage(tileMultiLayer!!, entityLayer!!)
                 drawnRegions[vec] = drawnMapRegion
             }
         }
@@ -109,7 +114,7 @@ abstract class BitbashCoreScene : Scene() {
         for(i in activeRegionCoords) {
             val rg = map.getOrLoadRegion(i)
             if(rg != null && rg.isDirty(MapRegionFlag.NEEDS_EDGE)) {
-                drawnRegions[i]!!.edgeRegion(tileLayer!!)
+                drawnRegions[i]!!.edgeRegion(tileMultiLayer!!)
             }
         }
     }
@@ -174,8 +179,8 @@ abstract class BitbashCoreScene : Scene() {
         GameManager.PLAY_STAGE.screenToStageCoordinates(tempCoords)
 
         var exit = false
-        for(group in overlayLayers) {
-            val hitActor = group?.hit(tempCoords.x, tempCoords.y, true)
+        for(layer in overlayLayers) {
+            val hitActor = layer?.hit(tempCoords.x, tempCoords.y, true)
             hitActor?.let {
                 if (hitActor is ActorGameObject) {
                     exit = true

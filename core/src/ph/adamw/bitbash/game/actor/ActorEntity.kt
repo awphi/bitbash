@@ -7,7 +7,6 @@ import ph.adamw.bitbash.game.actor.entity.ActorShadow
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.layer.YOrderedLayer
 
 abstract class ActorEntity : ActorGameObject(), Json.Serializable {
     var facing : Direction = Direction.DOWN

@@ -6,13 +6,13 @@ import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
 
 class ActorTile : ActorGameObject() {
-    var handler : TileHandler = GrassTileHandler
+    private var handler : TileHandler = GrassTileHandler
 
     override val actorName: String
         get() = "tile_empty"
 
     override val drawPriority: Int
-        get() = handler.edgePriority
+        get() = handler.drawPriority
 
     fun set(handler: TileHandler, tilePosition: TilePosition) {
         setPosition(tilePosition.getWorldX(), tilePosition.getWorldY())

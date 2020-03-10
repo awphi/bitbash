@@ -9,6 +9,7 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.*
 import ph.adamw.bitbash.scene.BitbashPlayScene
 import ph.adamw.bitbash.scene.layer.Layer
+import ph.adamw.bitbash.scene.layer.MultiLayer
 import java.rmi.UnexpectedException
 
 class ActorGroupMapRegion : Pool.Poolable {
@@ -41,7 +42,7 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    fun edgeRegion(layer: Layer) {
+    fun edgeRegion(layer: MultiLayer) {
         Gdx.app.log("EDGE-" + Thread.currentThread().id, "Re-applying edges to ${region!!}.")
         val temp = TilePosition(0f, 0f)
 
@@ -68,16 +69,10 @@ class ActorGroupMapRegion : Pool.Poolable {
         }
     }
 
-    private fun applyEdge(tileFrom: TileHandler, tileOnto: TileHandler?, temp: TilePosition, tp: TilePosition, edgeLocation : TileEdgeLocation, layer: Layer) {
+    private fun applyEdge(tileFrom: TileHandler, temp: TilePosition, tp: TilePosition, edgeLocation : TileEdgeLocation, layer: MultiLayer) {
         val edge = ActorTileEdge.POOL.obtain()
         edge.set(tileFrom, temp, edgeLocation)
-        layer.addActor(edge)
-
-        if(tileOnto != null && tileFrom.edgePriority < tileOnto.edgePriority) {
-            edge.toFront()
-        } else {
-            edge.toBack()
-        }
+        layer.addOrGetDefaultLayer(tileFrom.drawPriority).addActor(edge)
 
         if(!edgeMap.containsKey(tp)) {
             edgeMap[tp] = HashSet()
@@ -86,12 +81,11 @@ class ActorGroupMapRegion : Pool.Poolable {
         edgeMap[tp]!!.add(edge)
     }
 
-    private fun edgeTile(originalPosition: TilePosition, layer: Layer) {
-        //TODO fix unedging
+    private fun edgeTile(originalPosition: TilePosition, layer: MultiLayer) {
         unedgeTile(originalPosition)
 
         val tile = region!!.getTile(originalPosition)
-        val ep = tile.edgePriority
+        val ep = tile.drawPriority
 
         val tempPosition = originalPosition.copy()
         val tempDirections = HashSet<Direction>()
@@ -99,21 +93,21 @@ class ActorGroupMapRegion : Pool.Poolable {
         for(i in Direction.values()) {
             tempPosition.set(originalPosition).add(i.x, i.y)
             val tileOnto = BitbashPlayScene.map.getTileAt(tempPosition)
-            if(tileOnto != null && (tileOnto.edgePriority > ep || (ep != 0 && tileOnto.edgePriority == 0))) {
+            if(tileOnto != null && (tileOnto.drawPriority > ep || (ep != 0 && tileOnto.drawPriority == 0))) {
                 tempDirections.add(i)
-                applyEdge(tile, tileOnto, tempPosition, originalPosition, TileEdgeLocation.from(i), layer)
+                applyEdge(tile, tempPosition, originalPosition, TileEdgeLocation.from(i), layer)
             }
         }
 
         for(i in TileEdgeLocation.COMPOSITES) {
             if(tempDirections.containsAll(i.components!!)) {
                 tempPosition.set(originalPosition).add(i.x, i.y)
-                applyEdge(tile, BitbashPlayScene.map.getTileAt(tempPosition), tempPosition, originalPosition, i, layer)
+                applyEdge(tile, tempPosition, originalPosition, i, layer)
             }
         }
     }
 
-    fun loadToStage(tileGroup: Layer, widgetGroup: Layer) {
+    fun loadToStage(tileLayer: MultiLayer, widgetLayer: Layer) {
         if(region == null) {
             throw UnexpectedException("Attempted to call draw() on a drawn map region without a data region assigned!")
         }
@@ -126,12 +120,12 @@ class ActorGroupMapRegion : Pool.Poolable {
 
                 tile?.let {
                     drawnTiles[i][j].set(tile, tempCoords)
-                    tileGroup.addActor(drawnTiles[i][j])
+                    tileLayer.addOrGetDefaultLayer(tile.drawPriority).addActor(drawnTiles[i][j])
                     drawnTiles[i][j].isVisible = true
                 }
 
                 widget?.let {
-                    drawWidget(widget, widgetGroup)
+                    drawWidget(widget, widgetLayer)
                 }
             }
         }

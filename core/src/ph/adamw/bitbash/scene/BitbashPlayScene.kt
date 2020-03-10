@@ -26,11 +26,10 @@ object BitbashPlayScene : BitbashCoreScene() {
     override fun load(playMultiLayer: MultiLayer, uiMultiLayer: MultiLayer) {
         super.load(playMultiLayer, uiMultiLayer)
         mapViewer.root.debug()
-        devUi = uiMultiLayer.addUiLayer(0)
-        mapUi = uiMultiLayer.addUiLayer(1)
+        mapUi = uiMultiLayer.addUiLayer(0)
+        devUi = uiMultiLayer.addUiLayer(1)
         BitbashUIManager.loadDevUIInto(devUi!!)
         BitbashUIManager.loadMapViewer(mapUi!!, mapViewer, map, map.discoveredRegions)
-        Gdx.app.log("TEST", "HELLO")
         mapViewer.root.isVisible = false
         mapUi!!.isVisible = false
     }

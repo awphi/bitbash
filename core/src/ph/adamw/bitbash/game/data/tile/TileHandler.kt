@@ -22,7 +22,7 @@ abstract class TileHandler(name : String) : ActorHandler<ActorTile>(name) {
     @Transient
     open val color : Color = Color(1f, 1f, 1f, 1f)
 
-    abstract val edgePriority : Int
+    abstract val drawPriority : Int
 
     override val physicsData: PhysicsData?
         get() = null

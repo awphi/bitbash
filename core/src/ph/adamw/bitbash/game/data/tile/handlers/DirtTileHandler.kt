@@ -6,6 +6,6 @@ import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.BitbashPlayScene
 
 object DirtTileHandler : TileHandler("dirt") {
-    override val edgePriority: Int
+    override val drawPriority: Int
         get() = 20
 }
