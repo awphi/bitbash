@@ -50,6 +50,7 @@ class ActorGroupMapRegion : Pool.Poolable {
             for (j in region!!.tiles[i].indices) {
                 region!!.localTileIndexToWorldTilePosition(i, j, temp)
                 edgeTile(temp.copy(), layer)
+
             }
         }
 
@@ -71,7 +72,7 @@ class ActorGroupMapRegion : Pool.Poolable {
     private fun applyEdge(tileFrom: TileHandler, temp: TilePosition, tp: TilePosition, edgeLocation : TileEdgeLocation, layer: MultiLayer) {
         val edge = ActorTileEdge.POOL.obtain()
         edge.set(tileFrom, temp, edgeLocation)
-        layer.addOrGetDefaultLayer(tileFrom.drawPriority).addActor(edge)
+        layer.addOrGetGroup(tileFrom.drawPriority).addActor(edge)
         edge.toBack()
 
         if(!edgeMap.containsKey(tp)) {
@@ -120,7 +121,7 @@ class ActorGroupMapRegion : Pool.Poolable {
 
                 tile?.let {
                     drawnTiles[i][j].set(tile, tempCoords)
-                    tileLayer.addOrGetDefaultLayer(tile.drawPriority).addActor(drawnTiles[i][j])
+                    tileLayer.addOrGetGroup(tile.drawPriority).addActor(drawnTiles[i][j])
                     drawnTiles[i][j].isVisible = true
                 }
 

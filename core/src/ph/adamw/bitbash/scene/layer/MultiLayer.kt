@@ -11,6 +11,7 @@ import ph.adamw.bitbash.BitbashApplication
 import java.util.*
 
 class MultiLayer : Group(), Updatable {
+    private val layers = TreeMap<Int, Group>(Collections.reverseOrder())
     private val debugColor : Color = nextDebugColor()
 
     init {
@@ -21,10 +22,12 @@ class MultiLayer : Group(), Updatable {
         }
     }
 
-    private val layers = TreeMap<Int, Actor>(Collections.reverseOrder())
-
     fun addSelfOrderedLayer(prio: Int) : SelfOrderedLayer {
         return addLayer(prio, SelfOrderedLayer()) as SelfOrderedLayer
+    }
+
+    fun addGroup(prio: Int) : Group {
+        return addLayer(prio, Group())
     }
 
     fun addMultiLayer(prio: Int) : MultiLayer {
@@ -35,19 +38,19 @@ class MultiLayer : Group(), Updatable {
         return addLayer(prio, UILayer()) as UILayer
     }
 
-    fun addOrGetDefaultLayer(prio: Int) : Layer {
+    fun addOrGetGroup(prio: Int) : Group {
         if(!layers.containsKey(prio)) {
-            addDefaultLayer(prio)
+            addGroup(prio)
         }
 
-        return layers[prio] as Layer
+        return layers[prio] as Group
     }
 
     fun addDefaultLayer(prio: Int) : Layer {
         return addLayer(prio, Layer()) as Layer
     }
 
-    fun addLayer(prio: Int, layer: Actor) : Actor {
+    fun addLayer(prio: Int, layer: Group) : Group {
         if(layers.containsKey(prio)) {
             throw RuntimeException("MultiLayer" + hashCode() +  " already contains a layer at " + prio + "!")
         }
@@ -81,7 +84,7 @@ class MultiLayer : Group(), Updatable {
         }
     }
 
-    operator fun iterator(): MutableIterator<MutableMap.MutableEntry<Int, Actor>> {
+    operator fun iterator(): MutableIterator<MutableMap.MutableEntry<Int, Group>> {
         return layers.iterator()
     }
 
