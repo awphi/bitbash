@@ -45,7 +45,21 @@ abstract class ActorGameObject : Actor() {
         parentChanged(old)
     }
 
-    open fun parentChanged(old: Group?) {}
+    open fun parentChanged(old: Group?) {
+        if(parent == null && old != null) {
+            removed()
+        } else if(parent != null) {
+            if(old != null) {
+                removed()
+            }
+
+            added()
+        }
+    }
+
+    open fun removed() {}
+
+    open fun added() {}
 
     fun updateParent() {
         if(parent is Updatable) {

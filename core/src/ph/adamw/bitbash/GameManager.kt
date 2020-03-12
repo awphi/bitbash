@@ -1,7 +1,9 @@
 package ph.adamw.bitbash
 
 import box2dLight.RayHandler
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Camera
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
@@ -32,7 +34,7 @@ object GameManager {
     val UI_STAGE : Stage = Stage(ScreenViewport())
     val PLAY_STAGE: Stage = Stage(ExtendViewport(MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT), ShaderBatch(1000))
 
-    val WORLD_CAMERA : Camera = PLAY_STAGE.camera!!
+    val WORLD_CAMERA : OrthographicCamera = PLAY_STAGE.camera!! as OrthographicCamera
 
     fun loadScene(scene: Scene) : Scene {
         PLAY_STAGE.addActor(playMultiLayer)

@@ -14,6 +14,7 @@ import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorGroupMapRegion
 import ph.adamw.bitbash.game.actor.ActorWidget
 import ph.adamw.bitbash.game.data.MapState
+import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.world.*
 import ph.adamw.bitbash.game.data.world.Map
@@ -67,13 +68,20 @@ abstract class BitbashCoreScene : Scene() {
         entityLayer!!.addActor(mapState!!.player)
         CameraUtils.setCameraPos(GameManager.WORLD_CAMERA, mapState!!.player.x, mapState!!.player.y)
 
-        GameManager.rayHandler.setAmbientLight(0f, 0f, 0f, 0.8f)
+        GameManager.rayHandler.setAmbientLight(0f, 0f, 0f, 1f)
         GameManager.rayHandler.setBlurNum(3)
     }
 
     override fun postDraw() {
-        GameManager.rayHandler.setCombinedMatrix(GameManager.WORLD_CAMERA as OrthographicCamera)
-        GameManager.rayHandler.updateAndRender()
+        // TODO work this out
+        GameManager.rayHandler.setCombinedMatrix(
+                GameManager.WORLD_CAMERA.combined.scl(PhysicsData.PPM),
+                GameManager.WORLD_CAMERA.position.x / PhysicsData.PPM,
+                GameManager.WORLD_CAMERA.position.y / PhysicsData.PPM,
+                GameManager.WORLD_CAMERA.viewportWidth * GameManager.WORLD_CAMERA.zoom,
+                GameManager.WORLD_CAMERA.viewportHeight * GameManager.WORLD_CAMERA.zoom
+        )
+        //GameManager.rayHandler.updateAndRender()
         updateActiveRegions()
     }
 
@@ -170,7 +178,7 @@ abstract class BitbashCoreScene : Scene() {
 
     fun updateDrawnTile(rg: MapRegion, np: TilePosition, tile: TileHandler) {
         if(isRegionDrawn(rg.coords)) {
-            drawnRegions[rg.coords]!!.drawTile(np, tile)
+            drawnRegions[rg.coords]!!.drawTile(np, tileMultiLayer!!, tile)
         }
     }
 

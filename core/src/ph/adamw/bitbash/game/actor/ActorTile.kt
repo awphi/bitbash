@@ -4,6 +4,7 @@ import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.scene.layer.MultiLayer
 
 class ActorTile : ActorGameObject() {
     private var handler : TileHandler = GrassTileHandler
@@ -14,7 +15,7 @@ class ActorTile : ActorGameObject() {
     override val drawPriority: Int
         get() = handler.drawPriority
 
-    fun set(handler: TileHandler, tilePosition: TilePosition) {
+    fun set(handler: TileHandler, tileLayer: MultiLayer, tilePosition: TilePosition) {
         setPosition(tilePosition.getWorldX(), tilePosition.getWorldY())
         setTexture(handler.getTextureName())
 
@@ -30,7 +31,7 @@ class ActorTile : ActorGameObject() {
 
         name = "tile_" + handler.name
 
-        updateParent()
+        tileLayer.addOrGetGroup(drawPriority).addActor(this)
         isVisible = true
     }
 

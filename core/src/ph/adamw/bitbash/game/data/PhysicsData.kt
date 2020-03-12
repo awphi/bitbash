@@ -44,6 +44,6 @@ abstract class PhysicsData {
     }
 
     companion object {
-        const val PPM = 12f;
+        const val PPM = 12f
     }
 }

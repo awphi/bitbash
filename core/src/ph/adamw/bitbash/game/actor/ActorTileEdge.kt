@@ -1,5 +1,6 @@
 package ph.adamw.bitbash.game.actor
 
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ph.adamw.bitbash.game.data.PhysicsData
@@ -7,6 +8,7 @@ import ph.adamw.bitbash.game.data.tile.TileHandler
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TileEdgeLocation
 import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.scene.layer.MultiLayer
 
 class ActorTileEdge : ActorGameObject(), Pool.Poolable {
     private var handler : TileHandler = GrassTileHandler
@@ -23,7 +25,7 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
     override val physicsData: PhysicsData?
         get() = null
 
-    fun set(handler: TileHandler, tilePosition: TilePosition, loc: TileEdgeLocation) {
+    fun set(handler: TileHandler, tileLayer : MultiLayer, tilePosition: TilePosition, loc: TileEdgeLocation) {
         this.handler = handler
         name = "tile_" + handler.name + "_edge_" + loc.toString().toLowerCase()
         setTexture("${handler.getTextureName()}_edge_${loc.toString().toLowerCase()}")
@@ -32,7 +34,7 @@ class ActorTileEdge : ActorGameObject(), Pool.Poolable {
 
         color.set(handler.color)
 
-        updateParent()
+        tileLayer.addOrGetGroup(drawPriority).addActor(this)
         isVisible = true
     }
 

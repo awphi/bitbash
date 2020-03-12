@@ -20,7 +20,6 @@ abstract class ActorEntity : ActorGameObject(), Json.Serializable {
         }
 
     override fun parentChanged(old: Group?) {
-        super.parentChanged(old)
         facingChanged(facing)
 
         if(this !is ActorShadow) {
@@ -30,6 +29,7 @@ abstract class ActorEntity : ActorGameObject(), Json.Serializable {
                 parent.addActor(shadow)
             }
         }
+        super.parentChanged(old)
     }
 
     open fun facingChanged(oldFacing: Direction) {

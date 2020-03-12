@@ -3,14 +3,12 @@ package ph.adamw.bitbash.scene.layer
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import ph.adamw.bitbash.BitbashApplication
 import java.util.*
 
-class MultiLayer : Group(), Updatable {
+class MultiLayer : Group() {
     private val layers = TreeMap<Int, Group>(Collections.reverseOrder())
     private val debugColor : Color = nextDebugColor()
 
@@ -23,19 +21,19 @@ class MultiLayer : Group(), Updatable {
     }
 
     fun addSelfOrderedLayer(prio: Int) : SelfOrderedLayer {
-        return addLayer(prio, SelfOrderedLayer()) as SelfOrderedLayer
+        return addGroup(prio, SelfOrderedLayer()) as SelfOrderedLayer
     }
 
     fun addGroup(prio: Int) : Group {
-        return addLayer(prio, Group())
+        return addGroup(prio, Group())
     }
 
     fun addMultiLayer(prio: Int) : MultiLayer {
-        return addLayer(prio, MultiLayer()) as MultiLayer
+        return addGroup(prio, MultiLayer()) as MultiLayer
     }
 
     fun addUiLayer(prio: Int) : UILayer {
-        return addLayer(prio, UILayer()) as UILayer
+        return addGroup(prio, UILayer()) as UILayer
     }
 
     fun addOrGetGroup(prio: Int) : Group {
@@ -47,10 +45,10 @@ class MultiLayer : Group(), Updatable {
     }
 
     fun addDefaultLayer(prio: Int) : Layer {
-        return addLayer(prio, Layer()) as Layer
+        return addGroup(prio, Layer()) as Layer
     }
 
-    fun addLayer(prio: Int, layer: Group) : Group {
+    fun addGroup(prio: Int, layer: Group) : Group {
         if(layers.containsKey(prio)) {
             throw RuntimeException("MultiLayer" + hashCode() +  " already contains a layer at " + prio + "!")
         }
@@ -104,8 +102,6 @@ class MultiLayer : Group(), Updatable {
             }
         }
     }
-
-    override fun update(actor: Actor) {}
 
     companion object {
         private var idx = 0
