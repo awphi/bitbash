@@ -20,7 +20,8 @@ class ActorWidgetLamp : ActorWidget() {
         get() = "widgets/lamp"
 
     override fun added() {
-        light = PointLight(GameManager.rayHandler, 8, Color.WHITE, 128f, (x + width / 2f) / PhysicsData.PPM, (y + height - 4) / PhysicsData.PPM)
+        super.added()
+        light = PointLight(GameManager.rayHandler, 32, Color.WHITE, 8f, (x + width / 2f) / PhysicsData.PPM, (y + height - 4) / PhysicsData.PPM)
     }
 
     override fun removed() {

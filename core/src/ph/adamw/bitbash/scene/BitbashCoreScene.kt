@@ -68,20 +68,13 @@ abstract class BitbashCoreScene : Scene() {
         entityLayer!!.addActor(mapState!!.player)
         CameraUtils.setCameraPos(GameManager.WORLD_CAMERA, mapState!!.player.x, mapState!!.player.y)
 
-        GameManager.rayHandler.setAmbientLight(0f, 0f, 0f, 1f)
+        GameManager.rayHandler.setAmbientLight(0f, 0f, 0f, 0.8f)
         GameManager.rayHandler.setBlurNum(3)
     }
 
     override fun postDraw() {
-        // TODO work this out
-        GameManager.rayHandler.setCombinedMatrix(
-                GameManager.WORLD_CAMERA.combined.scl(PhysicsData.PPM),
-                GameManager.WORLD_CAMERA.position.x / PhysicsData.PPM,
-                GameManager.WORLD_CAMERA.position.y / PhysicsData.PPM,
-                GameManager.WORLD_CAMERA.viewportWidth * GameManager.WORLD_CAMERA.zoom,
-                GameManager.WORLD_CAMERA.viewportHeight * GameManager.WORLD_CAMERA.zoom
-        )
-        //GameManager.rayHandler.updateAndRender()
+        GameManager.rayHandler.setCombinedMatrix(GameManager.WORLD_CAMERA.combined.scl(PhysicsData.PPM))
+        GameManager.rayHandler.updateAndRender()
         updateActiveRegions()
     }
 

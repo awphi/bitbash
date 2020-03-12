@@ -24,9 +24,9 @@ abstract class ActorWidget : ActorEntity() {
             setPositionWithBody(calculateX(), calculateY())
         }
 
-    override fun parentChanged(old: Group?) {
+    override fun added() {
+        super.added()
         setPositionWithBody(calculateX(), calculateY())
-        super.parentChanged(old)
     }
 
     private fun calculateX() : Float {
