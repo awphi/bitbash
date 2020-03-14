@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Container
@@ -48,7 +49,7 @@ object BitbashUIManager {
         mapViewerThreadPool.shutdown()
     }
 
-    fun loadMapViewer(layer: Layer, stage: Stage, map: Map, regions: HashSet<Vector2>) {
+    fun loadMapViewer(layer: Group, stage: Stage, map: Map, regions: HashSet<Vector2>) {
         mapMarker.setTexture("marker")
         stage.addActor(mapMarker)
 
@@ -135,9 +136,9 @@ object BitbashUIManager {
         return null
     }
 
-    fun loadDevUIInto(layer: Layer) {
-        val topLeftContainer = Container<VisTable>()
-        val topLeftTable = VisTable()
+    fun loadDevUIInto(layer: Group) {
+        val topLeftContainer = Container(VisTable())
+        val topLeftTable = topLeftContainer.actor
         topLeftContainer.align(Align.topLeft)
         topLeftContainer.setFillParent(true)
         topLeftTable.background = TextureRegionDrawable(ActorGameObject.getTexture("map-background"))
@@ -151,8 +152,11 @@ object BitbashUIManager {
         topLeftTable.row()
         topLeftTable.add(velocityLabel).left()
 
-        topLeftContainer.actor = topLeftTable
-
         layer.addActor(topLeftContainer)
+    }
+
+    fun loadMainUIInto(mainUi: Group) {
+        val consoleContainer = Container(VisTable())
+        val consoleTable = consoleContainer.actor
     }
 }

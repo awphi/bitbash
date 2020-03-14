@@ -2,6 +2,7 @@ package ph.adamw.bitbash.scene
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.utils.viewport.ExtendViewport
@@ -18,8 +19,9 @@ import ph.adamw.bitbash.scene.layer.MultiLayer
 import ph.adamw.bitbash.scene.ui.BitbashUIManager
 
 object BitbashPlayScene : BitbashCoreScene() {
-    private var devUi : Layer? = null
-    private var mapUi : Layer? = null
+    private var devUi : Group? = null
+    private var mapUi : Group? = null
+    private var mainUi : Group? = null
 
     private val mapViewer : Stage = Stage(ExtendViewport(GameManager.MIN_WORLD_WIDTH, GameManager.MIN_WORLD_HEIGHT))
 
@@ -28,8 +30,10 @@ object BitbashPlayScene : BitbashCoreScene() {
         mapViewer.root.debug()
         mapUi = uiMultiLayer.addUiLayer(0)
         devUi = uiMultiLayer.addUiLayer(1)
+        mainUi = uiMultiLayer.addUiLayer(2)
         BitbashUIManager.loadDevUIInto(devUi!!)
         BitbashUIManager.loadMapViewer(mapUi!!, mapViewer, map, map.discoveredRegions)
+        BitbashUIManager.loadMainUIInto(mainUi!!)
         mapViewer.root.isVisible = false
         mapUi!!.isVisible = false
     }

@@ -1,6 +1,7 @@
 package ph.adamw.bitbash.game.actor
 
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.Pools
 import ph.adamw.bitbash.game.data.PhysicsData
@@ -12,6 +13,10 @@ import ph.adamw.bitbash.scene.layer.MultiLayer
 
 class ActorTileEdge : ActorGameObject(), Pool.Poolable {
     private var handler : TileHandler = GrassTileHandler
+
+    init {
+        touchable = Touchable.disabled
+    }
 
     override val drawPriority: Int
         get() = handler.drawPriority
