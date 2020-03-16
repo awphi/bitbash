@@ -1,26 +1,23 @@
 package ph.adamw.bitbash.scene.ui
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Cell
-import com.badlogic.gdx.scenes.scene2d.ui.Container
-import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.*
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
+import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorSimple
 import ph.adamw.bitbash.game.data.world.Map
 import ph.adamw.bitbash.game.data.world.MapRegionFlag
 import ph.adamw.bitbash.scene.BitbashPlayScene
-import ph.adamw.bitbash.scene.layer.Layer
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -34,6 +31,9 @@ object BitbashUIManager {
 
     private val clipBounds = Rectangle()
     private val scissors = Rectangle()
+
+    private val consoleDisplay = VisTable()
+    private val consoleInput = TextField("", UIUtils.SKIN)
 
     private var mapViewerCell : Cell<*>? = null
 
@@ -155,8 +155,64 @@ object BitbashUIManager {
         layer.addActor(topLeftContainer)
     }
 
+    fun addToConsole(tag: String, content: String) {
+        val t = UIUtils.DATE_FORMATTER.format(Date())
+        consoleDisplay.row()
+        consoleDisplay.add("<$t> [${tag.toUpperCase()}] $content").left()
+    }
+
     fun loadMainUIInto(mainUi: Group) {
         val consoleContainer = Container(VisTable())
         val consoleTable = consoleContainer.actor
+
+        consoleContainer.pad(10f)
+        consoleTable.pad(5f)
+
+        consoleTable.background = TextureRegionDrawable(ActorGameObject.getTexture("map-background"))
+
+
+        for(i in 0..10) {
+            addToConsole("DEBUG", "test $i")
+        }
+
+        val scrollPane = ScrollPane(consoleDisplay)
+
+        consoleContainer.debugAll()
+
+        consoleContainer.align(Align.bottomLeft)
+        consoleContainer.setFillParent(true)
+
+        consoleTable.add(scrollPane).left()
+        consoleTable.row()
+        consoleTable.add(consoleInput).fill()
+
+        consoleInput.addListener(object : InputListener() {
+            override fun keyUp(event: InputEvent?, keycode: Int): Boolean {
+                if(consoleInput.hasKeyboardFocus()) {
+                    if(keycode == Input.Keys.ESCAPE) {
+                        closeConsole()
+                    } else if(keycode == Input.Keys.ENTER) {
+                        //TODO command parser
+                        addToConsole("INPUT", consoleInput.text)
+                        consoleInput.text = ""
+                    }
+
+                    return true
+                }
+
+                return super.keyUp(event, keycode)
+            }
+        })
+
+        mainUi.addActor(consoleContainer)
+    }
+
+    fun closeConsole() {
+        consoleInput.text = ""
+        GameManager.UI_STAGE.unfocus(consoleInput)
+    }
+
+    fun openConsole() {
+        GameManager.UI_STAGE.keyboardFocus = consoleInput
     }
 }

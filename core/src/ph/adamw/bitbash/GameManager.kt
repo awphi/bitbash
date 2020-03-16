@@ -23,7 +23,6 @@ object GameManager {
     var physicsWorld = World(Vector2(0f, 0f), true)
     var rayHandler = RayHandler(physicsWorld)
     val debugRenderer = Box2DDebugRenderer()
-    var lockInput = false
 
     const val MIN_WORLD_WIDTH = 640f
     const val MIN_WORLD_HEIGHT = 480f

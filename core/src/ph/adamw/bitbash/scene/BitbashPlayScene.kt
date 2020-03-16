@@ -3,6 +3,8 @@ package ph.adamw.bitbash.scene
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.utils.viewport.ExtendViewport
@@ -38,6 +40,11 @@ object BitbashPlayScene : BitbashCoreScene() {
         mapUi!!.isVisible = false
     }
 
+    fun toggleMap() {
+        mapViewer.root.isVisible = !mapViewer.root.isVisible
+        mapUi!!.isVisible = !mapUi!!.isVisible
+    }
+
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
         mapViewer.viewport.update(width, height, true)
@@ -52,11 +59,6 @@ object BitbashPlayScene : BitbashCoreScene() {
                 mapViewer.batch.flush()
                 ScissorStack.popScissors()
             }
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-            mapViewer.root.isVisible = !mapViewer.root.isVisible
-            mapUi!!.isVisible = !mapUi!!.isVisible
         }
 
         BitbashUIManager.fpsLabel.setText(GameManager.getScene()?.frameRate.toString() + " fps")

@@ -2,6 +2,7 @@ package ph.adamw.bitbash
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.TimeUtils
@@ -24,7 +25,7 @@ import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
 
 class BitbashApplication : ApplicationAdapter() {
     override fun create() {
-        Gdx.input.inputProcessor = GameManager.PLAY_STAGE
+        Gdx.input.inputProcessor = InputMultiplexer(GameManager.UI_STAGE, GameManager.PLAY_STAGE)
 
         VisUI.load(UIUtils.SKIN)
 

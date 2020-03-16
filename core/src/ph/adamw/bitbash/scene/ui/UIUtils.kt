@@ -11,10 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ph.adamw.bitbash.game.actor.ActorGameObject
 import ph.adamw.bitbash.game.actor.ActorSimple
 import ph.adamw.bitbash.game.data.world.MapRegion
+import java.text.SimpleDateFormat
 
 object UIUtils {
     //TODO replace this placeholder skin
     val SKIN : Skin = Skin(Gdx.files.local("ui/neutralizer-ui.json"))
+    val DATE_FORMATTER : SimpleDateFormat = SimpleDateFormat("kk:mm:ss:SSS")
 
     private val TILE_TEX = ActorGameObject.getTexture("grass")
     private val TILE_TEXTURES : Pixmap

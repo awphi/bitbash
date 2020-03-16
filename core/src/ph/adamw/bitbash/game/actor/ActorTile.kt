@@ -2,12 +2,13 @@ package ph.adamw.bitbash.game.actor
 
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.tile.TileHandler
+import ph.adamw.bitbash.game.data.tile.TileListener
 import ph.adamw.bitbash.game.data.tile.handlers.GrassTileHandler
 import ph.adamw.bitbash.game.data.world.TilePosition
 import ph.adamw.bitbash.scene.layer.MultiLayer
 
 class ActorTile : ActorGameObject() {
-    private var handler : TileHandler = GrassTileHandler
+    var handler : TileHandler = GrassTileHandler
 
     override val actorName: String
         get() = "tile_empty"
@@ -16,6 +17,7 @@ class ActorTile : ActorGameObject() {
         get() = handler.drawPriority
 
     fun set(handler: TileHandler, tileLayer: MultiLayer, tilePosition: TilePosition) {
+        clearListeners()
         setPosition(tilePosition.getWorldX(), tilePosition.getWorldY())
         setTexture(handler.getTextureName())
 
@@ -31,6 +33,7 @@ class ActorTile : ActorGameObject() {
 
         name = "tile_" + handler.name
 
+        addListener(TileListener(this))
         tileLayer.addOrGetGroup(drawPriority).addActor(this)
         isVisible = true
     }
@@ -45,10 +48,6 @@ class ActorTile : ActorGameObject() {
 
             return null
         }
-
-    override fun mouseClicked(button: Int, tilePosition: TilePosition, x: Float, y: Float) {
-        handler.mouseClicked(this, button, tilePosition, x, y)
-    }
 
     companion object {
         const val SIZE = 32f

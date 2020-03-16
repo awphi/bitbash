@@ -63,7 +63,8 @@ abstract class BitbashCoreScene : Scene() {
         overlay.touchable = Touchable.disabled
         overlayLayer.addActor(overlay)
 
-        gameObjectLayer!!.addListener(BitbashSceneListener())
+        gameObjectLayer!!.addListener(BitbashGlobalListener())
+        GameManager.PLAY_STAGE.keyboardFocus = gameObjectLayer!!
 
         entityLayer!!.addActor(mapState!!.player)
         CameraUtils.setCameraPos(GameManager.WORLD_CAMERA, mapState!!.player.x, mapState!!.player.y)
