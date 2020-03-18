@@ -64,7 +64,7 @@ abstract class BitbashCoreScene : Scene() {
         overlayLayer.addActor(overlay)
 
         gameObjectLayer!!.addListener(BitbashGlobalListener())
-        GameManager.PLAY_STAGE.keyboardFocus = gameObjectLayer!!
+        GameManager.PLAY_STAGE.keyboardFocus = mapState!!.player
 
         entityLayer!!.addActor(mapState!!.player)
         CameraUtils.setCameraPos(GameManager.WORLD_CAMERA, mapState!!.player.x, mapState!!.player.y)

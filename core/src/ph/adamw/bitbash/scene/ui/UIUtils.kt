@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 object UIUtils {
     //TODO replace this placeholder skin
     val SKIN : Skin = Skin(Gdx.files.local("ui/neutralizer-ui.json"))
-    val DATE_FORMATTER : SimpleDateFormat = SimpleDateFormat("kk:mm:ss:SSS")
+    val DATE_FORMATTER : SimpleDateFormat = SimpleDateFormat("kk:mm:ss")
 
     private val TILE_TEX = ActorGameObject.getTexture("grass")
     private val TILE_TEXTURES : Pixmap

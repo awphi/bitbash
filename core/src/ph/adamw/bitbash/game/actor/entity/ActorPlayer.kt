@@ -5,13 +5,13 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.Shape
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.utils.Json
-import ph.adamw.bitbash.GameManager
 import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.TilePosition
-import ph.adamw.bitbash.scene.BitbashPlayScene
 
 class ActorPlayer : ActorEntity(), Json.Serializable {
     override val actPriority: Int
@@ -23,13 +23,16 @@ class ActorPlayer : ActorEntity(), Json.Serializable {
     override val actorName: String
         get() = "player"
 
+    init {
+        //TODO implement a KeyListener (see trello) + replace the Gdx.input
+    }
+
     override fun actEntity(delta: Float, tilePosition: TilePosition) {
         val step = STEP * if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) SPRINT_MODIFIER else 1f
 
         var x = 0f
         var y = 0f
 
-        //TODO replace w listener
         if(Gdx.input.isKeyPressed(Input.Keys.W)) {
             y += 1f
             facing = Direction.UP
