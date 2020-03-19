@@ -194,7 +194,7 @@ object BitbashUIManager {
                     } else if(keycode == Input.Keys.ENTER) {
                         //TODO command parser
                         addToConsole("INPUT", consoleInput.text)
-                        consoleInput.text = ""
+                        closeConsole()
                     }
 
                     return true

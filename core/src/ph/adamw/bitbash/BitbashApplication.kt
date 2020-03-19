@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.Json
-import com.badlogic.gdx.utils.TimeUtils
 import com.kotcrab.vis.ui.VisUI
 import org.nustaq.serialization.FSTConfiguration
 import ph.adamw.bitbash.game.actor.ActorEntity
@@ -18,9 +17,9 @@ import ph.adamw.bitbash.game.data.world.MapRegion
 import ph.adamw.bitbash.scene.BitbashPlayScene
 import ph.adamw.bitbash.scene.ui.BitbashUIManager
 import ph.adamw.bitbash.scene.ui.UIUtils
-import ph.adamw.bitbash.util.JsonFSTSerializer
-import ph.adamw.bitbash.util.TileHandlerFSTSerializer
-import ph.adamw.bitbash.util.TweakedFSTClassInstantiator
+import ph.adamw.bitbash.util.io.JsonFSTSerializer
+import ph.adamw.bitbash.util.io.TileHandlerFSTSerializer
+import ph.adamw.bitbash.util.io.TweakedFSTClassInstantiator
 
 
 class BitbashApplication : ApplicationAdapter() {

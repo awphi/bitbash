@@ -1,4 +1,4 @@
-package ph.adamw.bitbash.util
+package ph.adamw.bitbash.util.io
 
 import org.nustaq.serialization.FSTBasicObjectSerializer
 import org.nustaq.serialization.FSTClazzInfo

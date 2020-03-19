@@ -12,6 +12,7 @@ import ph.adamw.bitbash.game.actor.ActorEntity
 import ph.adamw.bitbash.game.data.PhysicsData
 import ph.adamw.bitbash.game.data.world.Direction
 import ph.adamw.bitbash.game.data.world.TilePosition
+import ph.adamw.bitbash.scene.event.KeyListener
 
 class ActorPlayer : ActorEntity(), Json.Serializable {
     override val actPriority: Int
@@ -23,32 +24,40 @@ class ActorPlayer : ActorEntity(), Json.Serializable {
     override val actorName: String
         get() = "player"
 
-    init {
-        //TODO implement a KeyListener (see trello) + replace the Gdx.input
+    private val listener = KeyListener(Input.Keys.W, Input.Keys.A, Input.Keys.S, Input.Keys.D, Input.Keys.SHIFT_LEFT)
+
+    override fun added() {
+        super.added()
+        addListener(listener)
+    }
+
+    override fun removed() {
+        super.removed()
+        clearListeners()
     }
 
     override fun actEntity(delta: Float, tilePosition: TilePosition) {
-        val step = STEP * if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) SPRINT_MODIFIER else 1f
+        val step = STEP * if (listener.isDown(Input.Keys.SHIFT_LEFT)) SPRINT_MODIFIER else 1f
 
         var x = 0f
         var y = 0f
 
-        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+        if(listener.isDown(Input.Keys.W)) {
             y += 1f
             facing = Direction.UP
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+        if(listener.isDown(Input.Keys.S)) {
             y -= 1f
             facing = Direction.DOWN
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.A)) {
+        if(listener.isDown(Input.Keys.A)) {
             x -= 1f
             facing = Direction.LEFT
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+        if(listener.isDown(Input.Keys.D)) {
             x += 1f
             facing = Direction.RIGHT
         }
